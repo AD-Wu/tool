@@ -1,6 +1,7 @@
 package com.x.commons.util.convert;
 
 import com.x.commons.enums.Charsets;
+import com.x.commons.enums.DisplayStyle;
 import com.x.commons.enums.Regex;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.bean.SB;

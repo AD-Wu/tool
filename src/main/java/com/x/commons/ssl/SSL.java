@@ -23,7 +23,11 @@ import java.security.SecureRandom;
  */
 public class SSL {
 
+    // -------------------------- 静态变量 --------------------------
+
     private static final SSLVerifier VERIFIER = new SSLVerifier();
+
+    // -------------------------- 成员变量 --------------------------
 
     private final SSLSocketFactory sslFactory;
 
@@ -31,8 +35,15 @@ public class SSL {
 
     private final SSLIOSessionStrategy sslIOSessionStrategy;
 
+    // -------------------------- 构造方法 --------------------------
+
     // public SSL() {}
 
+    /**
+     * TODO 创建无证书的SSL对象
+     *
+     * @param version
+     */
     public SSL(SSLVersion version) {
         SSLContext sslContext = getSSLContext(version);
         initSSLContext(sslContext, VERIFIER, new SecureRandom());
@@ -41,6 +52,12 @@ public class SSL {
         this.sslIOSessionStrategy = new SSLIOSessionStrategy(sslContext, VERIFIER);
     }
 
+    /**
+     * TODO 创建有证书的SSL对象
+     *
+     * @param keyStorePath
+     * @param keyStorepass
+     */
     public SSL(String keyStorePath, String keyStorepass) {
         SSLContext sslContext = getSSLContextWithKey(keyStorePath, keyStorepass);
         initSSLContext(sslContext, VERIFIER, new SecureRandom());
@@ -82,6 +99,8 @@ public class SSL {
     //     return sslIOSessionStrategy;
     // }
 
+    // -------------------------- 私有方法 --------------------------
+
     /**
      * TODO 自定义证书
      *
@@ -109,8 +128,10 @@ public class SSL {
 
     @SneakyThrows
     private void initSSLContext(SSLContext sslContext, X509TrustManager verifier, SecureRandom secureRandom) {
-        sslContext.init(null, new TrustManager[]{VERIFIER}, secureRandom);
+        sslContext.init(null, new TrustManager[]{verifier}, secureRandom);
     }
+
+    // -------------------------- 成员方法 --------------------------
 
     public SSLSocketFactory getSSLSocketFactory() {
         return sslFactory;

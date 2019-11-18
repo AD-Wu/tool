@@ -1,4 +1,4 @@
-package com.x.commons.util.convert;
+package com.x.commons.enums;
 
 import org.apache.commons.lang3.builder.ToStringStyle;
 

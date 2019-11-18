@@ -33,11 +33,11 @@ import java.net.UnknownHostException;
  */
 public class HttpClientFactory {
 
-    // -------------------------------- 成员变量 --------------------------------
+    // -------------------------- 成员变量 --------------------------
 
     private HttpClientBuilder builder;
 
-    // -------------------------------- 构造方法 --------------------------------
+    // -------------------------- 构造方法 --------------------------
     public HttpClientFactory() {
         builder = HttpClientBuilder.create();
     }
@@ -50,7 +50,7 @@ public class HttpClientFactory {
         builder = HttpClientBuilder.create().setRoutePlanner(proxy(ip, port));
     }
 
-    // -------------------------------- 成员方法 --------------------------------
+    // -------------------------- 成员方法 --------------------------
 
     public HttpClient http() {
         return builder.build();
@@ -75,14 +75,27 @@ public class HttpClientFactory {
         throw new Exception("the keyStorePath is null");
     }
 
-    // -------------------------------- 私有方法 --------------------------------
+    // -------------------------- 私有方法 --------------------------
 
+    /**
+     * 设置代理
+     *
+     * @param ip   代理IP
+     * @param port 代理端口
+     * @return
+     */
     private DefaultProxyRoutePlanner proxy(String ip, int port) {
         // 依次是代理地址，代理端口号，协议类型
         HttpHost proxy = new HttpHost(ip, port, "http");
         return new DefaultProxyRoutePlanner(proxy);
     }
 
+    /**
+     * 重试次数
+     *
+     * @param tryCount
+     * @return
+     */
     private HttpRequestRetryHandler retry(final int tryCount) {
         return retry(tryCount, false);
     }
@@ -107,6 +120,7 @@ public class HttpClientFactory {
     private HttpRequestRetryHandler getRetryHandler(int tryCount, boolean retryWhenIOInterrupted) {
 
         return new HttpRequestRetryHandler() {
+
             @Override
             public boolean retryRequest(final IOException e, final int executeCount, final HttpContext ctx) {
                 if (executeCount >= tryCount) {// 如果已经重试了n次，就放弃

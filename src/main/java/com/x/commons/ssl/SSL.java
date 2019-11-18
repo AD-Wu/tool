@@ -40,9 +40,9 @@ public class SSL {
     // public SSL() {}
 
     /**
-     * TODO 创建无证书的SSL对象
+     * 创建无证书的SSL对象
      *
-     * @param version
+     * @param version 协议版本
      */
     public SSL(SSLVersion version) {
         SSLContext sslContext = getSSLContext(version);
@@ -53,7 +53,7 @@ public class SSL {
     }
 
     /**
-     * TODO 创建有证书的SSL对象
+     * 创建有证书的SSL对象
      *
      * @param keyStorePath
      * @param keyStorepass
@@ -102,7 +102,7 @@ public class SSL {
     // -------------------------- 私有方法 --------------------------
 
     /**
-     * TODO 自定义证书
+     * 自定义证书
      *
      * @param keyStorePath
      * @param keyStorepass
@@ -136,9 +136,11 @@ public class SSL {
     public SSLSocketFactory getSSLSocketFactory() {
         return sslFactory;
     }
+
     public SSLConnectionSocketFactory getSSLConnSocketFactory() {
         return sslConnFactory;
     }
+
     public SSLIOSessionStrategy getSSLIOSessionStrategy() {
         return sslIOSessionStrategy;
     }

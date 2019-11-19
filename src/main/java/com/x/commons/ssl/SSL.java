@@ -17,7 +17,7 @@ import java.security.KeyStore;
 import java.security.SecureRandom;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2019-11-17 21:04
  * @Author AD
  */
@@ -30,9 +30,7 @@ public class SSL {
     // -------------------------- 成员变量 --------------------------
 
     private final SSLSocketFactory sslFactory;
-
     private final SSLConnectionSocketFactory sslConnFactory;
-
     private final SSLIOSessionStrategy sslIOSessionStrategy;
 
     // -------------------------- 构造方法 --------------------------

@@ -38,22 +38,19 @@ public class HttpClientFactory {
     private HttpClientBuilder builder;
 
     // -------------------------- 构造方法 --------------------------
-    public HttpClientFactory() {
-        builder = HttpClientBuilder.create();
-    }
 
-    public HttpClientFactory(int tryCount) {
-        builder = HttpClientBuilder.create().setRetryHandler(retry(tryCount));
-    }
-
-    public HttpClientFactory(String ip, int port) {
-        builder = HttpClientBuilder.create().setRoutePlanner(proxy(ip, port));
+    public HttpClientFactory(Builder builder) {
+        this.builder = builder.getHttpClientBuilder();
     }
 
     // -------------------------- 成员方法 --------------------------
 
     public HttpClient http() {
         return builder.build();
+    }
+
+    public HttpClient https() {
+        return https(SSLVersion.SSLv3);
     }
 
     public HttpClient https(SSLVersion version) {
@@ -75,85 +72,90 @@ public class HttpClientFactory {
         throw new Exception("the keyStorePath is null");
     }
 
-    // -------------------------- 私有方法 --------------------------
+    // -------------------------- 构建器 --------------------------
 
-    /**
-     * 设置代理
-     *
-     * @param ip   代理IP
-     * @param port 代理端口
-     * @return
-     */
-    private DefaultProxyRoutePlanner proxy(String ip, int port) {
-        // 依次是代理地址，代理端口号，协议类型
-        HttpHost proxy = new HttpHost(ip, port, "http");
-        return new DefaultProxyRoutePlanner(proxy);
-    }
+    public static class Builder {
 
-    /**
-     * 重试次数
-     *
-     * @param tryCount
-     * @return
-     */
-    private HttpRequestRetryHandler retry(final int tryCount) {
-        return retry(tryCount, false);
-    }
+        private HttpClientBuilder builder;
 
-    private HttpRequestRetryHandler retry(final int tryCount, final boolean retryWhenIOInterrupted) {
-        // 请求重试处理
-        return getRetryHandler(tryCount, retryWhenIOInterrupted);
-    }
+        public Builder() {
+            this.builder = HttpClientBuilder.create();
+        }
 
-    private PoolingHttpClientConnectionManager pool(int maxTotal, int maxPerRoute) {
-        Registry<ConnectionSocketFactory> registry = RegistryBuilder
-                .<ConnectionSocketFactory>create()
-                .register("http", PlainConnectionSocketFactory.INSTANCE)
-                .register("https", new SSL(SSLVersion.SSLv3).getSSLConnSocketFactory()).build();
-        // 设置连接池大小
-        PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(registry);
-        connManager.setMaxTotal(maxTotal);
-        connManager.setDefaultMaxPerRoute(maxPerRoute);
-        return connManager;
-    }
+        public Builder retry(int tryCount) {
+            builder.setRetryHandler(this.getRetryHandler(tryCount, false));
+            return this;
+        }
 
-    private HttpRequestRetryHandler getRetryHandler(int tryCount, boolean retryWhenIOInterrupted) {
+        public Builder proxy(String ip, int port) {
+            // 依次是代理地址，代理端口号，协议类型
+            HttpHost proxy = new HttpHost(ip, port, "http");
+            builder.setRoutePlanner(new DefaultProxyRoutePlanner(proxy));
+            return this;
+        }
 
-        return new HttpRequestRetryHandler() {
+        public Builder pool(int maxTotal, int maxPerRoute) {
+            Registry<ConnectionSocketFactory> registry = RegistryBuilder
+                    .<ConnectionSocketFactory>create()
+                    .register("http", PlainConnectionSocketFactory.INSTANCE)
+                    .register("https", new SSL(SSLVersion.SSLv3).getSSLConnSocketFactory()).build();
+            // 设置连接池大小
+            PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(registry);
+            connManager.setMaxTotal(maxTotal);
+            connManager.setDefaultMaxPerRoute(maxPerRoute);
+            builder.setConnectionManager(connManager);
+            return this;
+        }
 
-            @Override
-            public boolean retryRequest(final IOException e, final int executeCount, final HttpContext ctx) {
-                if (executeCount >= tryCount) {// 如果已经重试了n次，就放弃
+        public HttpClientFactory build() {
+            return new HttpClientFactory(this);
+        }
+
+        HttpClientBuilder getHttpClientBuilder() {
+            return builder;
+        }
+
+        // -------------------------- 私有方法 --------------------------
+
+        private HttpRequestRetryHandler getRetryHandler(int tryCount, boolean retryWhenIOInterrupted) {
+
+            return new HttpRequestRetryHandler() {
+
+                @Override
+                public boolean retryRequest(final IOException e, final int executeCount, final HttpContext ctx) {
+                    if (executeCount >= tryCount) {// 如果已经重试了n次，就放弃
+                        return false;
+                    }
+                    if (e instanceof NoHttpResponseException) {// 如果服务器丢掉了连接，那么就重试
+                        return true;
+                    }
+                    if (e instanceof SSLHandshakeException) {// 不要重试SSL握手异常
+                        return false;
+                    }
+                    if (e instanceof InterruptedIOException) {// 超时
+                        return retryWhenIOInterrupted;
+                    }
+                    if (e instanceof UnknownHostException) {// 目标服务器不可达
+                        return true;
+                    }
+                    if (e instanceof ConnectTimeoutException) {// 连接被拒绝
+                        return false;
+                    }
+                    if (e instanceof SSLException) {// SSL握手异常
+                        return false;
+                    }
+
+                    HttpClientContext clientContext = HttpClientContext.adapt(ctx);
+                    HttpRequest request = clientContext.getRequest();
+                    // 如果请求是幂等的，就再次尝试
+                    if (!(request instanceof HttpEntityEnclosingRequest)) {
+                        return true;
+                    }
                     return false;
                 }
-                if (e instanceof NoHttpResponseException) {// 如果服务器丢掉了连接，那么就重试
-                    return true;
-                }
-                if (e instanceof SSLHandshakeException) {// 不要重试SSL握手异常
-                    return false;
-                }
-                if (e instanceof InterruptedIOException) {// 超时
-                    return retryWhenIOInterrupted;
-                }
-                if (e instanceof UnknownHostException) {// 目标服务器不可达
-                    return true;
-                }
-                if (e instanceof ConnectTimeoutException) {// 连接被拒绝
-                    return false;
-                }
-                if (e instanceof SSLException) {// SSL握手异常
-                    return false;
-                }
+            };
+        }
 
-                HttpClientContext clientContext = HttpClientContext.adapt(ctx);
-                HttpRequest request = clientContext.getRequest();
-                // 如果请求是幂等的，就再次尝试
-                if (!(request instanceof HttpEntityEnclosingRequest)) {
-                    return true;
-                }
-                return false;
-            }
-        };
     }
 
 }

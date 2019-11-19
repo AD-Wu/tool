@@ -21,6 +21,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.10</version>
+        </dependency>
+        <dependency>
             <groupId>com.arronlong</groupId>
             <artifactId>httpclientutil</artifactId>
             <version>1.0.4</version>
@@ -114,6 +119,7 @@
             <!--项目根目录下的lib文件夹下-->
             <systemPath>${basedir}/lib/ax-framework-2.8.jar</systemPath>
         </dependency>
+
     </dependencies>
 
     <build>

@@ -19,8 +19,8 @@ public class TimerTask {
     private Thread checker;
     private ThreadPoolExecutor pool;
     private Object lock;
-    private List<TaskRunner> tasks;
-    private TaskRunner[] taskArray;
+    private List<Task> tasks;
+    private Task[] taskArray;
 
     public TimerTask(String name) {
         this(name, 0, 10, 60L, 0);
@@ -29,7 +29,7 @@ public class TimerTask {
     public TimerTask(String name, int var2, int var3, long var4, int var6) {
         this.lock = new Object();
         this.tasks = new ArrayList();
-        this.taskArray = new TaskRunner[0];
+        this.taskArray = new Task[0];
         synchronized(instanceLock) {
             timers.add(this);
         }
@@ -104,10 +104,10 @@ public class TimerTask {
 
     public void add(Runnable var1, long var2, long var4, long var6) {
         if (var1 != null) {
-            TaskRunner task = new TaskRunner(var1, var2, var4, var6);
+            Task task = new Task(var1, var2, var4, var6);
             synchronized(this.lock) {
                 this.tasks.add(task);
-                this.taskArray = (TaskRunner[])this.tasks.toArray(new TaskRunner[this.tasks.size()]);
+                this.taskArray = (Task[])this.tasks.toArray(new Task[this.tasks.size()]);
             }
         }
     }
@@ -126,13 +126,13 @@ public class TimerTask {
     }
 
     public boolean contains(Runnable taskRunner) {
-        TaskRunner[] taskArray = this.taskArray;
-        TaskRunner[] tasks = taskArray;
+        Task[] taskArray = this.taskArray;
+        Task[] tasks = taskArray;
         int len = taskArray.length;
 
         for(int i = 0; i < len; ++i) {
-            TaskRunner task = tasks[i];
-            if (task.getRunner().equals(taskRunner)) {
+            Task task = tasks[i];
+            if (task.getTask().equals(taskRunner)) {
                 return true;
             }
         }
@@ -141,14 +141,14 @@ public class TimerTask {
     }
 
     public boolean remove(Runnable taskRunner) {
-        TaskRunner[] taskArray = this.taskArray;
-        TaskRunner task = null;
-        TaskRunner[] tasks = taskArray;
+        Task[] taskArray = this.taskArray;
+        Task task = null;
+        Task[] tasks = taskArray;
         int len = taskArray.length;
 
         for(int i = 0; i < len; ++i) {
-            TaskRunner t = tasks[i];
-            if (t.getRunner().equals(taskRunner)) {
+            Task t = tasks[i];
+            if (t.getTask().equals(taskRunner)) {
                 task = t;
                 break;
             }
@@ -157,7 +157,7 @@ public class TimerTask {
         if (task != null) {
             synchronized(this.lock) {
                 this.tasks.remove(task);
-                this.taskArray = (TaskRunner[])this.tasks.toArray(new TaskRunner[this.tasks.size()]);
+                this.taskArray = (Task[])this.tasks.toArray(new Task[this.tasks.size()]);
                 return true;
             }
         } else {
@@ -166,14 +166,14 @@ public class TimerTask {
     }
 
     public void update(Runnable var1, int var2) {
-        TaskRunner[] var3 = this.taskArray;
-        TaskRunner[] var4 = var3;
+        Task[] var3 = this.taskArray;
+        Task[] var4 = var3;
         int var5 = var3.length;
 
         for(int var6 = 0; var6 < var5; ++var6) {
-            TaskRunner var7 = var4[var6];
-            if (var7.getRunner().equals(var1)) {
-                var7.updateInterval(var2);
+            Task var7 = var4[var6];
+            if (var7.getTask().equals(var1)) {
+                var7.updatePeriod(var2);
                 break;
             }
         }
@@ -183,7 +183,7 @@ public class TimerTask {
     public void clear() {
         synchronized(this.lock) {
             this.tasks.clear();
-            this.taskArray = (TaskRunner[])this.tasks.toArray(new TaskRunner[this.tasks.size()]);
+            this.taskArray = (Task[])this.tasks.toArray(new Task[this.tasks.size()]);
         }
     }
 
@@ -219,7 +219,7 @@ public class TimerTask {
         synchronized(lock) {
             while(true) {
                 while(!this.stopped) {
-                    TaskRunner[] taskRunners = this.taskArray;
+                    Task[] taskRunners = this.taskArray;
                     if (taskRunners.length == 0) {
                         try {
                             lock.wait(100L);
@@ -228,10 +228,10 @@ public class TimerTask {
                     } else {
                         long var1 = System.currentTimeMillis();
                         int var10;
-                        TaskRunner[] var11;
+                        Task[] var11;
                         int var12;
                         int var13;
-                        TaskRunner var14;
+                        Task var14;
                         if (var1 < now || var1 > now + (long)(taskRunners.length * 2) + var5 + 1000L) {
                             var10 = (int)(var1 - now);
                             var11 = taskRunners;
@@ -262,7 +262,7 @@ public class TimerTask {
                                     if (var14.needRemove()) {
                                         synchronized(this.lock) {
                                             this.tasks.remove(var14);
-                                            this.taskArray = (TaskRunner[])this.tasks.toArray(new TaskRunner[this.tasks.size()]);
+                                            this.taskArray = (Task[])this.tasks.toArray(new Task[this.tasks.size()]);
                                         }
                                     }
                                 } else {

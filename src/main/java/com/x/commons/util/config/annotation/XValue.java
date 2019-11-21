@@ -1,5 +1,7 @@
 package com.x.commons.util.config.annotation;
 
+import com.x.commons.decoder.core.IDecoder;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

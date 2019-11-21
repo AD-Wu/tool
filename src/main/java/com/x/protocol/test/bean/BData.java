@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-import static com.x.commons.decoder.core.Format.HEX;
+import static com.x.commons.decoder.enums.Format.HEX;
 
 /**
  * @Date 2019-01-02 14:51

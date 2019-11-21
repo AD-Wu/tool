@@ -1,4 +1,6 @@
-package com.x.commons.decoder.core;
+package com.x.commons.decoder.annotation;
+
+import com.x.commons.decoder.enums.Format;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

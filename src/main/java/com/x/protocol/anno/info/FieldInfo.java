@@ -1,6 +1,6 @@
 package com.x.protocol.anno.info;
 
-import com.x.commons.decoder.core.Format;
+import com.x.commons.decoder.enums.Format;
 import com.x.commons.decoder.core.Primitive;
 import com.x.protocol.anno.core.XField;
 import lombok.Data;
@@ -8,8 +8,8 @@ import lombok.NonNull;
 
 import java.lang.reflect.Field;
 
-import static com.x.commons.decoder.core.Format.HEX;
-import static com.x.commons.decoder.core.Format.NULL;
+import static com.x.commons.decoder.enums.Format.HEX;
+import static com.x.commons.decoder.enums.Format.NULL;
 import static com.x.protocol.anno.info.FieldInfo.FieldType.*;
 
 /**

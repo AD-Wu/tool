@@ -1,4 +1,4 @@
-package com.x.commons.decoder.core;
+package com.x.commons.decoder.enums;
 
 /**
  * @Date 2018-12-23 12:26

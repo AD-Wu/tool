@@ -1,10 +1,10 @@
 package com.x.commons.decoder.decoder.StringDecoder;
 
-import com.x.commons.decoder.core.Decoder;
+import com.x.commons.decoder.annotation.Decoder;
 import com.x.commons.decoder.decoder.base.BaseDecoder;
 import com.x.commons.util.convert.Strings;
 
-import static com.x.commons.decoder.core.Format.HEX;
+import static com.x.commons.decoder.enums.Format.HEX;
 
 /**
  * @Date 2018-12-23 12:29

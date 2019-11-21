@@ -1,6 +1,6 @@
 package com.x.protocol.anno.core;
 
-import com.x.commons.decoder.core.Format;
+import com.x.commons.decoder.enums.Format;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Inherited;

@@ -1,8 +1,8 @@
 package com.x.commons.decoder.decoder.StringDecoder;
 
-import com.x.commons.decoder.core.Decoder;
+import com.x.commons.decoder.annotation.Decoder;
 
-import static com.x.commons.decoder.core.Format.ASCII00;
+import static com.x.commons.decoder.enums.Format.ASCII00;
 
 /**
  * @Date 2019-01-03 22:02

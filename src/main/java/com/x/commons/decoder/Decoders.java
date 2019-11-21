@@ -1,4 +1,4 @@
-package com.x.commons.decoder.manager;
+package com.x.commons.decoder;
 
 import com.x.commons.decoder.annotation.Decoder;
 import com.x.commons.decoder.core.IDecoder;

@@ -23,7 +23,6 @@ public final class Auto {
         Arrays.stream(clazz.getDeclaredMethods())
                 .filter(m -> m.getAnnotation(AutoRun.class) != null && ("".equals(method) || method.equals(m.getName())))
                 .forEach(m -> {
-
                     try {
                         m.setAccessible(true);
                         m.invoke(o, m.getParameters());

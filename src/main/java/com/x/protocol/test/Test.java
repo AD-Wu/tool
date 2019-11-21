@@ -9,6 +9,7 @@ import com.x.protocol.test.actor.BActor;
 import com.x.protocol.test.bean.BData;
 import lombok.SneakyThrows;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 
 /**
@@ -19,7 +20,8 @@ public class Test {
 
     @SneakyThrows
     public static void main(String[] args) {
-        swapTest();
+        // swapTest();
+        annotationTest();
     }
 
     public static void swapTest() {
@@ -42,7 +44,7 @@ public class Test {
         System.out.println(reqData);
 
         Serializer serializer = new Serializer();
-        final BData req = (BData) serializer.serialize(reqData, New.buf(bs));
+        Serializable req = serializer.serialize(reqData, New.buf(bs));
         System.out.println(req);
 
         final MethodInfo[] mis = info.getMethodInfos();

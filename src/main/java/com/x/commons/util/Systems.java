@@ -14,7 +14,7 @@ public final class Systems {
     private Systems() {}
 
     /**
-     * TODO 运行时信息
+     * 运行时信息
      *
      * @return
      */
@@ -35,7 +35,7 @@ public final class Systems {
     }
 
     /**
-     * TODO 获取系统默认语言
+     * 获取系统默认语言
      *
      * @return 如：zh_CN
      */

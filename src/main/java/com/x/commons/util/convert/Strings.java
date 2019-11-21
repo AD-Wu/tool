@@ -134,6 +134,21 @@ public final class Strings {
     }
 
     /**
+     * 判断字符串是否为null或者""（包含"null","{}"）
+     *
+     * @param check 需检查的字符串
+     *
+     * @return boolean
+     *
+     * @author AD
+     * @date 2018-12-22 18:29
+     */
+    public static boolean isNullStr(String check) {
+
+        return isNull(check, "null", "{}");
+    }
+
+    /**
      * 转换成大写
      *
      * @param convert

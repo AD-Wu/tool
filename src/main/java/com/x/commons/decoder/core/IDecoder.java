@@ -15,6 +15,4 @@ public interface IDecoder<T extends Serializable> {
 
     T decode(FieldInfo fieldInfo, ByteBuffer buf) throws Exception;
 
-    T decode(String str) throws Exception;
-
 }

@@ -14,20 +14,25 @@ import static java.util.stream.Collectors.toList;
  * @Date 2018-12-18 23:49
  * @Author AD
  */
-public final class Classes {
+public final class Clazzs {
 
 
     /**
      * 类加载器
      */
-    private static final ClassLoader LOADER = Classes.class.getClassLoader();
+    private static final ClassLoader LOADER = Clazzs.class.getClassLoader();
 
+    public static <T> T newObj(Class<T> clazz) throws Exception {
+        return clazz.newInstance();
+    }
     /**
      * 获取包下带某个注解的类
      *
      * @param packageName 包名
      * @param annotation  注解类
+     *
      * @return
+     *
      * @author AD
      * @date 2018-12-22 23:37
      */
@@ -40,11 +45,13 @@ public final class Classes {
     }
 
     /**
-     * TODO 获取某个包下的所有类
+     * 获取某个包下的所有类
      *
      * @param packageName 包名
      * @param list
+     *
      * @return
+     *
      * @author AD
      * @date 2018-12-22 23:36
      */

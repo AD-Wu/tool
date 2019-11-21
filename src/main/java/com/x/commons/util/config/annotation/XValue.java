@@ -17,6 +17,6 @@ public @interface XValue {
 
     Class<?> formatClass() default Void.class;
 
-    String formatMethod() default "";
+    String methodName() default "";
 
 }

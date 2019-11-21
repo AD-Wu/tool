@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Properties;
 
 /**
  * @Date 2018-12-20 22:36
@@ -78,6 +79,13 @@ public final class Files {
     public static File[] getFiles(String packageName) {
         final URI uri = LOADER.getResource(packageName.replace(".", File.separator)).toURI();
         return new File(uri).listFiles();
+    }
+
+    public static Properties toProperties(String path) throws IOException {
+        InputStream in = Loader.get().getResourceAsStream(path);
+        Properties prop = new Properties();
+        prop.load(in);
+        return prop;
     }
 
     @SneakyThrows

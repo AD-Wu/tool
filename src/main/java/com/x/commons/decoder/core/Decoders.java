@@ -1,7 +1,7 @@
 package com.x.commons.decoder.core;
 
 import com.x.commons.util.bean.New;
-import com.x.commons.util.reflact.Classes;
+import com.x.commons.util.reflact.Clazzs;
 import lombok.SneakyThrows;
 
 import java.util.Map;
@@ -25,7 +25,7 @@ public final class Decoders {
     @SneakyThrows
     private static void init() {
 
-        for (Class<?> c : Classes.getClassBy("com.x", Decoder.class)) {
+        for (Class<?> c : Clazzs.getClassBy("com.x", Decoder.class)) {
 
             final Decoder info = (Decoder) c.getAnnotation(Decoder.class);
 

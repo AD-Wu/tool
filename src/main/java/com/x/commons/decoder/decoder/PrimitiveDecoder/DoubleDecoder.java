@@ -5,6 +5,8 @@ import com.x.commons.decoder.core.Format;
 import com.x.commons.decoder.decoder.base.BaseDecoder;
 import com.x.commons.util.convert.Converts;
 
+import java.io.Serializable;
+
 /**
  * @Date 2019-01-13 11:02
  * @Author AD
@@ -15,6 +17,11 @@ public class DoubleDecoder extends BaseDecoder<Double> {
     @Override
     public Double decode(final byte[] bs) {
         return new Double(Converts.toDouble(bs));
+    }
+
+    @Override
+    public Double decode(final String str) throws Exception {
+        return null;
     }
 
 }

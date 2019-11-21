@@ -5,6 +5,8 @@ import com.x.commons.decoder.core.Format;
 import com.x.commons.decoder.decoder.base.BaseDecoder;
 import com.x.commons.util.convert.Converts;
 
+import java.io.Serializable;
+
 /**
  * @Date 2019-01-13 10:59
  * @Author AD
@@ -15,6 +17,11 @@ public class ShortDecoder extends BaseDecoder<Short> {
     @Override
     public Short decode(final byte[] bs) {
         return new Short(Converts.toShort(bs));
+    }
+
+    @Override
+    public Short decode(final String str) throws Exception {
+        return null;
     }
 
 }

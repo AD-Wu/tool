@@ -4,6 +4,8 @@ import com.x.commons.decoder.core.Decoder;
 import com.x.commons.decoder.decoder.base.BaseDecoder;
 import com.x.commons.util.convert.Converts;
 
+import java.io.Serializable;
+
 import static com.x.commons.decoder.core.Format.BOOLEAN;
 
 /**
@@ -13,9 +15,15 @@ import static com.x.commons.decoder.core.Format.BOOLEAN;
 @Decoder(format = BOOLEAN)
 public class BooleanDecoder extends BaseDecoder<Boolean> {
 
+
     @Override
     public Boolean decode(final byte[] bs) {
-        return new Boolean(Converts.toBoolean(bs));
+        return null;
+    }
+
+    @Override
+    public Boolean decode(final String str) throws Exception {
+        return null;
     }
 
 }

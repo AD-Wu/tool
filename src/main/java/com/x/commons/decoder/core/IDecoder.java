@@ -13,6 +13,8 @@ public interface IDecoder<T extends Serializable> {
 
     // Serializable encode(DataInfo dataInfo) throws Exception;
 
-    T decode(FieldInfo fieldInfo,ByteBuffer buf) throws Exception;
+    T decode(FieldInfo fieldInfo, ByteBuffer buf) throws Exception;
+
+    T decode(String str) throws Exception;
 
 }

@@ -8,7 +8,7 @@ import com.x.commons.util.convert.Strings;
  * @Author AD
  * @Date 2019/11/21 17:49
  */
-@Config(path = "config/value.properties",prefix = "usersd")
+@Config(path = "config/value.properties",prefix = "user")
 public class User {
 
     @XValue(key = "name")

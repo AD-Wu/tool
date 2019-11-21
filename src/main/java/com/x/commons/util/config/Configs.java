@@ -99,17 +99,5 @@ public final class Configs {
         return Strings.isNull(prefix) ? "" : (prefix.endsWith(".") ? prefix : prefix + ".");
     }
 
-    private static Object fixValue(Object value) {
-        if (value == null) {
-            return "";
-        }
-        if (value.getClass().equals(String.class)) {
-            String v = (String) value;
-            if (Strings.isNull(v)) {
-                return "";
-            }
-        }
-        return value;
-    }
 
 }

@@ -18,9 +18,5 @@ public class BooleanDecoder extends BaseDecoder<Boolean> {
         return null;
     }
 
-    @Override
-    public Boolean decode(final String str) throws Exception {
-        return null;
-    }
 
 }

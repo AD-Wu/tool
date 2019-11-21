@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * @Date 2019-11-21 23:00
  * @Author AD
  */
-@Parser(parsed = LocalDateTime.class)
+@Parser(result = LocalDateTime.class)
 public class LocalDateTimeParser implements IStringParser<LocalDateTime> {
 
     @Override

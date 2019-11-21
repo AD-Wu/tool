@@ -11,7 +11,7 @@ import java.util.Date;
  * @Date 2019-11-22 00:02
  * @Author AD
  */
-@Parser(parsed = Date.class)
+@Parser(result = Date.class)
 public class DateParser implements IStringParser<Date> {
 
     @Override

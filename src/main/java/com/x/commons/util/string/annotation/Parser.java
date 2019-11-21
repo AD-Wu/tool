@@ -18,6 +18,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Parser {
 
-    Class<?> parsed();
+    Class<?> result();
 
 }

@@ -9,7 +9,7 @@ import com.x.commons.util.string.core.IStringParser;
  * @Date 2019-11-22 00:10
  * @Author AD
  */
-@Parser(parsed = String[].class)
+@Parser(result = String[].class)
 public class ArrayParser implements IStringParser<String[]> {
 
     private static final String[] EMPTY = new String[0];

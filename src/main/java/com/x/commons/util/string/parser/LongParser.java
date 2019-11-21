@@ -9,7 +9,7 @@ import com.x.commons.util.string.core.IStringParser;
  * @Date 2019-11-21 22:43
  * @Author AD
  */
-@Parser(parsed = long.class)
+@Parser(result = long.class)
 public class LongParser implements IStringParser<Long> {
 
     @Override

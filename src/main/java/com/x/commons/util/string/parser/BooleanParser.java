@@ -12,7 +12,7 @@ import java.util.Map;
  * @Date 2019-11-21 22:42
  * @Author AD
  */
-@Parser(parsed = boolean.class)
+@Parser(result = boolean.class)
 public class BooleanParser implements IStringParser<Boolean> {
 
     @Override

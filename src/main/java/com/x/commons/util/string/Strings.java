@@ -5,6 +5,8 @@ import com.x.commons.enums.DisplayStyle;
 import com.x.commons.enums.Regex;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.bean.SB;
+import com.x.commons.util.string.core.IStringParser;
+import com.x.commons.util.string.core.StringParsers;
 import lombok.NonNull;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -64,6 +66,11 @@ public final class Strings {
     private Strings() {}
 
     // ======================== API ========================
+
+    public static <T> T parse(String parsed, Class<T> result) {
+        IStringParser<T> parser = StringParsers.getParser(result);
+        return parser.parse(parsed);
+    }
 
     public static boolean toBoolean(String value) {
         return toBoolean(value, "FALSE", "NULL", "NO", "N", "{}");

@@ -12,7 +12,7 @@ import java.time.LocalDate;
  * @Date 2019-11-21 22:47
  * @Author AD
  */
-@Parser(parsed = LocalDate.class)
+@Parser(result = LocalDate.class)
 public class LocalDateParser implements IStringParser<LocalDate> {
 
     @Override

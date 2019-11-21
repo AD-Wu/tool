@@ -21,13 +21,13 @@ public final class StringParsers {
         init();
     }
 
-    public static IStringParser getParser(Class<?> parsed) {
+    public static <T> IStringParser<T> getParser(Class<T> parsed) {
         return map.get(parsed);
     }
 
-    public static boolean addParser(Class<?> parsed, Class<? extends IStringParser> parser) {
+    public static boolean addParser(Class<?> result, Class<? extends IStringParser> parser) {
         try {
-            map.put(parsed, Clazzs.newObj(parser));
+            map.put(result, Clazzs.newObj(parser));
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -37,13 +37,13 @@ public final class StringParsers {
 
     private static void init() {
         String packageName = IntParser.class.getPackage().getName();
-        List<Class<IStringParser>> parsersClass = Clazzs.getClass(packageName, Parser.class, IStringParser.class);
-        parsersClass.forEach(parserClass -> {
-            Parser p = parserClass.getAnnotation(Parser.class);
-            Class<?> parsed = p.parsed();
+        List<Class<IStringParser>> parserClazzs = Clazzs.getClass(packageName, Parser.class, IStringParser.class);
+        parserClazzs.forEach(clazz -> {
+            Parser p = clazz.getAnnotation(Parser.class);
+            Class<?> result = p.result();
             try {
-                IStringParser parser = Clazzs.newObj(parserClass);
-                map.put(parsed, parser);
+                IStringParser parser = Clazzs.newObj(clazz);
+                map.put(result, parser);
             } catch (Exception e) {
                 e.printStackTrace();
             }

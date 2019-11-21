@@ -22,6 +22,10 @@ public final class Configs {
 
     private static final Map<Class, Object> classMap = new ConcurrentHashMap<>();
 
+    public static void main(String[] args) throws Exception {
+        User user = get(User.class);
+        System.out.println(user);
+    }
     public static <T> T get(Class<T> clazz) throws Exception {
         Config config = clazz.getAnnotation(Config.class);
         if (config == null) {
@@ -52,6 +56,9 @@ public final class Configs {
         return target;
     }
     private static <T> T parse(String value, Class<T> targetClass) {
+        if (value == null) {
+            return (T) "";
+        }
         if (targetClass.equals(String.class)) {
             return (T) value;
         }
@@ -90,6 +97,19 @@ public final class Configs {
 
     private static String fixPrefix(String prefix) {
         return Strings.isNull(prefix) ? "" : (prefix.endsWith(".") ? prefix : prefix + ".");
+    }
+
+    private static Object fixValue(Object value) {
+        if (value == null) {
+            return "";
+        }
+        if (value.getClass().equals(String.class)) {
+            String v = (String) value;
+            if (Strings.isNull(v)) {
+                return "";
+            }
+        }
+        return value;
     }
 
 }

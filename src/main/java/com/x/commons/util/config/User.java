@@ -14,7 +14,7 @@ public class User {
     @XValue(key = "name")
     private String name;
 
-    private String age;
+    private int age;
 
     private String birthday;
 
@@ -24,10 +24,10 @@ public class User {
     public void setName(final String name) {
         this.name = name;
     }
-    public String getAge() {
+    public int getAge() {
         return age;
     }
-    public void setAge(final String age) {
+    public void setAge(final int age) {
         this.age = age;
     }
     public String getBirthday() {

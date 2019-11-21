@@ -21,8 +21,8 @@ public final class StringParsers {
         init();
     }
 
-    public static IStringParser getParser(Class<?> fieldClazz) {
-        return map.get(fieldClazz);
+    public static IStringParser getParser(Class<?> parsed) {
+        return map.get(parsed);
     }
 
     public static boolean addParser(Class<?> parsed, Class<? extends IStringParser> parser) {
@@ -37,7 +37,6 @@ public final class StringParsers {
 
     private static void init() {
         String packageName = IntParser.class.getPackage().getName();
-        System.out.println(packageName);
         List<Class<IStringParser>> parsersClass = Clazzs.getClass(packageName, Parser.class, IStringParser.class);
         parsersClass.forEach(parserClass -> {
             Parser p = parserClass.getAnnotation(Parser.class);

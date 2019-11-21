@@ -17,6 +17,6 @@ public @interface XValue {
 
     String key();
 
-    Class<? extends IStringParser> format() default IStringParser.class;
+    Class<? extends IStringParser> parser() default IStringParser.class;
 
 }

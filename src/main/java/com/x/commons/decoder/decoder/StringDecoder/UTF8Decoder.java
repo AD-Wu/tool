@@ -2,7 +2,7 @@ package com.x.commons.decoder.decoder.StringDecoder;
 
 import com.x.commons.decoder.annotation.Decoder;
 import com.x.commons.decoder.decoder.base.BaseDecoder;
-import com.x.commons.util.convert.Strings;
+import com.x.commons.util.string.Strings;
 
 import static com.x.commons.decoder.enums.Format.UTF8;
 

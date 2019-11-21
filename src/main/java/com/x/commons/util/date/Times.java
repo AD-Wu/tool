@@ -1,5 +1,7 @@
 package com.x.commons.util.date;
 
+import com.x.commons.util.string.Strings;
+
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -12,10 +14,11 @@ public final class Times {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+
     private Times() {}
 
     /**
-     * get current time 
+     * get current time
      *
      * @return HH:mm:ss.SSS
      */
@@ -24,6 +27,10 @@ public final class Times {
     public static String now(boolean withMillSeconds) {
         final LocalTime now = LocalTime.now();
         return withMillSeconds ? now.format(DEFAULT_FORMATTER) : now.format(TIME_FORMATTER);
+    }
+
+    public static LocalTime to(String localTime) {
+        return Strings.isTime(localTime) ? LocalTime.parse(localTime) : null;
     }
 
 }

@@ -1,6 +1,6 @@
 package com.x.commons.local;
 
-import com.x.commons.util.convert.Strings;
+import com.x.commons.util.string.Strings;
 import com.x.commons.util.file.Files;
 import com.x.commons.util.reflact.Loader;
 

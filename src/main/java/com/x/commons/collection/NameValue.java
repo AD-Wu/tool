@@ -1,6 +1,6 @@
 package com.x.commons.collection;
 
-import com.x.commons.util.convert.Strings;
+import com.x.commons.util.string.Strings;
 import com.x.protocol.anno.core.Doc;
 
 import java.io.Serializable;

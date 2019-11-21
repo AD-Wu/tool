@@ -17,9 +17,6 @@ public class LongDecoder extends BaseDecoder<Long> {
         return new Long(Converts.toLong(bs));
     }
 
-    @Override
-    public Long decode(final String str) throws Exception {
-        return null;
-    }
+
 
 }

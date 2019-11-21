@@ -1,6 +1,6 @@
 package com.x.commons.database.pool;
 
-import com.x.commons.util.convert.Strings;
+import com.x.commons.util.string.Strings;
 
 /**
  * @Desc TODO

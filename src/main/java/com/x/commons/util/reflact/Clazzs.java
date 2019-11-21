@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -16,7 +17,6 @@ import static java.util.stream.Collectors.toList;
  */
 public final class Clazzs {
 
-
     /**
      * 类加载器
      */
@@ -25,23 +25,31 @@ public final class Clazzs {
     public static <T> T newObj(Class<T> clazz) throws Exception {
         return clazz.newInstance();
     }
+
     /**
      * 获取包下带某个注解的类
      *
      * @param packageName 包名
      * @param annotation  注解类
-     *
      * @return
-     *
      * @author AD
      * @date 2018-12-22 23:37
      */
     @SneakyThrows
-    public static <T extends Annotation> List<Class<?>> getClassBy(String packageName, Class<T> annotation) {
+    public static <T extends Annotation> List<Class<?>> getClass(String packageName, Class<T> annotation) {
         return getClass(packageName, New.list())
                 .stream()
                 .filter(c -> c.getDeclaredAnnotation(annotation) != null)
                 .collect(toList());
+    }
+
+    public static <A extends Annotation, I> List<Class<I>> getClass(String packageName, Class<A> annotation,
+            Class<I> interfaceClass) {
+        List<Class<?>> collect = getClass(packageName, New.list());
+        List<Class<I>> result = collect.stream()
+                .filter(c -> c.getDeclaredAnnotation(annotation) != null && interfaceClass.isAssignableFrom(c))
+                .map(c -> (Class<I>) c).collect(toList());
+        return result;
     }
 
     /**
@@ -49,9 +57,7 @@ public final class Clazzs {
      *
      * @param packageName 包名
      * @param list
-     *
      * @return
-     *
      * @author AD
      * @date 2018-12-22 23:36
      */
@@ -71,6 +77,7 @@ public final class Clazzs {
     private static String getPath(String packageName, File file) {
         return packageName + "." + file.getName();
     }
+
     private static String getClassName(String packageName, File file) {
         return getPath(packageName, file).replace(".class", "");
     }

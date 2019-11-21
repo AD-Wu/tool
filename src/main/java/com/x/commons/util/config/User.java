@@ -2,7 +2,7 @@ package com.x.commons.util.config;
 
 import com.x.commons.util.config.annotation.Config;
 import com.x.commons.util.config.annotation.XValue;
-import com.x.commons.util.convert.Strings;
+import com.x.commons.util.string.Strings;
 
 /**
  * @Author AD

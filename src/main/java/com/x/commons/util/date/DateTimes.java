@@ -1,5 +1,7 @@
 package com.x.commons.util.date;
 
+import com.x.commons.util.string.Strings;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -33,6 +35,10 @@ public final class DateTimes {
      */
     public static String now(boolean withMillSeconds) {
         return withMillSeconds ? now() : LocalDateTime.now().format(FORMATTER);
+    }
+
+    public static LocalDateTime to(String localDateTime){
+        return Strings.isDateTime(localDateTime)?LocalDateTime.parse(localDateTime):null;
     }
 
 

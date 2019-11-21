@@ -1,11 +1,7 @@
 package com.x.commons.database.pool;
 
-import com.x.commons.util.convert.Strings;
+import com.x.commons.util.string.Strings;
 import com.x.protocol.anno.core.Doc;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 /**
  * @Desc TODO 数据库连接池配置类

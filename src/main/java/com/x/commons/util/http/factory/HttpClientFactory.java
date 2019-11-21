@@ -2,7 +2,7 @@ package com.x.commons.util.http.factory;
 
 import com.x.commons.ssl.SSL;
 import com.x.commons.ssl.enums.SSLVersion;
-import com.x.commons.util.convert.Strings;
+import com.x.commons.util.string.Strings;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;

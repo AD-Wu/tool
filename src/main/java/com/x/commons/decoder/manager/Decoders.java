@@ -28,7 +28,7 @@ public final class Decoders {
     @SneakyThrows
     private static void init() {
 
-        for (Class<?> c : Clazzs.getClassBy("com.x", Decoder.class)) {
+        for (Class<?> c : Clazzs.getClass("com.x", Decoder.class)) {
 
             final Decoder info = (Decoder) c.getAnnotation(Decoder.class);
 

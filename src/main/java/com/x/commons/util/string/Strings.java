@@ -1,4 +1,4 @@
-package com.x.commons.util.convert;
+package com.x.commons.util.string;
 
 import com.x.commons.enums.Charsets;
 import com.x.commons.enums.DisplayStyle;
@@ -65,6 +65,21 @@ public final class Strings {
 
     // ======================== API ========================
 
+    public static boolean toBoolean(String value) {
+        return toBoolean(value, "FALSE", "NULL", "NO", "N", "{}");
+    }
+
+    public static boolean toBoolean(String value, String... falseValue) {
+        return toBoolean(value, true, falseValue);
+    }
+
+    public static boolean toBoolean(String value, boolean ignoreCase, String... falseValue) {
+        String fix = isNull(value) ? "" : ignoreCase ? value.toUpperCase() : value;
+        return !Stream.of(falseValue).anyMatch(fv -> {
+            return ignoreCase ? fv.toUpperCase().equals(fix) : fv.equals(value);
+        });
+    }
+
     public static byte toByte(String value) {
         return Byte.valueOf(value);
     }
@@ -83,7 +98,6 @@ public final class Strings {
      * toString方法，默认多行显示
      *
      * @param o 需要重写toString方法的对象
-     *
      * @return
      */
     public static String defaultToString(Object o) {
@@ -95,7 +109,6 @@ public final class Strings {
      *
      * @param o     需要重写toString方法的对象
      * @param style 显示风格
-     *
      * @return
      */
     public static String reflectToString(Object o, DisplayStyle style) {
@@ -106,9 +119,7 @@ public final class Strings {
      * 判断字符串是否为null或者""
      *
      * @param check 需检查的字符串
-     *
      * @return boolean
-     *
      * @author AD
      * @date 2018-12-22 18:29
      */
@@ -122,9 +133,7 @@ public final class Strings {
      *
      * @param check 需检查的字符串
      * @param nulls 被认为是null的字符串(如：{},"null")
-     *
      * @return boolean
-     *
      * @author AD
      * @date 2018-12-22 18:57
      */
@@ -137,9 +146,7 @@ public final class Strings {
      * 判断字符串是否为null或者""（包含"null","{}"）
      *
      * @param check 需检查的字符串
-     *
      * @return boolean
-     *
      * @author AD
      * @date 2018-12-22 18:29
      */
@@ -152,7 +159,6 @@ public final class Strings {
      * 转换成大写
      *
      * @param convert
-     *
      * @return
      */
     public static String toUppercase(Object convert) {
@@ -163,9 +169,7 @@ public final class Strings {
      * 16 进制字符串 --> byte[],如果包含其它字符(空格除外)，将放回空数组
      *
      * @param hex 16 进制字符串
-     *
      * @return byte[]
-     *
      * @author AD
      * @date 2018-12-22 18:29
      */
@@ -179,9 +183,7 @@ public final class Strings {
      * 任意的字符串 --> byte[](UTF-8编码)
      *
      * @param context 需转换的字符串
-     *
      * @return byte[]
-     *
      * @author AD
      * @date 2018-12-22 18:29
      */
@@ -195,9 +197,7 @@ public final class Strings {
      *
      * @param context 需转换的字符串
      * @param charset 字符编码(如：Charsets.UTF8)
-     *
      * @return byte[]
-     *
      * @author AD
      * @date 2018-12-22 18:30
      */
@@ -211,9 +211,7 @@ public final class Strings {
      * int 值 --> 16 进制字符串
      *
      * @param v int值
-     *
      * @return java.lang.String
-     *
      * @author AD
      * @date 2018-12-22 18:30
      */
@@ -226,9 +224,7 @@ public final class Strings {
      * byte[] --> 16 进制字符串
      *
      * @param bs byte[]
-     *
      * @return java.lang.String
-     *
      * @author AD
      * @date 2018-12-22 18:30
      */
@@ -242,9 +238,7 @@ public final class Strings {
      *
      * @param bs        byte[]
      * @param separator 分隔符
-     *
      * @return java.lang.String
-     *
      * @author AD
      * @date 2018-12-22 18:31
      */
@@ -261,9 +255,7 @@ public final class Strings {
      * byte[] --> ASCII 字符串
      *
      * @param bs byte[]
-     *
      * @return java.lang.String
-     *
      * @author AD
      * @date 2018-12-22 18:31
      */
@@ -276,9 +268,7 @@ public final class Strings {
      * 16进制字符串转ASCII码
      *
      * @param hex 16进制字符串
-     *
      * @return java.lang.String
-     *
      * @author AD
      * @date 2018-12-22 18:32
      */
@@ -291,9 +281,7 @@ public final class Strings {
      * byte[] --> 字符串，UTF-8编码
      *
      * @param bs byte[]
-     *
      * @return java.lang.String
-     *
      * @author AD
      * @date 2018-12-22 18:32
      */
@@ -307,9 +295,7 @@ public final class Strings {
      *
      * @param bs      byte[]
      * @param charset
-     *
      * @return java.lang.String
-     *
      * @author AD
      * @date 2018-12-22 18:33
      */
@@ -323,7 +309,6 @@ public final class Strings {
      *
      * @param pattern 如：{0}是中国人,来自{1},{2}岁
      * @param params
-     *
      * @return
      */
     public static String replace(String pattern, Object... params) {
@@ -335,7 +320,6 @@ public final class Strings {
      * 获取异常跟踪信息字符串
      *
      * @param throwable
-     *
      * @return
      */
     public static String getExceptionTrace(Throwable throwable) {
@@ -361,7 +345,6 @@ public final class Strings {
      *
      * @param length     指定长度
      * @param onlyNumber 是否只包含数字
-     *
      * @return
      */
     public static String getRandom(int length, boolean onlyNumber) {
@@ -384,7 +367,6 @@ public final class Strings {
      *
      * @param ip          需要判断的IP
      * @param removeSpace 是否移除所有空格
-     *
      * @return
      */
     public static boolean isLocalhost(String ip, boolean removeSpace) {
@@ -401,7 +383,6 @@ public final class Strings {
      * 是否URL格式
      *
      * @param check 需检验的字符串
-     *
      * @return
      */
     public static boolean isURLFormat(String check) {
@@ -412,7 +393,6 @@ public final class Strings {
      * 是否邮箱格式
      *
      * @param check
-     *
      * @return
      */
     public static boolean isEmailFormat(String check) {
@@ -423,7 +403,6 @@ public final class Strings {
      * 是否英文
      *
      * @param check
-     *
      * @return
      */
     public static boolean isOnlyEnglish(String check) {
@@ -434,7 +413,6 @@ public final class Strings {
      * 是否整数
      *
      * @param check
-     *
      * @return
      */
     public static boolean isLong(String check) {
@@ -445,7 +423,6 @@ public final class Strings {
      * 是否数字，包括小数
      *
      * @param check
-     *
      * @return
      */
     public static boolean isNumeric(String check) {
@@ -456,7 +433,6 @@ public final class Strings {
      * 是否无符号数
      *
      * @param check
-     *
      * @return
      */
     public static boolean isUnsignedNumeric(String check) {
@@ -467,7 +443,6 @@ public final class Strings {
      * 是否浮点数，包括float，不包括整数
      *
      * @param check
-     *
      * @return
      */
     public static boolean isDouble(String check) {
@@ -478,7 +453,6 @@ public final class Strings {
      * 是否时间
      *
      * @param check
-     *
      * @return
      */
     public static boolean isTime(String check) {
@@ -489,7 +463,6 @@ public final class Strings {
      * 是否日期
      *
      * @param check
-     *
      * @return
      */
     public static boolean isDate(String check) {
@@ -500,7 +473,6 @@ public final class Strings {
      * 是否日期时间
      *
      * @param check
-     *
      * @return
      */
     public static boolean isDateTime(String check) {
@@ -515,7 +487,6 @@ public final class Strings {
      * 是否只包含中文，不能包含数字、标点
      *
      * @param check
-     *
      * @return
      */
     public static boolean isOnlyChinese(String check) {
@@ -526,7 +497,6 @@ public final class Strings {
      * 是否存在中文
      *
      * @param check
-     *
      * @return
      */
     public static boolean isExistChinese(String check) {
@@ -540,7 +510,6 @@ public final class Strings {
      *
      * @param check 需要检验的字符串
      * @param regex 正则表达式
-     *
      * @return
      */
     private static boolean match(String check, String regex) {
@@ -558,9 +527,7 @@ public final class Strings {
      * 修正16进制字符串长度，如：A --> 0A
      *
      * @param hex 需修正的16进制字符串
-     *
      * @return java.lang.String
-     *
      * @author AD
      * @date 2018-12-22 18:34
      */
@@ -573,9 +540,7 @@ public final class Strings {
      * 将修正后的16进制字符串 --> byte[]
      *
      * @param hex 修正后的16进制字符串
-     *
      * @return byte[]
-     *
      * @author AD
      * @date 2018-12-22 18:35
      */
@@ -594,9 +559,7 @@ public final class Strings {
      * 移除字符串的所有空格
      *
      * @param fix 需修正的字符串
-     *
      * @return java.lang.String
-     *
      * @author AD
      * @date 2018-12-22 18:35
      */
@@ -613,9 +576,7 @@ public final class Strings {
      * 判断是否只包含16进制字符串
      *
      * @param check 需检查字符串
-     *
      * @return boolean
-     *
      * @author AD
      * @date 2018-12-22 18:37
      */
@@ -631,9 +592,7 @@ public final class Strings {
      * 将字符串转为大写字符数组
      *
      * @param character 英文字符串
-     *
      * @return char[]
-     *
      * @author AD
      * @date 2018-12-22 18:36
      */

@@ -17,9 +17,5 @@ public class ShortDecoder extends BaseDecoder<Short> {
         return new Short(Converts.toShort(bs));
     }
 
-    @Override
-    public Short decode(final String str) throws Exception {
-        return null;
-    }
 
 }

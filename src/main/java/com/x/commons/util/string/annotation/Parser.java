@@ -1,6 +1,8 @@
-package com.x.commons.util.config.annotation;
+package com.x.commons.util.string.annotation;
 
 import com.x.commons.util.string.core.IStringParser;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,15 +10,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * @Desc TODO
+ * @Date 2019-11-21 23:05
  * @Author AD
- * @Date 2019/11/21 9:42
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface XValue {
+@Target(ElementType.TYPE)
+public @interface Parser {
 
-    String key();
-
-    Class<? extends IStringParser> format() default IStringParser.class;
+    Class<?> parsed();
 
 }

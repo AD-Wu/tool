@@ -1,6 +1,6 @@
 package com.x.commons.encrypt;
 
-import com.x.commons.util.convert.Strings;
+import com.x.commons.util.string.Strings;
 
 import java.io.File;
 import java.io.FileInputStream;

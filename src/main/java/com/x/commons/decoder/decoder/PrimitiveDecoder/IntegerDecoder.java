@@ -17,9 +17,6 @@ public class IntegerDecoder extends BaseDecoder<Integer> {
         return new Integer(Converts.toInt(bs));
     }
 
-    @Override
-    public Integer decode(final String str) throws Exception {
-        return null;
-    }
+
 
 }

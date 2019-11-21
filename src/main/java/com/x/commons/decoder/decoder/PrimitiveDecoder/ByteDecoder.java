@@ -17,9 +17,5 @@ public class ByteDecoder extends BaseDecoder<Byte> {
         return new Byte(Converts.toByte(bs));
     }
 
-    @Override
-    public Byte decode(final String str) throws Exception {
-        return null;
-    }
 
 }

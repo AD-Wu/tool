@@ -52,7 +52,7 @@ public enum DB {
     }
 
     /**
-     * TODO 获取默认的数据库url。如：MySQL -> jdbc:mysql://localhost:3306/database
+     * 获取默认的数据库url。如：MySQL -> jdbc:mysql://localhost:3306/database
      *
      * @param database 数据库名或
      * @return
@@ -60,7 +60,7 @@ public enum DB {
     public abstract String defaultURL(String database);
 
     /**
-     * TODO 获取数据库url
+     * 获取数据库url
      *
      * @param ip       数据库所在ip
      * @param port     数据库端口
@@ -70,7 +70,7 @@ public enum DB {
     public abstract String url(String ip, int port, String database);
 
     /**
-     * TODO 获取数据库驱动类名
+     * 获取数据库驱动类名
      *
      * @return
      */

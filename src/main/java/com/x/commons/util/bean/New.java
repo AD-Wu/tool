@@ -6,6 +6,7 @@ import lombok.NonNull;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -16,9 +17,9 @@ import java.util.concurrent.ConcurrentSkipListSet;
  * @Date 2018-12-19 20:50
  * @Author AD
  */
-public enum New {
+public final class New {
 
-    ;
+    private New(){}
 
     public static <K,V> Map<K, V> map() {
         return new HashMap<K, V>();
@@ -74,6 +75,10 @@ public enum New {
 
     public static <T> Queue<T> queue() {
         return new LinkedList<>();
+    }
+
+    public static <T> ArrayBlockingQueue<T> blockingQueue(int capacity){
+        return new ArrayBlockingQueue<T>(capacity);
     }
 
     public static ByteBuffer buf(int capacity) {

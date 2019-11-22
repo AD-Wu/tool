@@ -22,7 +22,7 @@ public final class Clazzs {
      */
     private static final ClassLoader LOADER = Clazzs.class.getClassLoader();
 
-    public static <T> T newObj(Class<T> clazz) throws Exception {
+    public static <T> T newInstance(Class<T> clazz) throws Exception {
         return clazz.newInstance();
     }
 

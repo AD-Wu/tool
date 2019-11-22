@@ -27,7 +27,7 @@ public final class StringParsers {
 
     public static boolean addParser(Class<?> result, Class<? extends IStringParser> parser) {
         try {
-            map.put(result, Clazzs.newObj(parser));
+            map.put(result, Clazzs.newInstance(parser));
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,7 +42,7 @@ public final class StringParsers {
             Parser p = clazz.getAnnotation(Parser.class);
             Class<?> result = p.result();
             try {
-                IStringParser parser = Clazzs.newObj(clazz);
+                IStringParser parser = Clazzs.newInstance(clazz);
                 map.put(result, parser);
             } catch (Exception e) {
                 e.printStackTrace();

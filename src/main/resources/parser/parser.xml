@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE parser PUBLIC "-//X//DTD FRAMEWORK 1.0" "parser.dtd" >
-<parser class="a">
-    <result class="b"></result>
-</parser>
+<!DOCTYPE parsers PUBLIC "-//X//DTD FRAMEWORK 1.0" "parser.dtd" >
+
+<parsers>
+    <parser class="a">
+        <result class="b"></result>
+    </parser>
+    <parser class="c">
+        <result class="d"></result>
+    </parser>
+</parsers>

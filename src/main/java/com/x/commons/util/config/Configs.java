@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 /**
  * @Author AD
@@ -29,6 +30,8 @@ public final class Configs {
         User user = get(User.class);
         System.out.println(user);
     }
+
+    // ---------------------- 成员方法 ---------------------
 
     public static <T> T get(Class<T> clazz) throws Exception {
         Config config = clazz.getAnnotation(Config.class);
@@ -44,7 +47,7 @@ public final class Configs {
         // 创建对象
         T target = clazz.newInstance();
         // 循环赋值
-        for (Field f : fields) {
+        Stream.of(fields).forEach(f -> {
             f.setAccessible(true);
             // 获取属性类型
             Class<?> parsed = f.getType();
@@ -56,22 +59,28 @@ public final class Configs {
             } else {
                 setValueWithAnnotation(prop, msg, prefix, f, parsed, target);
             }
-        }
+        });
         return target;
     }
 
+    // ---------------------- 私有方法 ---------------------
+
     private static void setValueWithoutAnnotation(Properties prop, String prefix, Field field, Class<?> parsed,
-            Object target) throws Exception {
+                                                  Object target) {
         // 获取值
         String str = prop.getProperty(prefix + field.getName());
         // 解析值
         Object value = StringParsers.getParser(parsed).parse(str);
-        // 设置
-        field.set(target, value);
+        try {
+            // 设置值
+            field.set(target, value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static void setValueWithAnnotation(Properties prop, XValue msg, String prefix, Field field,
-            Class<?> parsed, Object target) throws Exception {
+                                               Class<?> parsed, Object target) {
         // 获取值
         String param = prop.getProperty(prefix + msg.key());
         // 特定格式化
@@ -81,8 +90,12 @@ public final class Configs {
         }
         // 获取值
         Object value = StringParsers.getParser(parsed).parse(param);
-        // 设置值
-        field.set(target, value);
+        try {
+            // 设置值
+            field.set(target, value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

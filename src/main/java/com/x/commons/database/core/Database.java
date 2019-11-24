@@ -2,7 +2,7 @@ package com.x.commons.database.core;
 
 import com.x.commons.database.pool.Pool;
 import com.x.commons.database.reader.IDataReader;
-import com.x.commons.util.array.Arrays;
+import com.x.commons.util.collection.Arrays;
 
 import java.sql.*;
 

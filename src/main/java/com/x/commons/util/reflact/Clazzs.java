@@ -9,6 +9,7 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.x.commons.decoder.enums.Format.NULL;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -25,6 +26,23 @@ public final class Clazzs {
     public static <T> T newInstance(Class<T> clazz) throws Exception {
         return clazz.newInstance();
     }
+    
+    public static boolean isPrimitive(Class<?> clazz) { return clazz.isPrimitive(); }
+    
+    public static boolean isString(Class<?> clazz) { return String.class == clazz; }
+    
+    public static boolean isObject(Class<?> clazz) {
+        return !isPrimitive(clazz) && !isString(clazz) && !isArray(clazz); }
+    
+    public static boolean isPrimitiveArray(Class<?> clazz) {
+        return isArray(clazz) && isPrimitive(clazz.getComponentType());
+    }
+    
+    public static boolean isObjectArray(Class<?> clazz) {
+        return isArray(clazz) && !isPrimitive(clazz.getComponentType());
+    }
+    
+    public static boolean isArray(Class<?> clazz) { return clazz.isArray(); }
 
     /**
      * 获取包下带某个注解的类

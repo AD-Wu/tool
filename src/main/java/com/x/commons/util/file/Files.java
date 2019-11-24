@@ -17,38 +17,42 @@ import java.util.Properties;
  * @Author AD
  */
 public final class Files {
-
+    
     public static void main(String[] args) throws IOException {
         String path = "/Users/sunday/Java/StudyVideo/SpringMVC";
         // String old = "北京动力节点-SpringMVC4-";
         // String newChar = "";
         // editNames(path, old, newChar);
-
+        
     }
-
+    
     private static final ClassLoader LOADER = Loader.get();
-
+    
     public static void editNames(String path, String old, String newChar) {
         Arrays.stream(getFiles(path, old)).forEach(f -> f.renameTo(new File(f.getAbsolutePath().replace(old, newChar))));
     }
-
+    
     /**
      * 获取某个文件夹路径，不用Paths.get(path),会报找不到文件异常
      *
      * @param path 必须是一个文件夹路径
+     *
      * @return
+     *
      * @throws Exception
      */
     public static Path getPath(String path) throws Exception {
         URL url = LOADER.getResource(path);
         return Paths.get(url.toURI());
     }
-
+    
     /**
      * 适用于获取项目路径下的文件，如编译后的根路径或根路径下的某个文件夹路径
      *
      * @param path 如：项目根路径-"/"或""，根路径下的文件夹路径为文件夹名，如：config
+     *
      * @return java.io.File
+     *
      * @author AD
      * @date 2019-10-17 22:03
      */
@@ -62,32 +66,35 @@ public final class Files {
         }
         return null;
     }
-
+    
     /**
      * 适用于获取电脑文件
      *
      * @param path 如："/Users/sunday/Java/StudyVideo/SpringMVC"为文件夹路径
+     *
      * @return path路径下于pattern匹配的所有文件
+     *
      * @author AD
      * @date 2019-10-17 22:00
      */
     public static File[] getFiles(String path, String pattern) {
         return new File(path).listFiles(f -> f.getName().contains(pattern));
     }
-
+    
     @SneakyThrows
     public static File[] getFiles(String packageName) {
         final URI uri = LOADER.getResource(packageName.replace(".", File.separator)).toURI();
         return new File(uri).listFiles();
     }
-
-    public static Properties toProperties(String path) throws IOException {
-        InputStream in = Loader.get().getResourceAsStream(path);
-        Properties prop = new Properties();
-        prop.load(in);
-        return prop;
+    
+    public static Properties toProperties(String path) throws Exception {
+        try (InputStream in = Loader.get().getResourceAsStream(path);) {
+            Properties prop = new Properties();
+            prop.load(in);
+            return prop;
+        }
     }
-
+    
     @SneakyThrows
     public static InputStreamReader getUnicodeReader(InputStream in, String encoding) {
         if (in == null) {
@@ -116,16 +123,16 @@ public final class Files {
                 if (encoding == null || encoding.equals("")) {
                     encoding = Charset.defaultCharset().name();
                 }
-
+                
                 unread = byteNums;
             }
-
+            
             if (unread > 0) {
                 back.unread(buf, byteNums - unread, unread);
             }
-
+            
             return new InputStreamReader(back, encoding);
         }
     }
-
+    
 }

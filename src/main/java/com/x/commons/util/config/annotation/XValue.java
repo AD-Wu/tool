@@ -1,6 +1,6 @@
 package com.x.commons.util.config.annotation;
 
-import com.x.commons.util.string.core.IStringParser;
+import com.x.commons.parser.string.core.IStringParser;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

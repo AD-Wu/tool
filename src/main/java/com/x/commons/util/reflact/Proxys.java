@@ -1,6 +1,6 @@
 package com.x.commons.util.reflact;
 
-import com.x.commons.util.array.Arrays;
+import com.x.commons.util.collection.Arrays;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

@@ -1,7 +1,7 @@
 package com.x.commons.collection;
 
-import com.x.commons.util.array.Arrays;
-import com.x.commons.util.array.Maps;
+import com.x.commons.util.collection.Arrays;
+import com.x.commons.util.collection.Maps;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.convert.Converts;
 import com.x.commons.util.string.Strings;

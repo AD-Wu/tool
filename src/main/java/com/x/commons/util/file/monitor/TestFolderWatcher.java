@@ -10,7 +10,7 @@ import java.io.File;
 public class TestFolderWatcher {
 
     public static void main(String[] args) throws Exception {
-        FolderWatcher watcher = new FolderWatcher.Builder("config").modify().build();
+        FolderWatcher watcher = new FolderWatcher.Builder("x-framework/-/config").modify().build();
 
         watcher.setPeriod(13);
 

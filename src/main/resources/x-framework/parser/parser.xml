@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE parsers PUBLIC "-//X//DTD FRAMEWORK 1.0" "parser.dtd" >
+<!DOCTYPE parsers PUBLIC "-//X//DTD FRAMEWORK 1.0" "/Users/sunday/Work/tool/src/main/resources/x-framework/parser.dtd" >
 
 <parsers>
     <parser class="a">

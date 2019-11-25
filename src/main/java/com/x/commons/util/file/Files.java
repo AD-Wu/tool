@@ -1,15 +1,26 @@
 package com.x.commons.util.file;
 
+import com.ax.commons.utils.FileHelper;
+import com.x.commons.encrypt.MD5;
+import com.x.commons.enums.Charsets;
+import com.x.commons.util.bean.New;
+import com.x.commons.util.bean.SB;
 import com.x.commons.util.reflact.Loader;
+import com.x.commons.util.string.Strings;
 import lombok.SneakyThrows;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URL;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -18,16 +29,456 @@ import java.util.Properties;
  */
 public final class Files {
     
-    public static void main(String[] args) throws IOException {
-        String path = "/Users/sunday/Java/StudyVideo/SpringMVC";
-        // String old = "北京动力节点-SpringMVC4-";
-        // String newChar = "";
-        // editNames(path, old, newChar);
-        
-    }
+    // ------------------------ 成员变量 ------------------------
+    
+    /**
+     * Windows：
+     * <p>
+     * 　　“/”是表示参数，“\”是表示本地路径。
+     * <p>
+     * Linux和Unix：
+     * <p>
+     * 　　“/”表示路径，“\”表示转义，“-”和“--”表示参数。
+     * <p>
+     * 网络：
+     * <p>
+     * 　　由于网络使用Unix标准，所以网络路径用“/”。
+     */
+    public static final String SP = File.separator;
     
     private static final ClassLoader LOADER = Loader.get();
     
+    private static String APP_PATH;
+    
+    // ------------------------ 构造方法 ------------------------
+    
+    public Files() {}
+    
+    // ------------------------ 成员方法 ------------------------
+    
+    /**
+     * 获取当前应用所在的路径
+     *
+     * @param endWithSP 返回的路径是否要以系统文件分隔符结束
+     *
+     * @return
+     */
+    public static String getAppPath(boolean endWithSP) {
+        if (Strings.isNull(APP_PATH)) {
+            String absPath = new File("").getAbsolutePath();
+            if (absPath.endsWith(SP)) {
+                if (absPath.length() > 1) {
+                    absPath = absPath.substring(0, absPath.length() - 1);
+                } else {
+                    absPath = "";
+                }
+            }
+            APP_PATH = absPath;
+        }
+        return endWithSP ? APP_PATH + SP : APP_PATH;
+    }
+    
+    public static String getLocalPath(String path, boolean endWithSP) {
+        if (Strings.isNull(path)) {
+            return getAppPath(endWithSP);
+        } else {
+            if (path.indexOf(":\\") == 1) {
+                return fixPath(path, SP, endWithSP);
+            } else {
+                if (path.startsWith("/")) {
+                    return fixPath(path, SP, endWithSP);
+                } else {
+                    return fixPath(getAppPath(true) + path, SP, endWithSP);
+                }
+            }
+        }
+    }
+    
+    public static String fixPath(String path, String fileSeparator, boolean endWithSP) {
+        if (Strings.isNull(path)) {
+            return "";
+        }
+        String fixPath;
+        if ("\\".equals(fileSeparator)) {
+            fixPath = path.replaceAll("/", "\\\\");
+        } else if ("/".equals(fileSeparator)) {
+            fixPath = path.replaceAll("\\\\", "/");
+        } else {
+            fixPath = path;
+        }
+        if (endWithSP) {
+            if (!fixPath.endsWith(fileSeparator)) {
+                fixPath = fixPath + fileSeparator;
+            }
+        } else {
+            if (fixPath.endsWith(fileSeparator)) {
+                fixPath = fixPath.substring(0, fixPath.length() - 1);
+            }
+        }
+        return fixPath;
+        
+    }
+    
+    /**
+     * 默认以UTF-8的编码创建文件
+     *
+     * @param path    文件路径(包含文件名)
+     * @param content 文件内容
+     *
+     * @return true:成功 <p> false:失败
+     */
+    public static boolean createFile(String path, String content) {
+        return createFile(path, content, Charsets.UTF8.name());
+    }
+    
+    /**
+     * 创建文件
+     *
+     * @param path    文件路径(包含文件名)
+     * @param content 文件内容
+     * @param charset 文件字符编码
+     *
+     * @return true:成功 <p> false:失败
+     */
+    public static boolean createFile(String path, String content, String charset) {
+        boolean succeed;
+        try {
+            File file = new File(path);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            try (PrintWriter writer = new PrintWriter(file, charset);) {
+                writer.print(content);
+                succeed = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            succeed = false;
+        }
+        return succeed;
+    }
+    
+    /**
+     * 以UTF-8的方式读取文本
+     *
+     * @param path
+     *
+     * @return
+     *
+     * @throws IOException
+     */
+    public static String readTxt(String path) throws IOException {
+        return readTxt(path, Charsets.UTF8.name());
+    }
+    
+    /**
+     * 读取文本
+     *
+     * @param path     文本路径
+     * @param encoding 字符编码
+     *
+     * @return
+     *
+     * @throws IOException
+     */
+    public static String readTxt(String path, String encoding) throws IOException {
+        SB sb = New.sb();
+        String result = "";
+        InputStream in = null;
+        
+        try {
+            in = Loader.get().getResourceAsStream(path);
+            if (in == null) {
+                File file = new File(path);
+                if (!file.exists()) {
+                    System.out.println("========== Files.readTxt() appPath:" + APP_PATH);
+                    in = new FileInputStream(getAppPath(true) + SP + path);
+                } else {
+                    in = new FileInputStream(path);
+                }
+            }
+            try (InputStreamReader reader = getUnicodeReader(in, encoding);
+                 BufferedReader bufReader = new BufferedReader(reader);) {
+                String content = "";
+                while ((content = bufReader.readLine()) != null) {
+                    /**
+                     * \r是回车,\n是换行.有的控件是要\r\n才能达到换行的
+                     * enter+newline with different platforms:
+                     * windows: \r\n
+                     * mac: \r
+                     * unix/linux: \n
+                     */
+                    sb.append(content + "\r\n");
+                }
+            }
+            result = sb.toString();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            result = "";
+        } finally {
+            try {
+                if (in != null) {
+                    ((InputStream) in).close();
+                }
+            } catch (Exception e) {
+            }
+            
+        }
+        return result;
+    }
+    
+    public static void createFolders(String[] paths) {
+        String appPath = getAppPath(true);
+        for (int i = 0, L = paths.length; i < L; ++i) {
+            createFolder(appPath + paths[i]);
+        }
+        
+    }
+    
+    public static boolean createFolder(String path) {
+        // 默认文件path存在
+        if (Strings.isNull(path)) {
+            return true;
+        }
+        try {
+            File file = new File(path);
+            return !file.exists() ? file.mkdirs() : true;
+        } catch (Exception var2) {
+            var2.printStackTrace();
+            return false;
+        }
+    }
+    
+    /**
+     * 是否存在文件
+     *
+     * @param path
+     *
+     * @return
+     */
+    public static boolean fileExists(String path) {
+        try {
+            File var1 = new File(path);
+            return var1.exists();
+        } catch (Exception var2) {
+            var2.printStackTrace();
+            return false;
+        }
+    }
+    
+    /**
+     * 慎用<p>
+     * 删除文件夹下所有文件（包括path本身）
+     *
+     * @param path
+     *
+     * @return
+     */
+    public static boolean deleteFile(String path) {
+        try {
+            // 递归删除文件夹下所有文件
+            deleteInnerFile(path);
+            // 删除自身文件夹
+            File file = new File(path);
+            return file.delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    /**
+     * 慎用<P>
+     * 删除文件夹下所有文件(不包含path本身)
+     *
+     * @param path 必须是一个目录（文件夹）
+     *
+     * @return
+     */
+    public static boolean deleteInnerFile(String path) {
+        boolean succeed = false;
+        File file = new File(path);
+        if (!file.exists() || !file.isDirectory()) {
+            return succeed;
+        } else {
+            String[] names = file.list();
+            File f = null;
+            
+            for (int i = 0, L = names.length; i < L; ++i) {
+                if (path.endsWith(SP)) {
+                    f = new File(path + names[i]);
+                } else {
+                    f = new File(path + SP + names[i]);
+                }
+                // 如果是文件，直接删除
+                if (f.isFile()) {
+                    f.delete();
+                }
+                // 如果是文件夹
+                if (f.isDirectory()) {
+                    // 递归删除删除文件夹里的文件
+                    deleteInnerFile(path + SP + names[i]);
+                    // 删除文件夹(先递归删除文件夹里的文件，在删除文件夹本身)
+                    deleteFile(path + SP + names[i]);
+                    succeed = true;
+                }
+            }
+            return succeed;
+        }
+    }
+    
+    /**
+     * 递归获取文件夹下所有文件（不包含文件夹）
+     *
+     * @param list 文件路径容器
+     * @param path 目标路径，如果是文件则返回自身
+     */
+    public static void getFile(List<String> list, String path) {
+        File file = new File(path);
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (int i = 0; i < files.length; ++i) {
+                getFile(list, files[i].getPath());
+            }
+        } else {
+            list.add(file.getPath());
+        }
+        
+    }
+    
+    /**
+     * 拷贝文件->文件夹
+     *
+     * @param srcPath    必须是文件，不能是文件夹
+     * @param targetPath 必须是文件夹
+     *
+     * @return
+     */
+    public static boolean copyFile(String srcPath, String targetPath) {
+        File src = new File(srcPath);
+        File target = new File(targetPath);
+        if (!src.exists() || !src.isFile() || !target.isDirectory()) {
+            return false;
+        } else {
+            // 将目标文件夹创建为文件流，须是文件，不能是目录(文件夹)
+            int last = srcPath.lastIndexOf(SP);
+            String fileName = srcPath.substring(last + 1, srcPath.length());
+            // 修正为文件
+            targetPath = targetPath.endsWith(SP) ? targetPath + fileName : targetPath + SP + fileName;
+            try (FileInputStream in = new FileInputStream(srcPath);
+                 FileOutputStream out = new FileOutputStream(targetPath);) {
+                byte[] buf = new byte[1444];
+                int length;
+                while ((length = in.read(buf)) != -1) {
+                    out.write(buf, 0, length);
+                }
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+    }
+    
+    /**
+     * 拷贝整个文件夹目录（包括srcPath文件夹）
+     *
+     * @param srcPath    需拷贝的（文件/文件夹）路径
+     * @param targetPath 目标路径，必须是文件夹
+     *
+     * @return
+     */
+    public static boolean copyFolder(String srcPath, String targetPath) {
+        File file = new File(srcPath);
+        if (file.isFile()) {
+            return copyFile(srcPath, targetPath);
+        }
+        // 找出文件夹名字
+        int last = srcPath.lastIndexOf(SP);
+        String lastFolderName = srcPath.substring(last, srcPath.length());
+        // 修正目标路径
+        if (targetPath.endsWith(SP)) {
+            targetPath = targetPath + lastFolderName;
+        } else {
+            targetPath = targetPath + SP + lastFolderName;
+        }
+        // 创建目标文件夹目录
+        new File(targetPath).mkdirs();
+        // 拷贝源文件夹内所有文件
+        return copyFolderInner(srcPath, targetPath);
+        
+    }
+    
+    /**
+     * 拷贝文件夹内所有文件（不包含srcPath本身）
+     *
+     * @param srcPath    源路径,如果是文件夹，不建议用"/"命名，会扫描出src所在目录所有path
+     * @param targetPath 目标路径
+     *
+     * @return
+     */
+    private static boolean copyFolderInner(String srcPath, String targetPath) {
+        boolean succeed;
+        try {
+            // 修正目标路径，
+            // String target = fixTargetPath(srcPath, targetPath);
+            // 创建目标路径
+            new File(targetPath).mkdirs();
+            // 获取path
+            File file = new File(srcPath);
+            // 获取path下的simple name
+            String[] names = file.list();
+            if (names == null) {
+                return false;
+            }
+            File src = null;
+            // 遍历源path
+            for (int i = 0, L = names.length; i < L; ++i) {
+                // 修正path
+                if (srcPath.endsWith(SP)) {
+                    src = new File(srcPath + names[i]);
+                } else {
+                    src = new File(srcPath + SP + names[i]);
+                }
+                // 文件
+                if (src.isFile()) {
+                    try (FileInputStream in = new FileInputStream(src);
+                         FileOutputStream out = new FileOutputStream(targetPath + SP + src.getName());) {
+                        byte[] buf = new byte[5120];
+                        while (true) {
+                            int length;
+                            if ((length = in.read(buf)) == -1) {
+                                out.flush();
+                                in.close();
+                                out.close();
+                                break;
+                            }
+                            out.write(buf, 0, length);
+                        }
+                    }
+                }
+                // 目录
+                if (src.isDirectory() && !copyFolderInner(srcPath + SP + names[i], targetPath + SP + names[i])) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            succeed = false;
+        }
+        return succeed;
+    }
+    
+    public static String getMD5(File file) throws Exception {
+        return file == null ? "" : new MD5().encode(file);
+    }
+    
+    /**
+     * @param path
+     * @param old
+     * @param newChar
+     */
     public static void editNames(String path, String old, String newChar) {
         Arrays.stream(getFiles(path, old)).forEach(f -> f.renameTo(new File(f.getAbsolutePath().replace(old, newChar))));
     }
@@ -87,6 +538,13 @@ public final class Files {
         return new File(uri).listFiles();
     }
     
+    /**
+     * @param path
+     *
+     * @return
+     *
+     * @throws Exception
+     */
     public static Properties toProperties(String path) throws Exception {
         try (InputStream in = Loader.get().getResourceAsStream(path);) {
             Properties prop = new Properties();
@@ -133,6 +591,21 @@ public final class Files {
             
             return new InputStreamReader(back, encoding);
         }
+    }
+    
+    // ------------------------ 私有方法 ------------------------
+    private static String fixTargetPath(String srcPath, String targetPath) {
+        int last = srcPath.lastIndexOf(SP);
+        String folderName = srcPath.substring(last, srcPath.length());
+        return targetPath.endsWith(SP) ? targetPath + folderName : targetPath + SP + folderName;
+    }
+    
+    public static void main(String[] args) throws Exception {
+        // String path = "/Users/sunday/Java/StudyVideo/SpringMVC";
+        // String old = "北京动力节点-SpringMVC4-";
+        // String newChar = "";
+        // editNames(path, old, newChar);
+        
     }
     
 }

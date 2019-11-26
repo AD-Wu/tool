@@ -35,7 +35,7 @@ public final class Locals {
     private static String defLanguage;
 
     /**
-     * 区域文本存放路径，默认：com/x/commons/local/{0}.properties
+     * 区域文本存放路径，默认：com/x/commons/local/data/{0}.properties
      */
     private static String defPath;
 
@@ -151,7 +151,7 @@ public final class Locals {
         // 默认中文
         defLanguage = zh_CN;
         // 默认路径
-        defPath = "com/x/commons/local/{0}.properties";
+        defPath = "com/x/commons/local/data/{0}.properties";
         localMap = new ConcurrentHashMap<>();
         SUPPORT_LANGUAGES = new HashSet<>();
         // 添加默认支持的语言

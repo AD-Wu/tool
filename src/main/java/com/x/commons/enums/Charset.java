@@ -1,7 +1,7 @@
 package com.x.commons.enums;
 
 /**
- * @Desc TODO
+ * @Desc 字符编码枚举
  * @Date 2019-11-02 23:35
  * @Author AD
  */

@@ -3,11 +3,10 @@ package com.x.commons.util.string;
 import com.x.commons.enums.Charsets;
 import com.x.commons.enums.DisplayStyle;
 import com.x.commons.enums.Regex;
+import com.x.commons.parser.Parsers;
 import com.x.commons.parser.core.IParser;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.bean.SB;
-import com.x.commons.parser.string.core.IStringParser;
-import com.x.commons.parser.Parsers;
 import lombok.NonNull;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -192,7 +191,7 @@ public final class Strings {
      * @return
      */
     public static String toUppercase(Object convert) {
-        return convert == null ? "" : String.valueOf(convert).toUpperCase();
+        return convert == null ? "" : String.valueOf(convert).trim().toUpperCase();
     }
     
     /**

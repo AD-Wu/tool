@@ -3,6 +3,8 @@ package com.x.commons.enums;
 import java.nio.charset.Charset;
 
 /**
+ * 字符集编码对象枚举
+ *
  * @Date 2018-12-19 23:49
  * @Author AD
  */

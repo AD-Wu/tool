@@ -33,6 +33,10 @@ public final class SB {
         return this;
     }
 
+    public int length() {
+        return sb.length();
+    }
+
     public String get() {
         return toString();
     }

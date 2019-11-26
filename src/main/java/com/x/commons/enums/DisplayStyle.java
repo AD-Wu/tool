@@ -3,7 +3,7 @@ package com.x.commons.enums;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
- * @Desc TODO
+ * @Desc toString方法的展示类型枚举
  * @Date 2019-11-08 12:34
  * @Author AD
  */

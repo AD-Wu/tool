@@ -149,7 +149,7 @@ public final class Locals {
     static {
         defLocal = null;
         // 默认中文
-        defLanguage = zh_CN;
+        defLanguage = en_US;
         // 默认路径
         defPath = "com/x/commons/local/data/{0}.properties";
         localMap = new ConcurrentHashMap<>();

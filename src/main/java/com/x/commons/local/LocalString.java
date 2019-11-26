@@ -1,8 +1,8 @@
 package com.x.commons.local;
 
-import com.x.commons.util.string.Strings;
 import com.x.commons.util.file.Files;
 import com.x.commons.util.reflact.Loader;
+import com.x.commons.util.string.Strings;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,7 +30,7 @@ final class LocalString {
      * @return 是否加载成功
      */
     boolean load(String path) {
-        try (InputStream in = Loader.getStream(path);) {
+        try (InputStream in = Loader.getStream(path) ;) {
             if (in == null) return false;
             try (InputStreamReader reader = Files.getUnicodeReader(in, UTF8);
             ) {

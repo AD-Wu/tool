@@ -13,11 +13,11 @@ import static com.x.commons.enums.Language.en_US;
 import static com.x.commons.enums.Language.zh_CN;
 
 /**
- * @Desc TODO 区域性文本管理者
+ * @Desc 区域性文本管理者
  * @Date 2019-11-02 23:48
  * @Author AD
  */
-public final class LocalManager {
+public final class Locals {
 
     /**
      * 默认字体
@@ -60,51 +60,29 @@ public final class LocalManager {
     private static Set<String> SUPPORT_LANGUAGES;
 
     /**
-     * TODO 根据key将args替换到区域性文本信息中
+     * 根据key将args替换到区域性文本信息中
      *
      * @param key  配置在com/x/commons/local/en_US.properties文件中的key
      * @param args 需要替换到参数
      * @return
      */
-    public static String text(String key,Object... args) {
+    public static String text(String key, Object... args) {
         LocalString local = getLocal();
-        return local == null ? "" : local.text(key,args);
+        return local == null ? "" : local.text(key, args);
     }
 
     /**
-     * TODO 设置语言
-     *
-     * @param language 如：zh_CN,en_US
-     */
-    public static void setLanguage(String language) {
-        if (Strings.isNull(language) && SUPPORT_LANGUAGES.contains(language)) {
-            synchronized (langLock) {
-                defLanguage = language;
-                defLocal = null;
-            }
-        }
-    }
-
-    /**
-     * TODO 获取默认语言key，如：zh_CN,en_US
-     *
-     * @return
-     */
-    public static String getLanguage() {
-        return defLanguage;
-    }
-
-    /**
-     * TODO 获取默认区域性文本，默认zh_CN
+     * 获取默认区域性文本，默认zh_CN
      *
      * @return
      */
     public synchronized static LocalString getLocal() {
+        // defaultLocal也是公共资源，和defaultLanguage在一起需要多把锁
         if (defLocal != null) return defLocal;
         // 存在多个公共资源，需要多把锁
         synchronized (langLock) {
             if (defLocal != null) return defLocal;
-            String path = Strings.replace(defPath,defLanguage);
+            String path = Strings.replace(defPath, defLanguage);
             defLocal = new LocalString();
             defLocal.load(path);
         }
@@ -112,7 +90,7 @@ public final class LocalManager {
     }
 
     /**
-     * TODO 获取区域性文本信息
+     * 获取区域性文本信息
      *
      * @param language 语言key，如：zh_CN,en_US
      * @return
@@ -128,7 +106,7 @@ public final class LocalManager {
                 return local;
             }
             local = new LocalString();
-            if (!local.load(Strings.replace(defPath,language))) {
+            if (!local.load(Strings.replace(defPath, language))) {
                 local = getLocal();
             }
             return local;
@@ -137,7 +115,30 @@ public final class LocalManager {
     }
 
     /**
-     * TODO 获取系统语言
+     * 设置语言
+     *
+     * @param language 如：zh_CN,en_US
+     */
+    public static void setLanguage(String language) {
+        if (Strings.isNull(language) && SUPPORT_LANGUAGES.contains(language)) {
+            synchronized (langLock) {
+                defLanguage = language;
+                defLocal = null;
+            }
+        }
+    }
+
+    /**
+     * 获取默认语言key，如：zh_CN,en_US
+     *
+     * @return
+     */
+    public static String getLanguage() {
+        return defLanguage;
+    }
+
+    /**
+     * 获取系统语言
      *
      * @return 如：zh_CN,en_US
      */

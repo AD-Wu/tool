@@ -24,7 +24,7 @@ final class LocalString {
     }
 
     /**
-     * TODO 加载区域性配置文件
+     * 加载区域性配置文件
      *
      * @param path 配置文件路径，如：com/x/commons/local/zh_CN.properties
      * @return 是否加载成功
@@ -32,7 +32,7 @@ final class LocalString {
     boolean load(String path) {
         try (InputStream in = Loader.getStream(path);) {
             if (in == null) return false;
-            try (InputStreamReader reader = Files.getUnicodeReader(in,UTF8);
+            try (InputStreamReader reader = Files.getUnicodeReader(in, UTF8);
             ) {
                 this.props.load(reader);
                 return true;
@@ -44,9 +44,15 @@ final class LocalString {
     }
 
 
-    String text(String localKey,Object... params) {
-
-        return Strings.replace(props.getProperty(localKey),params);
+    /**
+     * 根据xxx.properties里的key替换成相应的信息
+     *
+     * @param localKey
+     * @param params
+     * @return
+     */
+    String text(String localKey, Object... params) {
+        return Strings.replace(props.getProperty(localKey), params);
     }
 
 }

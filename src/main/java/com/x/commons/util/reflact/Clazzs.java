@@ -22,28 +22,38 @@ public final class Clazzs {
      */
     private static final ClassLoader LOADER = Clazzs.class.getClassLoader();
 
+    private Clazzs() {
+    }
+
     public static <T> T newInstance(Class<T> clazz) throws Exception {
         Constructor<T> c = clazz.getDeclaredConstructor();
         c.setAccessible(true);
         return c.newInstance();
     }
-    
-    public static boolean isPrimitive(Class<?> clazz) { return clazz.isPrimitive(); }
-    
-    public static boolean isString(Class<?> clazz) { return String.class == clazz; }
-    
+
+    public static boolean isPrimitive(Class<?> clazz) {
+        return clazz == null ? false : clazz.isPrimitive();
+    }
+
+    public static boolean isString(Class<?> clazz) {
+        return String.class == clazz;
+    }
+
     public static boolean isObject(Class<?> clazz) {
-        return !isPrimitive(clazz) && !isString(clazz) && !isArray(clazz); }
-    
+        return !isPrimitive(clazz) && !isString(clazz) && !isArray(clazz);
+    }
+
     public static boolean isPrimitiveArray(Class<?> clazz) {
         return isArray(clazz) && isPrimitive(clazz.getComponentType());
     }
-    
+
     public static boolean isObjectArray(Class<?> clazz) {
         return isArray(clazz) && !isPrimitive(clazz.getComponentType());
     }
-    
-    public static boolean isArray(Class<?> clazz) { return clazz.isArray(); }
+
+    public static boolean isArray(Class<?> clazz) {
+        return clazz == null ? false : clazz.isArray();
+    }
 
     /**
      * 获取包下带某个注解的类
@@ -63,7 +73,7 @@ public final class Clazzs {
     }
 
     public static <A extends Annotation, I> List<Class<I>> getClass(String packageName, Class<A> annotation,
-            Class<I> interfaceClass) {
+                                                                    Class<I> interfaceClass) {
         List<Class<?>> collect = getClass(packageName, New.list());
         List<Class<I>> result = collect.stream()
                 .filter(c -> c.getDeclaredAnnotation(annotation) != null && interfaceClass.isAssignableFrom(c))

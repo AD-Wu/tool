@@ -1,6 +1,6 @@
 package com.x.commons.util;
 
-import com.x.commons.local.LocalManager;
+import com.x.commons.local.Locals;
 
 import java.util.Locale;
 
@@ -27,7 +27,7 @@ public final class Systems {
         double free = getMemory(run.freeMemory());
         int size = Thread.getAllStackTraces().size();
 
-        return LocalManager.text("runtime.info",cpu,max,total,free,size);
+        return Locals.text("runtime.info",cpu,max,total,free,size);
     }
 
     private static double getMemory(long memory) {

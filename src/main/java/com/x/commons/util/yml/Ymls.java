@@ -4,19 +4,20 @@ import com.x.commons.parser.Parsers;
 import com.x.commons.parser.core.IParser;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.bean.SB;
-import com.x.commons.util.collection.Maps;
+import com.x.commons.util.collection.Arrays;
 import com.x.commons.util.reflact.Clazzs;
 import com.x.commons.util.reflact.Fields;
 import com.x.commons.util.reflact.Loader;
 import com.x.commons.util.string.Strings;
-import com.x.commons.util.test.Auto;
-import com.x.commons.util.test.AutoRun;
+import com.x.commons.util.yml.test.Config;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -25,25 +26,30 @@ import java.util.stream.Stream;
  * @Author AD
  */
 public final class Ymls {
-    
+
     // 测试用
     private static final String YML_PATH = "x-framework/yml/test.yml";
-    
+
     // ------------------------ 构造方法 ------------------------
-    
-    private Ymls() {}
-    
+
+    private Ymls() {
+    }
+
     // ------------------------ 成员方法 ------------------------
-    
+
     /**
      * 将yml/yaml文件解析成对象
      *
-     * @param path yml/yaml文件路径，如：resources/x-framework/x.yml
+     * @param path  yml/yaml文件路径，如：resources/x-framework/x.yml
+     * @param clazz 想把yml/yaml解析成POJO的对象类型
+     * @param <T>
+     * @return
+     * @throws Exception
      */
     public static <T> T load(String path, Class<T> clazz) throws Exception {
         return load(path, clazz, "");
     }
-    
+
     /**
      * 将yml/yaml文件解析成对象，可指定前缀，效率高
      *
@@ -51,16 +57,14 @@ public final class Ymls {
      * @param clazz
      * @param prefix yml/yaml的某个前缀
      * @param <T>
-     *
      * @return
-     *
      * @throws Exception
      */
     public static <T> T load(String path, Class<T> clazz, String prefix) throws Exception {
         // 拿到map结构->String=LinkedHashMap
         Map<String, Object> props = load(path);
         // 有前缀效率高
-        props = findProps(prefix, props);
+        props = findPropsByPrefix(prefix, props);
         // 反射创建对象
         T t = clazz.newInstance();
         // 拿到类的所有属性
@@ -75,17 +79,32 @@ public final class Ymls {
         setValue(t, props, fieldMap, fieldClassMap);
         return t;
     }
-    
+
+    /**
+     * 将yml/yaml文件转为properties格式的文件
+     *
+     * @param path yml/yaml 文件路径
+     * @return
+     * @throws Exception
+     */
+    public static Map<String, String> loadAsFlatMap(String path) throws Exception {
+        Map<String, Object> load = load(YML_PATH);
+        Map<String, String> rsult = New.map();
+        // 递归解析
+        flat(load, "", rsult);
+        return rsult;
+    }
+
+    // ------------------------ 私有方法 ------------------------
+
     /**
      * 原生的yaml结构解析，String=LinkedHashMap<String,LinkedHashMap>
      *
      * @param path yml/yaml文件路径
-     *
      * @return
-     *
      * @throws Exception
      */
-    public static Map<String, Object> load(String path) throws Exception {
+    private static Map<String, Object> load(String path) throws Exception {
         try (InputStream in = Loader.get().getResourceAsStream(path);) {
             Yaml yaml = new Yaml();
             Map<String, Object> load = yaml.load(in);
@@ -94,46 +113,51 @@ public final class Ymls {
             throw e;
         }
     }
-    
-    @AutoRun
-    public static Properties loadAsProp(String path) throws Exception {
-        Map<String, Object> load = load(YML_PATH);
-        Map<String, String> map = New.map();
-        loop(load, "", map);
-        Maps.printMap(map);
-        return null;
-    }
-    
-    // ------------------------ 私有方法 ------------------------
-    private static void loop(Map<String, Object> map, String nul, Map<String, String> result) {
+
+    /**
+     * 将load()方法加载的map<String,LinkedHashMap>递归解析成Map<String,String>,即扁平化
+     *
+     * @param map       load()加载的结果
+     * @param supPrefix 上一级前缀
+     * @param result    递归所需的map
+     */
+    private static void flat(Map<String, Object> map, String supPrefix, Map<String, String> result) {
         map.entrySet().forEach(e -> {
             String key = e.getKey();
-            SB sb = New.sb();
-            sb.append(key);
+            String fixKey = supPrefix + key;
             Object value = e.getValue();
             if (value instanceof Map) {
-                sb.append(".");
-                loop((Map<String, Object>) value, "", result);
+                fixKey = fixKey + ".";
+                flat((Map<String, Object>) value, fixKey, result);
             } else if (value instanceof List) {
                 List<String> list = (List<String>) value;
-                String r = "";
+                SB sb = New.sb();
                 for (String s : list) {
-                    r = s + ",";
+                    sb.append(s).append(",");
                 }
-                r.substring(0, r.length() - 1);
-                result.put(sb.get(), r);
+                result.put(fixKey, sb.deleteLast().get());
             } else {
-                result.put(sb.get(), value.toString());
+                result.put(fixKey, value.toString());
             }
         });
     }
-    
+
+    /**
+     * 反射机制设置Field的值
+     *
+     * @param t             Field所在类对象
+     * @param props         从yml/yaml解析出来的源数据
+     * @param fieldMap      fieldName-Field的映射
+     * @param fieldClassMap fidle name-field class的映射
+     * @param <T>
+     * @throws Exception
+     */
     private static <T> void setValue(
             T t,
             Map<String, Object> props,
             Map<String, Field> fieldMap,
             Map<String, Class> fieldClassMap) throws Exception {
-        
+
         props.entrySet().forEach(prop -> {
             String key = prop.getKey();
             // 一级目录
@@ -153,6 +177,7 @@ public final class Ymls {
                             value = parseObject(fieldClass, subProp);
                         }
                     }
+                    // 设置属性可访问
                     Field field = fieldMap.get(key);
                     field.setAccessible(true);
                     /**
@@ -161,7 +186,7 @@ public final class Ymls {
                      *  long[]不能强制转换成Object[],Long[]才可以
                      */
                     if (Clazzs.isArray(value.getClass())) {
-                        Object o = toTargetArray(fieldClass, value);
+                        Object o = Arrays.convert(value, fieldClass);
                         field.set(t, o);
                     } else {
                         field.set(t, value);
@@ -183,33 +208,42 @@ public final class Ymls {
             }
         });
     }
-    
+
     /**
      * 解析对象，parser 完善后基本没用
      *
      * @param clazz 需要解析的类，不能是内部类
      * @param map   从yml/yaml解析出来的源数据
-     *
      * @return
-     *
      * @throws Exception
      */
     private static Object parseObject(Class<?> clazz, Map<String, Object> map) throws Exception {
-        Object o = clazz.newInstance();
+        // 反射创建对象
+        Object o = Clazzs.newInstance(clazz);
+        // 获取所有属性
         Field[] fields = clazz.getDeclaredFields();
+        // 遍历属性
         Stream.of(fields).forEach(f -> {
+            // 设置可访问
             f.setAccessible(true);
+            // 获取属性类型
             Class<?> fieldClass = f.getType();
+            // 从源数据根据name获取值
             Object value = map.get(f.getName());
             try {
+                // 根据field类型获取解析器
                 IParser parser = Parsers.getParser(fieldClass);
+                // 不为空就按照解析器解析
                 if (parser != null) {
                     value = parser.parse(value);
                 } else {
+                    // 判断field是否为对象型
                     if (Clazzs.isObject(fieldClass)) {
+                        // 递归解析改对象型的Field
                         value = parseObject(fieldClass, (Map<String, Object>) value);
                     }
                 }
+                // 设置属性值
                 f.set(o, value);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -217,46 +251,44 @@ public final class Ymls {
         });
         return o;
     }
-    
-    private static Object toTargetArray(Class<?> valueClass, Object value) {
-        if (Clazzs.isArray(valueClass)) {
-            Class<?> type = valueClass.getComponentType();
-            Object[] os = (Object[]) value;
-            int length = os.length;
-            Object instance = Array.newInstance(type, length);
-            for (int i = 0, L = os.length; i < L; i++) {
-                Array.set(instance, i, os[i]);
-            }
-            return instance;
-        }
-        return null;
-    }
-    
-    private static Map<String, Object> findProps(String key, Map<String, Object> props) {
-        if (!Strings.isNull(key)) {
+
+    /**
+     * 通过前缀找到前缀下的子内容
+     *
+     * @param prefix 需查找内容的前缀
+     * @param props  从yml/yaml所加载的源数据
+     * @return Map<String, LinkedHashMap < String, Map>> 源数据的某个子结构
+     */
+    private static Map<String, Object> findPropsByPrefix(String prefix, Map<String, Object> props) {
+        if (!Strings.isNull(prefix)) {
+            // 获取所有的key
             Set<String> keys = props.keySet();
-            if (keys.contains(key)) {
-                return (Map<String, Object>) props.get(key);
+            // 如果一级目录包括目标key，直接返回
+            if (keys.contains(prefix)) {
+                return (Map<String, Object>) props.get(prefix);
             } else {
+                // 二级查找（这里不能用Stream循环解析）
                 Iterator<Map.Entry<String, Object>> it = props.entrySet().iterator();
                 while (it.hasNext()) {
                     Map.Entry<String, Object> next = it.next();
                     Object o = next.getValue();
+                    // 如果是map，则递归解析
                     if (o instanceof Map) {
                         Map<String, Object> value = (Map<String, Object>) o;
-                        return findProps(key, value);
+                        return findPropsByPrefix(prefix, value);
                     }
                 }
-                
+
             }
         }
         return props;
     }
-    
+
     public static void main(String[] args) throws Exception {
-        // Config load = load("x-framework/yml/test.yml", Config.class);
-        // System.out.println(load);
-        Auto.run(Ymls.class, "loadAsProp");
+        Config load = load("x-framework/yml/test.yml", Config.class);
+        System.out.println(load);
+
     }
-    
+
 }
+

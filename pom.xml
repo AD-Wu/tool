@@ -13,7 +13,7 @@
 
     <groupId>com.x</groupId>
     <artifactId>tool</artifactId>
-    <version>1.0.0</version>
+    <version>1.0</version>
 
     <properties>
         <java.version>1.8</java.version>
@@ -161,6 +161,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.x.APP</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>

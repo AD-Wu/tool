@@ -1,6 +1,5 @@
 package com.x.commons.util;
 
-import com.ax.commons.encrypt.md5.MD5;
 import com.x.commons.local.Locals;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.bean.SB;
@@ -38,11 +37,17 @@ public final class Systems {
         return Locals.text("commons.system.status", cpu, max, total, free, size);
     }
 
-    public static String getPcID() {
+
+    /**
+     * 查询BIOS序列号
+     *
+     * @return
+     */
+    public static String getBiosID() {
         String id = getWindowsHardwareID("bios", "SerialNumber");
         if (id.length() > 0) {
             try {
-                return new MD5().encode(id);
+                return id;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -50,20 +55,86 @@ public final class Systems {
         return "";
     }
 
-    private static String getWindowsHardwareID(String bios, String SerialNumber) {
-        if (!Strings.isNull(bios) && !Strings.isNull(SerialNumber)) {
+    /**
+     * 查询主板序列号
+     *
+     * @return
+     */
+    public static String getBaseBoardID() {
+        String id = getWindowsHardwareID("baseboard", "SerialNumber");
+        if (id.length() > 0) {
+            try {
+                return id;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return "";
+    }
+
+    /**
+     * 获取CPU序列号
+     *
+     * @return
+     */
+    public static String getCpuID() {
+        String id = getWindowsHardwareID("cpu", "processorid");
+        if (id.length() > 0) {
+            try {
+                return id;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return "";
+    }
+
+    /**
+     * 获取网卡信息
+     *
+     * @return
+     */
+    public static String getNetCard() {
+        String id = getWindowsHardwareID("nicconfig", "macaddress");
+        if (id.length() > 0) {
+            try {
+                return id;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return "";
+    }
+
+    /**
+     * Windows系统下使用wmic命令查看硬件信息
+     * <p>
+     * 1、查询网卡信息：wmic nicconfig get macaddress
+     * <p>
+     * 2、查询cpu序列号：wmic cpu get processorid
+     * <p>
+     * 3、查询主板序列号：wmic baseboard get serialnumber
+     * <p>
+     * 4、查询BIOS序列号：wmic bios get serialnumber
+     *
+     * @param device
+     * @param contect
+     * @return
+     */
+    private static String getWindowsHardwareID(String device, String contect) {
+        if (!Strings.isNull(device) && !Strings.isNull(contect)) {
             Process process = null;
             InputStreamReader inReader = null;
             BufferedReader buf = null;
             boolean succeed = false;
 
             try {
-                process = Runtime.getRuntime().exec(new String[]{"wmic", bios, "get", SerialNumber});
+                process = Runtime.getRuntime().exec(new String[]{"wmic", device, "get", contect});
                 process.getOutputStream().close();
                 inReader = new InputStreamReader(process.getInputStream());
                 buf = new BufferedReader(inReader);
                 String line = buf.readLine();
-                if (line == null || !SerialNumber.toUpperCase().equals(Strings.toUppercase(line))) {
+                if (line == null || !contect.toUpperCase().equals(Strings.toUppercase(line))) {
                     return null;
                 } else {
                     succeed = true;
@@ -72,11 +143,8 @@ public final class Systems {
                     while (true) {
                         String msg;
                         try {
-                            if ((msg = buf.readLine()) != null) {
-                                msg = msg.trim();
-                                if (msg.length() > 0) {
-                                    sb.append(msg);
-                                }
+                            if (!Strings.isNull((msg = buf.readLine()))) {
+                                sb.append(msg.trim());
                                 continue;
                             }
                         } catch (Exception e) {
@@ -145,10 +213,17 @@ public final class Systems {
     }
 
     public static void main(String[] args) {
-        String s = runtimeInfo();
-        System.out.println(s);
-        String pcID = getPcID();
-        System.out.println(pcID);
+        String biosID = getBiosID();
+        System.out.println(biosID);
+
+        String cpuID = getCpuID();
+        System.out.println(cpuID);
+
+        String baseBoardID = getBaseBoardID();
+        System.out.println(baseBoardID);
+
+        String netCard = getNetCard();
+        System.out.println(netCard);
     }
 
 }

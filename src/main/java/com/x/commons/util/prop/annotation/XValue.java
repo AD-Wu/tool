@@ -1,4 +1,4 @@
-package com.x.commons.util.config.annotation;
+package com.x.commons.util.prop.annotation;
 
 import com.x.commons.parser.string.core.IStringParser;
 

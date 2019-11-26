@@ -1,4 +1,4 @@
-package com.x.commons.util.config.test;
+package com.x.commons.util.prop.test;
 
 import com.x.commons.util.string.Strings;
 

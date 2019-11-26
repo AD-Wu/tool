@@ -5,25 +5,27 @@ package com.x.commons.util.bean;
  * @Author AD
  */
 public final class SB {
-
-    StringBuilder sb = new StringBuilder();
-
-    SB() {}
-
+    
+    StringBuilder sb;
+    
+    SB() {
+        sb = new StringBuilder();
+    }
+    
     public SB append(Object o) {
-
+        
         sb.append(o);
         return this;
     }
-
+    
     public String get() {
-
+        
         return toString();
     }
-
+    
     public String toString() {
-
+        
         return sb.toString();
     }
-
+    
 }

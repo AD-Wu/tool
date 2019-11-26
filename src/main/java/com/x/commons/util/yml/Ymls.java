@@ -1,22 +1,22 @@
 package com.x.commons.util.yml;
 
+import com.x.commons.parser.Parsers;
 import com.x.commons.parser.core.IParser;
 import com.x.commons.util.bean.New;
+import com.x.commons.util.bean.SB;
+import com.x.commons.util.collection.Maps;
 import com.x.commons.util.reflact.Clazzs;
 import com.x.commons.util.reflact.Fields;
 import com.x.commons.util.reflact.Loader;
-import com.x.commons.parser.Parsers;
 import com.x.commons.util.string.Strings;
-import com.x.commons.util.yml.test.Config;
+import com.x.commons.util.test.Auto;
+import com.x.commons.util.test.AutoRun;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -25,6 +25,9 @@ import java.util.stream.Stream;
  * @Author AD
  */
 public final class Ymls {
+    
+    // 测试用
+    private static final String YML_PATH = "x-framework/yml/test.yml";
     
     // ------------------------ 构造方法 ------------------------
     
@@ -73,6 +76,15 @@ public final class Ymls {
         return t;
     }
     
+    /**
+     * 原生的yaml结构解析，String=LinkedHashMap<String,LinkedHashMap>
+     *
+     * @param path yml/yaml文件路径
+     *
+     * @return
+     *
+     * @throws Exception
+     */
     public static Map<String, Object> load(String path) throws Exception {
         try (InputStream in = Loader.get().getResourceAsStream(path);) {
             Yaml yaml = new Yaml();
@@ -83,7 +95,38 @@ public final class Ymls {
         }
     }
     
+    @AutoRun
+    public static Properties loadAsProp(String path) throws Exception {
+        Map<String, Object> load = load(YML_PATH);
+        Map<String, String> map = New.map();
+        loop(load, "", map);
+        Maps.printMap(map);
+        return null;
+    }
+    
     // ------------------------ 私有方法 ------------------------
+    private static void loop(Map<String, Object> map, String nul, Map<String, String> result) {
+        map.entrySet().forEach(e -> {
+            String key = e.getKey();
+            SB sb = New.sb();
+            sb.append(key);
+            Object value = e.getValue();
+            if (value instanceof Map) {
+                sb.append(".");
+                loop((Map<String, Object>) value, "", result);
+            } else if (value instanceof List) {
+                List<String> list = (List<String>) value;
+                String r = "";
+                for (String s : list) {
+                    r = s + ",";
+                }
+                r.substring(0, r.length() - 1);
+                result.put(sb.get(), r);
+            } else {
+                result.put(sb.get(), value.toString());
+            }
+        });
+    }
     
     private static <T> void setValue(
             T t,
@@ -211,8 +254,9 @@ public final class Ymls {
     }
     
     public static void main(String[] args) throws Exception {
-        Config load = load("x-framework/yml/test.yml", Config.class);
-        System.out.println(load);
+        // Config load = load("x-framework/yml/test.yml", Config.class);
+        // System.out.println(load);
+        Auto.run(Ymls.class, "loadAsProp");
     }
     
 }

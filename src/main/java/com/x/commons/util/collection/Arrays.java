@@ -20,6 +20,30 @@ public final class Arrays {
         return arrays == null || arrays.length == 0;
     }
     
+    public static boolean isEmpty(byte[] arrays) {
+        return arrays == null || arrays.length == 0;
+    }
+    
+    public static boolean isEmpty(short[] arrays) {
+        return arrays == null || arrays.length == 0;
+    }
+    
+    public static boolean isEmpty(long[] arrays) {
+        return arrays == null || arrays.length == 0;
+    }
+    
+    public static boolean isEmpty(float[] arrays) {
+        return arrays == null || arrays.length == 0;
+    }
+    
+    public static boolean isEmpty(double[] arrays) {
+        return arrays == null || arrays.length == 0;
+    }
+    
+    public static boolean isEmpty(char[] arrays) {
+        return arrays == null || arrays.length == 0;
+    }
+    
     public static <T> Set<T> toSet(T[] ts) {
         return Stream.of(ts).collect(Collectors.toSet());
     }

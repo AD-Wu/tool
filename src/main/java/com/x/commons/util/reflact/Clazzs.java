@@ -6,10 +6,9 @@ import lombok.SneakyThrows;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static com.x.commons.decoder.enums.Format.NULL;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -24,7 +23,9 @@ public final class Clazzs {
     private static final ClassLoader LOADER = Clazzs.class.getClassLoader();
 
     public static <T> T newInstance(Class<T> clazz) throws Exception {
-        return clazz.newInstance();
+        Constructor<T> c = clazz.getDeclaredConstructor();
+        c.setAccessible(true);
+        return c.newInstance();
     }
     
     public static boolean isPrimitive(Class<?> clazz) { return clazz.isPrimitive(); }

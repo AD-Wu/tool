@@ -1,7 +1,7 @@
-package com.x.commons.util.config.test;
+package com.x.commons.util.prop.test;
 
-import com.x.commons.util.config.annotation.Config;
-import com.x.commons.util.config.annotation.XValue;
+import com.x.commons.util.prop.annotation.Prop;
+import com.x.commons.util.prop.annotation.XValue;
 import com.x.commons.util.string.Strings;
 
 import java.util.Date;
@@ -10,7 +10,7 @@ import java.util.Date;
  * @Author AD
  * @Date 2019/11/21 17:49
  */
-@Config(path = "x-framework/config/value.properties", prefix = "user")
+@Prop(path = "x-framework/config/value.properties", prefix = "user")
 public class User {
     
     // ------------------------ 成员变量 ------------------------

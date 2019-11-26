@@ -3,7 +3,6 @@ package com.x.commons.util.bean;
 import com.x.commons.encrypt.MD5;
 import lombok.NonNull;
 
-import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -93,8 +92,11 @@ public final class New {
         return ByteBuffer.wrap(bs);
     }
     
-    public static ByteArrayOutputStream byteOutStream() {
-        return new ByteArrayOutputStream();
+    public static ByteArray byteArray() {
+        return new ByteArray();
+    }
+    public static ByteArray byteArray(int size) {
+        return new ByteArray(size);
     }
     
     public static SB sb() {

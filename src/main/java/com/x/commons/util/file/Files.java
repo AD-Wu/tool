@@ -1,24 +1,19 @@
 package com.x.commons.util.file;
 
-import com.ax.commons.utils.FileHelper;
 import com.x.commons.encrypt.MD5;
 import com.x.commons.enums.Charsets;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.bean.SB;
 import com.x.commons.util.reflact.Loader;
 import com.x.commons.util.string.Strings;
-import lombok.SneakyThrows;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -480,7 +475,8 @@ public final class Files {
      * @param newChar
      */
     public static void editNames(String path, String old, String newChar) {
-        Arrays.stream(getFiles(path, old)).forEach(f -> f.renameTo(new File(f.getAbsolutePath().replace(old, newChar))));
+        Arrays.stream(getFiles(path, old))
+              .forEach(f -> f.renameTo(new File(f.getAbsolutePath().replace(old, newChar))));
     }
     
     /**
@@ -532,10 +528,15 @@ public final class Files {
         return new File(path).listFiles(f -> f.getName().contains(pattern));
     }
     
-    @SneakyThrows
     public static File[] getFiles(String packageName) {
-        final URI uri = LOADER.getResource(packageName.replace(".", File.separator)).toURI();
-        return new File(uri).listFiles();
+        
+        try {
+            URI uri = LOADER.getResource(packageName.replace(".", SP)).toURI();
+            return new File(uri).listFiles();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     
     /**
@@ -553,8 +554,11 @@ public final class Files {
         }
     }
     
-    @SneakyThrows
-    public static InputStreamReader getUnicodeReader(InputStream in, String encoding) {
+    public static InputStreamReader getUnicodeReader(InputStream in) throws IOException {
+        return getUnicodeReader(in, Charsets.UTF8.name());
+    }
+    
+    public static InputStreamReader getUnicodeReader(InputStream in, String encoding) throws IOException {
         if (in == null) {
             return null;
         } else {

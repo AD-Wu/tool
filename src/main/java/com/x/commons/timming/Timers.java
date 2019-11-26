@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.ThreadPoolExecutor.AbortPolicy;
 
-public class TimerTask {
-    private static TimerTask instance;
+public class Timers {
+    private static Timers instance;
     private static Object instanceLock = new Object();
-    private static List<TimerTask> timers = new ArrayList();
+    private static List<Timers> timers = new ArrayList();
     private boolean stopped;
     private Thread checker;
     private ThreadPoolExecutor pool;
@@ -22,11 +22,11 @@ public class TimerTask {
     private List<Task> tasks;
     private Task[] taskArray;
 
-    public TimerTask(String name) {
+    public Timers(String name) {
         this(name, 0, 10, 60L, 0);
     }
 
-    public TimerTask(String name, int var2, int var3, long var4, int var6) {
+    public Timers(String name, int var2, int var3, long var4, int var6) {
         this.lock = new Object();
         this.tasks = new ArrayList();
         this.taskArray = new Task[0];
@@ -37,7 +37,7 @@ public class TimerTask {
         this.checker = new Thread("TimerTask[" + name + "]") {
             public void run() {
                 try {
-                    TimerTask.this.checkTask();
+                    Timers.this.checkTask();
                 } catch (Exception var2) {
                     var2.printStackTrace();
                 }
@@ -48,7 +48,7 @@ public class TimerTask {
         this.pool = new ThreadPoolExecutor(var2, var3, var4, TimeUnit.SECONDS, var7, new AbortPolicy());
     }
 
-    public static TimerTask timer() {
+    public static Timers timer() {
         if (instance != null) {
             return instance;
         } else {
@@ -57,7 +57,7 @@ public class TimerTask {
                     return instance;
                 }
 
-                instance = new TimerTask("system", 0, 100, 60L, 0);
+                instance = new Timers("system", 0, 100, 60L, 0);
                 instance.start();
             }
 
@@ -67,10 +67,10 @@ public class TimerTask {
 
     public static void clearAll() {
         synchronized(instanceLock) {
-            Iterator<TimerTask> it = timers.iterator();
+            Iterator<Timers> it = timers.iterator();
 
             while(it.hasNext()) {
-                TimerTask task = it.next();
+                Timers task = it.next();
                 task.clear();
             }
 
@@ -78,17 +78,17 @@ public class TimerTask {
     }
 
     public static void destroyAll() {
-        TimerTask[] tasks;
+        Timers[] tasks;
         synchronized(instanceLock) {
             instance = null;
-            tasks = (TimerTask[])timers.toArray(new TimerTask[0]);
+            tasks = (Timers[])timers.toArray(new Timers[0]);
         }
 
-        TimerTask[] temp = tasks;
+        Timers[] temp = tasks;
         int taskLength = tasks.length;
 
         for(int i = 0; i < taskLength; ++i) {
-            TimerTask task = temp[i];
+            Timers task = temp[i];
             task.destroy();
         }
 

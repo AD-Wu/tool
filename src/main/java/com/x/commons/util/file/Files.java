@@ -51,6 +51,26 @@ public final class Files {
     
     // ------------------------ 成员方法 ------------------------
     
+    public static String getResourcesPath() {
+        return getResourcesPath(true);
+    }
+    
+    public static String getResourcesPath(boolean endWithSP) {
+        SB sb = New.sb();
+        sb.append(getAppPath()).append("src").append(SP);
+        sb.append("main").append(SP).append("resources");
+        return endWithSP ? sb.append("/").get() : sb.get();
+    }
+    
+    /**
+     * 获取当前App路径，默认有文件分隔符结尾
+     *
+     * @return
+     */
+    public static String getAppPath() {
+        return getAppPath(true);
+    }
+    
     /**
      * 获取当前应用所在的路径
      *
@@ -117,40 +137,64 @@ public final class Files {
     /**
      * 默认以UTF-8的编码创建文件
      *
-     * @param path    文件路径(包含文件名)
-     * @param content 文件内容
+     * @param folder   文件夹路径（包含文件夹名）
+     * @param filename 文件名
+     * @param content  文件内容
      *
      * @return true:成功 <p> false:失败
      */
-    public static boolean createFile(String path, String content) {
-        return createFile(path, content, Charsets.UTF8.name());
+    public static boolean createFile(String folder, String filename, String content) {
+        return createFile(folder, filename, content, Charsets.UTF8);
     }
     
     /**
      * 创建文件
      *
-     * @param path    文件路径(包含文件名)
-     * @param content 文件内容
-     * @param charset 文件字符编码
+     * @param folder   文件夹路径（包含文件夹名）
+     * @param filename 文件名
+     * @param content  文件内容
+     * @param charset  文件字符编码
      *
      * @return true:成功 <p> false:失败
      */
-    public static boolean createFile(String path, String content, String charset) {
-        boolean succeed;
+    public static boolean createFile(String folder, String filename, String content, Charset charset) {
+        if (createFolder(folder)) {
+            String path = endSP(folder) + filename;
+            try {
+                File file = new File(path);
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+                try (PrintWriter writer = new PrintWriter(file, charset.name());) {
+                    writer.print(content);
+                }
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+    
+    public static boolean createFolder(String path) {
+        if (Strings.isNull(path)) {
+            return false;
+        }
         try {
             File file = new File(path);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            try (PrintWriter writer = new PrintWriter(file, charset);) {
-                writer.print(content);
-                succeed = true;
-            }
+            return !file.exists() ? file.mkdirs() : true;
         } catch (Exception e) {
             e.printStackTrace();
-            succeed = false;
+            return false;
         }
-        return succeed;
+    }
+    
+    public static void createFolders(String[] paths) {
+        String appPath = getAppPath(true);
+        for (int i = 0, L = paths.length; i < L; ++i) {
+            createFolder(appPath + paths[i]);
+        }
+        
     }
     
     /**
@@ -220,28 +264,6 @@ public final class Files {
             
         }
         return result;
-    }
-    
-    public static void createFolders(String[] paths) {
-        String appPath = getAppPath(true);
-        for (int i = 0, L = paths.length; i < L; ++i) {
-            createFolder(appPath + paths[i]);
-        }
-        
-    }
-    
-    public static boolean createFolder(String path) {
-        // 默认文件path存在
-        if (Strings.isNull(path)) {
-            return true;
-        }
-        try {
-            File file = new File(path);
-            return !file.exists() ? file.mkdirs() : true;
-        } catch (Exception var2) {
-            var2.printStackTrace();
-            return false;
-        }
     }
     
     /**
@@ -476,7 +498,7 @@ public final class Files {
      */
     public static void editNames(String path, String old, String newChar) {
         Arrays.stream(getFiles(path, old))
-              .forEach(f -> f.renameTo(new File(f.getAbsolutePath().replace(old, newChar))));
+                .forEach(f -> f.renameTo(new File(f.getAbsolutePath().replace(old, newChar))));
     }
     
     /**
@@ -602,6 +624,10 @@ public final class Files {
         int last = srcPath.lastIndexOf(SP);
         String folderName = srcPath.substring(last, srcPath.length());
         return targetPath.endsWith(SP) ? targetPath + folderName : targetPath + SP + folderName;
+    }
+    
+    private static String endSP(String path) {
+        return path.endsWith(SP) ? path : path + SP;
     }
     
     public static void main(String[] args) throws Exception {

@@ -9,7 +9,6 @@ import com.x.commons.util.reflact.Clazzs;
 import com.x.commons.util.reflact.Fields;
 import com.x.commons.util.reflact.Loader;
 import com.x.commons.util.string.Strings;
-import com.x.commons.util.yml.test.Config;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
@@ -89,10 +88,10 @@ public final class Ymls {
      */
     public static Map<String, String> loadAsFlatMap(String path) throws Exception {
         Map<String, Object> load = load(YML_PATH);
-        Map<String, String> rsult = New.map();
+        Map<String, String> result = New.map();
         // 递归解析
-        flat(load, "", rsult);
-        return rsult;
+        flat(load, "", result);
+        return result;
     }
 
     // ------------------------ 私有方法 ------------------------
@@ -285,9 +284,13 @@ public final class Ymls {
     }
 
     public static void main(String[] args) throws Exception {
-        Config load = load("x-framework/yml/test.yml", Config.class);
-        System.out.println(load);
-
+        // Config load = load("x-framework/yml/test.yml", Config.class);
+        Map<String, Object> load = load("x-framework/yml/test.yml");
+        // System.out.println(load);
+        Yaml yaml = new Yaml();
+        
+        String dump = yaml.dump(load);
+        System.out.println(dump);
     }
 
 }

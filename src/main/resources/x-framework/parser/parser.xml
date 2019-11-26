@@ -2,10 +2,10 @@
 <!DOCTYPE parsers PUBLIC "-//X//DTD FRAMEWORK 1.0" "/Users/sunday/Work/tool/src/main/resources/x-framework/parser.dtd" >
 
 <parsers>
-    <parser class="a">
-        <result class="b"></result>
+    <parser clazz="a">
+        <result clazz="b"></result>
     </parser>
-    <parser class="c">
-        <result class="d"></result>
+    <parser clazz="c">
+        <result clazz="d"></result>
     </parser>
 </parsers>

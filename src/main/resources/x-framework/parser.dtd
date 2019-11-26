@@ -1,7 +1,7 @@
 <!ELEMENT parsers (parser+)>
 
 <!ELEMENT parser (result+)>
-<!ATTLIST parser class ID #REQUIRED>
+<!ATTLIST parser clazz ID #REQUIRED>
 
 <!ELEMENT result ()>
-<!ATTLIST result class ID #REQUIRED>
+<!ATTLIST result clazz ID #REQUIRED>

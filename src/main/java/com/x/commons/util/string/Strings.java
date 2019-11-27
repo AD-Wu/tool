@@ -7,6 +7,7 @@ import com.x.commons.parser.Parsers;
 import com.x.commons.parser.core.IParser;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.bean.SB;
+import com.x.commons.util.collection.Arrays;
 import lombok.NonNull;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -62,11 +63,6 @@ public final class Strings {
      * 随机变量
      */
     private static final Random RANDOM = new Random();
-    
-    /**
-     * 空字节数组
-     */
-    private static final byte[] EMPTY_BYTE = new byte[0];
     
     // ====================== 构造方法 =======================
     
@@ -224,7 +220,7 @@ public final class Strings {
     public static byte[] hexToBytes(@NonNull String hex) {
         
         String s = removeSpaces(hex);
-        return onlyHex(s) ? getBytes(fix(s)) : EMPTY_BYTE;
+        return onlyHex(s) ? getBytes(fix(s)) : Arrays.EMPTY_BYTE;
     }
     
     /**

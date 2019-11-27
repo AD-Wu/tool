@@ -5,13 +5,10 @@ import lombok.NonNull;
 
 import java.nio.ByteBuffer;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.*;
 
 /**
- * TODO 静态工厂，对象创建者
+ * 静态工厂，对象创建者
  *
  * @Date 2018-12-19 20:50
  * @Author AD
@@ -95,12 +92,23 @@ public final class New {
     public static ByteArray byteArray() {
         return new ByteArray();
     }
+    
     public static ByteArray byteArray(int size) {
         return new ByteArray(size);
     }
     
+    public static ThreadPoolExecutor threadPool() {
+        return new ThreadPoolExecutor(0, 10, 1, TimeUnit.MINUTES,
+                new SynchronousQueue(),
+                new ThreadPoolExecutor.AbortPolicy());
+    }
+    
     public static SB sb() {
         return new SB();
+    }
+    
+    public static SB sb(String s) {
+        return new SB(s);
     }
     
     public static MD5 md5() throws Exception { return new MD5(); }

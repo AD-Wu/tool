@@ -33,7 +33,7 @@ public final class Strings {
     public static void main(String[] args) throws Exception {
         // Integer parse = parse("5", Integer.class);
         // System.out.println(parse);
-        String abcd = fix("123456789ABCD", 12, "1234adf");
+        String abcd = fix("", 12, "");
         System.out.println(abcd);
     }
     
@@ -125,6 +125,21 @@ public final class Strings {
      */
     public static String defaultToString(Object o) {
         return o == null ? "" : reflectToString(o, DisplayStyle.MULTI_LINE);
+    }
+    
+    /**
+     * 比较两个字符串是否相等
+     *
+     * @param one  第一个字符串
+     * @param two  第二个字符串
+     * @param trim 是否去除空格比较
+     *
+     * @return
+     */
+    public static boolean equals(String one, String two, boolean trim) {
+        one = one == null ? "" : (trim ? one.trim() : one);
+        two = two == null ? "" : (trim ? two.trim() : two);
+        return one.equals(two);
     }
     
     /**
@@ -369,6 +384,29 @@ public final class Strings {
     }
     
     /**
+     * 修正字符串长度为12，不足时以前缀"0"填充，否则截取
+     *
+     * @param fix 需修正的字符串
+     *
+     * @return
+     */
+    public static String fix(String fix) {
+        return fix(fix, 12, "0");
+    }
+    
+    /**
+     * 修正字符串至固定长度，不足时以前缀"0"填充，否则截取
+     *
+     * @param fix         需修正的字符串
+     * @param totalLength 修正后总长度
+     *
+     * @return
+     */
+    public static String fix(String fix, int totalLength) {
+        return fix(fix, totalLength, "0");
+    }
+    
+    /**
      * 修正字符串至固定长度，不足以前缀填充，一般是0
      *
      * @param fix         需修正的字符串
@@ -378,20 +416,45 @@ public final class Strings {
      * @return
      */
     public static String fix(String fix, int totalLength, String prefix) {
-        if (isNull(fix) || totalLength <= 0) {
+        if (totalLength <= 0) {
             return "";
         }
-        SB sb = New.sb(fix);
-        int len = fix.length();
+        SB sb = New.sb(prefix).append(fix);
+        int len = sb.length();
         if (len >= totalLength) {
             return sb.sub(len - totalLength);
         } else {
-            prefix = isNull(prefix) ? "0" : prefix;
             while (sb.length() < totalLength) {
-                sb.preAppend(prefix);
+                sb.preAppend("0");
             }
-            return sb.sub(sb.length() - totalLength);
+            return sb.get();
         }
+    }
+    
+    /**
+     * 将第一个字母改为大写
+     *
+     * @param s 需要修改的字符串
+     *
+     * @return
+     */
+    public static String firstToUpper(@NonNull String s) {
+        byte[] bs = s.getBytes();
+        bs[0] = (byte) ((char) bs[0] - 97 + 65);
+        return new String(bs);
+    }
+    
+    /**
+     * 将第一个字母改为小写
+     *
+     * @param s 需要修改的字符串
+     *
+     * @return
+     */
+    public static String firstToLower(@NonNull String s) {
+        byte[] bs = s.getBytes();
+        bs[0] = (byte) ((char) bs[0] - 65 + 97);
+        return new String(bs);
     }
     
     /**
@@ -647,7 +710,7 @@ public final class Strings {
      * @author AD
      * @date 2018-12-22 18:34
      */
-    private static String fix(String hex) {
+    private static String fixHex(String hex) {
         
         return hex.length() % 2 == 0 ? hex : "0" + hex;
     }

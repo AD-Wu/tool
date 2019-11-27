@@ -55,20 +55,20 @@ class Task implements Runnable{
         return this.repeatCount > 0L && this.currentCount >= this.repeatCount;
     }
 
-    void updatePeriod(int var1) {
-        if ((long)var1 <= -this.period) {
-            var1 = (int)(1L - this.period);
+    void updatePeriod(int period) {
+        if ((long)period <= -this.period) {
+            period = (int)(1L - this.period);
         }
 
         synchronized(this.lock) {
-            this.runTime += (long)var1;
-            this.period += (long)var1;
+            this.runTime += (long)period;
+            this.period += (long)period;
         }
     }
 
-    void updateTime(int var1) {
+    void updateTime(int period) {
         synchronized(this.lock) {
-            this.runTime += (long)var1;
+            this.runTime += (long)period;
         }
     }
 

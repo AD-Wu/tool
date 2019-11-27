@@ -38,28 +38,28 @@ public final class Strings {
     /**
      * 空字符串
      */
-    private static final String NULL = "";
+    public static final String NULL = "";
+    
+    /**
+     * 16进制字符串(大写)
+     */
+    public static final String HEX = "0123456789ABCDEF";
+    
+    /**
+     * 16进制字符串(大小写)
+     */
+    public static final String ALL_HEX = "0123456789ABCDEFabcdef";
+    
+    /**
+     * 大小写字母、数字
+     */
+    public static final char[] LETTER_FIGURE =
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
     
     /**
      * 随机变量
      */
     private static final Random RANDOM = new Random();
-    
-    /**
-     * 16进制字符串(大写)
-     */
-    private static final String HEX = "0123456789ABCDEF";
-    
-    /**
-     * 16进制字符串(大小写)
-     */
-    private static final String ALL_HEX = "0123456789ABCDEFabcdef";
-    
-    /**
-     * 数字、大小写字母
-     */
-    private static final char[] KEY_WORDS =
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
     
     /**
      * 空字节数组
@@ -386,7 +386,7 @@ public final class Strings {
      *
      * @return
      */
-    public static String getUUID() {
+    public static String UUID() {
         UUID uuid = UUID.randomUUID();
         return uuid.toString().replaceAll("-", "");
     }
@@ -395,20 +395,20 @@ public final class Strings {
      * 获取指定长度的随机字符串，包含数字、大小写字母
      *
      * @param length     指定长度
-     * @param onlyNumber 是否只包含数字
+     * @param onlyFigure 是否只包含数字
      *
      * @return
      */
-    public static String getRandom(int length, boolean onlyNumber) {
+    public static String getRandom(int length, boolean onlyFigure) {
         SB sb = New.sb();
-        int L = onlyNumber ? 10 : KEY_WORDS.length;
-        if (onlyNumber) {
+        int L = onlyFigure ? 10 : LETTER_FIGURE.length;
+        if (onlyFigure) {
             for (int i = 0; i < length; ++i) {
                 sb.append(RANDOM.nextInt(L));
             }
         } else {
             for (int i = 0; i < length; ++i) {
-                sb.append(KEY_WORDS[RANDOM.nextInt(L)]);
+                sb.append(LETTER_FIGURE[RANDOM.nextInt(L)]);
             }
         }
         return sb.get();
@@ -426,8 +426,8 @@ public final class Strings {
         ip = removeSpace ? removeSpaces(ip) : ip;
         if (!isNull(ip)) {
             return ip.replaceAll("[0\\.]", NULL).length() == 0 ||
-                    "127.0.0.1".equals(ip) ||
-                    "localhost".equals(ip);
+                   "127.0.0.1".equals(ip) ||
+                   "localhost".equals(ip);
         }
         return true;
     }

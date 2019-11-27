@@ -194,11 +194,10 @@ public final class Files {
         for (int i = 0, L = paths.length; i < L; ++i) {
             createFolder(appPath + paths[i]);
         }
-        
     }
     
     /**
-     * 以UTF-8的方式读取文本
+     * 以UTF-8的方式读取xxx.txt文本
      *
      * @param path
      *
@@ -211,7 +210,7 @@ public final class Files {
     }
     
     /**
-     * 读取文本
+     * 读取xxx.txt文本
      *
      * @param path     文本路径
      * @param encoding 字符编码
@@ -635,7 +634,8 @@ public final class Files {
         // String old = "北京动力节点-SpringMVC4-";
         // String newChar = "";
         // editNames(path, old, newChar);
-        
+        String s = readTxt("C:\\Users\\chunquanw\\Desktop\\word.pdf");
+        System.out.println(s);
     }
     
 }

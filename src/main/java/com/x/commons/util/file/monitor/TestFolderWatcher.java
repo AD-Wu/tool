@@ -10,11 +10,11 @@ import java.io.File;
 public class TestFolderWatcher {
 
     public static void main(String[] args) throws Exception {
-        FolderWatcher watcher = new FolderWatcher.Builder("x-framework/-/config").modify().build();
+        FolderWatcher watcher = new FolderWatcher.Builder("x-framework/config").modify().build();
 
         watcher.setPeriod(13);
 
-        watcher.addWatched(new FileWatched("config.properties") {
+        watcher.addWatched(new FileWatched("value.properties") {
             @Override
             public void change(File file) {
                 String name = file.getName();

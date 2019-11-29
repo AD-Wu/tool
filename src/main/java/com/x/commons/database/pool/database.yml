@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    druid:
+      url:
+      username:
+      password:
+      db-type:
+      driver:
+      min-idle:
+      max-active:
+      max-wait:
+      initial-size:
+      fail-fast: true
+      test-on-borrow: false
+      test-on-return: false
+      test-while-idle: true

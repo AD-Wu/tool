@@ -3,7 +3,7 @@ package com.x.commons.database.core;
 import com.x.commons.database.reader.IDataReader;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2019-11-08 17:29
  * @Author AD
  */
@@ -25,6 +25,6 @@ public interface IDatabase {
 
     int executeReader(IDataReader reader,String table,Object[] args,int[] sqlTypes,int start,int rows) throws Exception;
 
-    Object[] executeReturnGeneratedKeys(String sql,Object[] args,int[] sqlTypes,String[] columns) throws Exception;
+    Object[] executeReturnGeneratedKeys(String sql,Object[] args,int[] sqlTypes,String[] rows) throws Exception;
 
 }

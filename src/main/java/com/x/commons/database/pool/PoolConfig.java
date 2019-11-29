@@ -4,7 +4,7 @@ import com.x.commons.util.string.Strings;
 import com.x.protocol.anno.core.Doc;
 
 /**
- * @Desc TODO 数据库连接池配置类
+ * @Desc 数据库连接池配置类
  * @Date 2019-11-08 17:31
  * @Author AD
  */
@@ -65,6 +65,9 @@ public class PoolConfig {
 
     @Doc("归还连接时检测连接是否有效")
     private boolean testOnReturn = false;
+    
+    @Doc("当发现池中的可用实例已经用光时，需要做的动作")
+    private boolean exhaustedAction = true;
 
     @Doc("是否缓存preparedStatement(PSCache)。对支持游标的数据库性能提升巨大，如:oracle。mysql下建议关闭")
     private boolean poolPreparedStatements = false;
@@ -339,10 +342,26 @@ public class PoolConfig {
     public void setPoolPreparedStatements(boolean poolPreparedStatements) {
         this.poolPreparedStatements = poolPreparedStatements;
     }
+    
+    
+    /**
+     * 获取 当发现池中的可用实例已经用光时，需要做的动作
+     */
+    public boolean isExhaustedAction() {
+        return this.exhaustedAction;
+    }
+    
+    /**
+     * 设置 当发现池中的可用实例已经用光时，需要做的动作
+     */
+    public void setExhaustedAction(boolean exhaustedAction) {
+        this.exhaustedAction = exhaustedAction;
+    }
 
     @Override
     public String toString() {
         return Strings.defaultToString(this);
     }
-
+    
+    
 }

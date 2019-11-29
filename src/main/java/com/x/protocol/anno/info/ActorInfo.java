@@ -54,6 +54,7 @@ public final class ActorInfo {
     }
 
     public FieldInfo[] getFieldInfos(String cmd, String ctrl) {
+        DataInfo reqData = map.get(cmd.concat("|").concat(ctrl)).getReqData();
         return map.get(cmd.concat("|").concat(ctrl)).getReqData().getFieldInfos();
     }
 

@@ -1,15 +1,19 @@
 package com.x.commons.util.prop;
 
+import com.x.commons.database.pool.PoolConfig;
 import com.x.commons.parser.Parsers;
 import com.x.commons.parser.string.core.IStringParser;
+import com.x.commons.util.bean.New;
+import com.x.commons.util.bean.SB;
 import com.x.commons.util.file.Files;
 import com.x.commons.util.prop.annotation.Prop;
 import com.x.commons.util.prop.annotation.XValue;
-import com.x.commons.util.prop.test.User;
+import com.x.commons.util.reflact.Clazzs;
 import com.x.commons.util.reflact.Fields;
 import com.x.commons.util.string.Strings;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.stream.Stream;
 
@@ -28,9 +32,42 @@ public final class Props {
     // ---------------------- 成员方法 ---------------------
     
     /**
+     * 将类转为xxx.properties的文件（resources/x-framework）
+     *
+     * @param clazz 需要转换的类，如数据库连接池的配置文件
+     *
+     * @return
+     *
+     * @throws Exception
+     */
+    public static boolean to(Class<?> clazz) throws Exception {
+        if (clazz == null) {
+            return false;
+        }
+        Object instance = Clazzs.newInstance(clazz);
+        String filename = clazz.getSimpleName();
+        SB sb = New.sb();
+        // 获取所有的属性
+        Field[] fields = Fields.getFields(clazz);
+        // 获取属性名=值
+        Arrays.stream(fields).forEach(f -> {
+            f.setAccessible(true);
+            String key = f.getName();
+            try {
+                Object value = f.get(instance);
+                value = value == null ? "" : value;
+                sb.append(key).append("=").append(value).append("\r\n");
+            } catch (IllegalAccessException e) {
+            }
+        });
+        String folder = Files.getResourcesPath() + "x-framework";
+        return Files.createFile(folder, filename + ".properties", sb.get());
+    }
+    
+    /**
      * 将xxx.properties的配置文件解析成class
      *
-     * @param clazz 加了@Prop注解的类，该类属性可以配合@XValue使用
+     * @param clazz 加了@Prop(path="",prefix="")注解的类，该类属性可以配合@XValue使用
      * @param <T>   目标类型
      *
      * @return 目标类对象
@@ -135,8 +172,10 @@ public final class Props {
     }
     
     public static void main(String[] args) throws Exception {
-        User user = get(User.class);
-        System.out.println(user);
+        // User user = get(User.class);
+        // System.out.println(user);
+        boolean to = to(PoolConfig.class);
+        System.out.println(to);
     }
     
 }

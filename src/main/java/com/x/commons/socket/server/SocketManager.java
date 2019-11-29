@@ -1,6 +1,6 @@
 package com.x.commons.socket.server;
 
-import com.x.commons.interfaces.IIFactory;
+import com.x.commons.interfaces.IMapFactory;
 import com.x.commons.socket.client.SocketClientFactory;
 import com.x.commons.socket.config.ClientConfig;
 import com.x.commons.socket.config.ServerConfig;
@@ -50,9 +50,9 @@ public enum SocketManager {
 
     private static Map<Integer, ISocket> serverMap = new ConcurrentHashMap<>();
 
-    private static IIFactory<ISocket, ServerConfig> serverFactory = new SocketServerFactory();
+    private static IMapFactory<ISocket, ServerConfig> serverFactory = new SocketServerFactory();
 
-    private static IIFactory<ISocket, ClientConfig> clientFactory = new SocketClientFactory();
+    private static IMapFactory<ISocket, ClientConfig> clientFactory = new SocketClientFactory();
 
     public abstract ISocket start(int port, String... ip) throws Exception;
 

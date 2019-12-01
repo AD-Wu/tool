@@ -20,8 +20,7 @@ public final class Beans implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         context = applicationContext;
     }
-
-
+    
     public static Object getBean(String name){
         return context.getBean(name);
     }

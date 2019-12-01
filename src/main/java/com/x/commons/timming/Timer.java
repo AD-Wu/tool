@@ -274,7 +274,7 @@ public final class Timer {
     }
     
     /**
-     * 清除某个定时器的所有任务
+     * 清除当前定时器的所有任务
      */
     public void clear() {
         synchronized (this.lock) {
@@ -299,7 +299,7 @@ public final class Timer {
     /**
      * 清除当前定时器的所有任务，并关闭任务线程池
      */
-    synchronized void destroy() {
+    public synchronized void destroy() {
         if (!this.stopped) {
             this.stopped = true;
             synchronized (instanceLock) {
@@ -318,7 +318,7 @@ public final class Timer {
     /**
      * 销毁所有定时器的任务，并关闭所有定时器的任务线程池
      */
-    static void destroyAll() {
+    public static void destroyAll() {
         Timer[] timers;
         synchronized (instanceLock) {
             instance = null;

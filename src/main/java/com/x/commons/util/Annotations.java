@@ -42,7 +42,7 @@ public final class Annotations {
     }
     
     public static void main(String[] args) throws Exception {
-        getAnnotationInfo("com.ax.protocol.core.IDataActor", "com.ax", true);
+        getAnnotationInfo("", "", true);
     }
     
     public static AnnotationInfo getAnnotationInfo(String var0, String var1, boolean var2) throws Exception {

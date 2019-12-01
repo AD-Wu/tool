@@ -97,6 +97,14 @@ public final class New {
         return new ByteArray(size);
     }
     
+    public static ExecutorService fixedThreadPool(int n) {
+        return Executors.newFixedThreadPool(n);
+    }
+    
+    public static ExecutorService singleThreadPool() {
+        return Executors.newSingleThreadExecutor();
+    }
+    
     public static ThreadPoolExecutor threadPool() {
         return new ThreadPoolExecutor(0, 10, 1, TimeUnit.MINUTES,
                 new SynchronousQueue(),

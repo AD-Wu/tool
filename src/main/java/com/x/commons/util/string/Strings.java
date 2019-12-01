@@ -112,16 +112,7 @@ public final class Strings {
     
     public static Double toDouble(String value) { return Double.valueOf(value);}
     
-    /**
-     * toString方法，默认多行显示
-     *
-     * @param o 需要重写toString方法的对象
-     *
-     * @return
-     */
-    public static String defaultToString(Object o) {
-        return o == null ? "" : reflectToString(o, DisplayStyle.MULTI_LINE);
-    }
+    
     
     /**
      * 比较两个字符串是否相等
@@ -136,6 +127,28 @@ public final class Strings {
         one = one == null ? "" : (trim ? one.trim() : one);
         two = two == null ? "" : (trim ? two.trim() : two);
         return one.equals(two);
+    }
+    
+    /**
+     * toString方法，默认多行显示
+     *
+     * @param o 需要重写toString方法的对象
+     *
+     * @return
+     */
+    public static String defaultToString(Object o) {
+        return o == null ? "" : reflectToString(o, DisplayStyle.MULTI_LINE);
+    }
+    
+    /**
+     * toString方法，简单类名+属性，单行显示
+     *
+     * @param o 需要重写toString方法的对象
+     *
+     * @return
+     */
+    public static String simpleToString(Object o) {
+        return o == null ? "" : reflectToString(o, DisplayStyle.SHORT_PREFIX);
     }
     
     /**

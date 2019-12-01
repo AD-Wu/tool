@@ -1,5 +1,7 @@
 package com.x.commons.enums;
 
+import com.x.commons.util.string.Strings;
+
 /**
  * @Desc TODO
  * @Date 2019-12-01 17:50
@@ -24,6 +26,12 @@ public enum Formatter {
     
     private Formatter(String pattern) {
         this.pattern = pattern;
+    }
+    
+    public static void main(String[] args) {
+        String s ="12:12:12";
+        boolean date = Strings.isTime(s);
+        System.out.println(date);
     }
 }
     

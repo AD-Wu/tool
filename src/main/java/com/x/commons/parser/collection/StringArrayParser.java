@@ -10,22 +10,14 @@ import com.x.commons.parser.string.core.IStringParser;
  * @Author AD
  */
 @Parser(result = String[].class)
-public class StringArrayParser extends IStringParser<String[],String> {
+public class StringArrayParser extends IStringParser<String[], String> {
     
     private static final String[] EMPTY = new String[0];
     
     @Override
-    public String[] parseFrom(String s) throws Exception{
+    public String[] parseFrom(String s) throws Exception {
         if (Strings.isNull(s)) {return EMPTY;}
-        if (s.contains(",")) {
-            return s.split(",");
-        } else {
-            if (s.contains("|")) {
-                return s.split("|");
-            } else {
-                return s.split(" ");
-            }
-        }
+        return s.split("[,\\;\\|]");
     }
     
 }

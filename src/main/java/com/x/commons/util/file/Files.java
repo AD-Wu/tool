@@ -349,25 +349,6 @@ public final class Files {
     }
     
     /**
-     * 递归获取文件夹下所有文件（不包含文件夹）
-     *
-     * @param list 文件路径容器
-     * @param path 目标路径，如果是文件则返回自身
-     */
-    public static void getFile(List<String> list, String path) {
-        File file = new File(path);
-        if (file.isDirectory()) {
-            File[] files = file.listFiles();
-            for (int i = 0; i < files.length; ++i) {
-                getFile(list, files[i].getPath());
-            }
-        } else {
-            list.add(file.getPath());
-        }
-        
-    }
-    
-    /**
      * 拷贝文件->文件夹
      *
      * @param srcPath    必须是文件，不能是文件夹
@@ -545,13 +526,33 @@ public final class Files {
      *
      * @param path 如："/Users/sunday/Java/StudyVideo/SpringMVC"为文件夹路径
      *
-     * @return path路径下于pattern匹配的所有文件
+     * @return path路径下于pattern匹配的所有文件,
      *
      * @author AD
      * @date 2019-10-17 22:00
      */
     public static File[] getFiles(String path, String pattern) {
         return new File(path).listFiles(f -> f.getName().contains(pattern));
+    }
+    
+    /**
+     * 递归获取文件夹路径下所有文件
+     *
+     * @param path
+     * @param list
+     *
+     * @return
+     */
+    public static File[] getFiles(String path, List<File> list) {
+        File[] files = getFiles(path, "");
+        for (File file : files) {
+            if (file.isFile()) {
+                list.add(file);
+            } else {
+                getFiles(file.getPath(), list);
+            }
+        }
+        return list.toArray(new File[list.size()]);
     }
     
     public static File[] getFiles(String packageName) {

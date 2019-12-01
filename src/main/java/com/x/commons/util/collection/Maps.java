@@ -1,13 +1,11 @@
 package com.x.commons.util.collection;
 
 import com.x.commons.util.bean.New;
-import com.x.commons.util.date.DateTimes;
 import com.x.commons.util.json.test.User;
 import com.x.commons.util.string.Strings;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.*;
 
 /**
  * @Desc TODO
@@ -20,6 +18,20 @@ public final class Maps {
     
     public static boolean isEmpty(Map map) {
         return map == null || map.size() == 0;
+    }
+    
+    public static Map<String, String> toMap(Properties... props) {
+        Map<String, String> map = New.map();
+        Arrays.stream(props).forEach(p -> {
+            Iterator<Map.Entry<Object, Object>> it = p.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<Object, Object> next = it.next();
+                String key = String.valueOf(next.getKey());
+                String value = String.valueOf(next.getValue());
+                map.put(key, value);
+            }
+        });
+        return map;
     }
     
     public static <K, V> void printMap(Map<K, V> map) {

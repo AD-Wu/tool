@@ -5,6 +5,7 @@ import com.x.commons.parser.Parsers;
 import com.x.commons.parser.string.core.IStringParser;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.bean.SB;
+import com.x.commons.util.collection.Maps;
 import com.x.commons.util.file.Files;
 import com.x.commons.util.prop.annotation.Prop;
 import com.x.commons.util.prop.annotation.XValue;
@@ -12,8 +13,11 @@ import com.x.commons.util.reflact.Clazzs;
 import com.x.commons.util.reflact.Fields;
 import com.x.commons.util.string.Strings;
 
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Stream;
 
@@ -30,6 +34,20 @@ public final class Props {
     private Props() {}
     
     // ---------------------- 成员方法 ---------------------
+    public static Map<String, String> load(String path) throws Exception {
+        /**
+         * 读取路径文件的必须用文件流，适用于绝对和相对路径，ClassLoader只使用相对路径
+         * fin和reader不能分开，如果fin关闭，则reader读不到
+         */
+        try (FileInputStream fin = new FileInputStream(path);
+             InputStreamReader reader = Files.getUnicodeReader(fin);) {
+            Properties prop = new Properties();
+            prop.load(reader);
+            return Maps.toMap(prop);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
     
     /**
      * 将类转为xxx.properties的文件（resources/x-framework）

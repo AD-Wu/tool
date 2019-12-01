@@ -1,5 +1,7 @@
 package com.x.commons.util.teamwork.test;
 
+import com.x.commons.interfaces.ICallback;
+import com.x.commons.util.date.DateTimes;
 import com.x.commons.util.string.Strings;
 import lombok.Data;
 
@@ -9,7 +11,9 @@ import lombok.Data;
  * @Author AD
  */
 @Data
-public class User {
+public class User<T> {
+    
+    private static int counter = 0;
     
     private int id;
     
@@ -20,6 +24,21 @@ public class User {
     private boolean sex;
     
     private String birthday;
+    
+    private ICallback<String> callback;
+    
+    public User(ICallback<String> callback) {
+        this.id = ++counter;
+        this.name = "AD";
+        this.age = 28;
+        this.sex = true;
+        this.birthday = DateTimes.now();
+        this.callback = callback;
+    }
+    
+    public ICallback<String> getCallback() {
+        return callback;
+    }
     
     @Override
     public String toString() {

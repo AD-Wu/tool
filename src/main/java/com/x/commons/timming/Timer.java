@@ -93,7 +93,7 @@ public final class Timer {
             timerList.add(this);
         }
         
-        this.checker = new Thread("X-Timer[" + name + "]") {
+        this.checker = new Thread("X-[Timer-Checker]-[" + name + "]") {
             
             public void run() {
                 try {
@@ -215,7 +215,9 @@ public final class Timer {
     
     /**
      * 是否包含任务
+     *
      * @param runnable 可执行任务
+     *
      * @return true：包含  false：不包含
      */
     public boolean contains(Runnable runnable) {
@@ -231,7 +233,9 @@ public final class Timer {
     
     /**
      * 移除某个任务
+     *
      * @param runnable 可执行任务
+     *
      * @return
      */
     public boolean remove(Runnable runnable) {
@@ -258,8 +262,9 @@ public final class Timer {
     
     /**
      * 更新任务的执行周期
+     *
      * @param runnable 可执行任务
-     * @param period 周期
+     * @param period   周期
      */
     public void update(Runnable runnable, int period) {
         

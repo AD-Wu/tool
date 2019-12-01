@@ -3,8 +3,7 @@ package com.x.commons.util.teamwork;
 import java.util.concurrent.ArrayBlockingQueue;
 
 /**
- * @Desc 协作线程，团队工作，如：<br>
- * scan req thread -> req queue -> req run thread -> resp queue -> resp handle thread
+ * @Desc 阻塞队列，存放任务
  * @Date 2019-11-30 19:30
  * @Author AD
  */
@@ -34,7 +33,6 @@ public final class Task<T> {
             return task;
         } catch (InterruptedException e) {
             e.printStackTrace();
-            notifyAll();
             return null;
         }
         

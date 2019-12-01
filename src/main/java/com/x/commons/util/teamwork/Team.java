@@ -5,29 +5,51 @@ import com.x.commons.timming.Timer;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @Desc
+ * @Desc 团队协作者，如：<br>
+ * scanner -> reqQueue -> actor -> respQueue -> handler
  * @Date 2019-11-30 23:19
  * @Author AD
  */
 public class Team<REQ, RESP> {
     
-    private final TaskScanner<REQ> scanner;
+    // ------------------------ 变量定义 ------------------------
     
-    private final TaskActor<REQ, RESP> actor;
+    /**
+     * 请求扫描器
+     */
+    private final ReqScanner<REQ> scanner;
     
-    private final ResultHandler<RESP> handler;
+    /**
+     * 请求执行器
+     */
+    private final ReqActor<REQ, RESP> actor;
     
+    /**
+     * 结果处理器
+     */
+    private final RespHandler<RESP> handler;
+    
+    /**
+     * 定时器，scanner用于定时执行任务
+     */
     private Timer timer;
     
+    /**
+     * 团队是否开始工作的标识
+     */
     private volatile boolean start;
     
-    public Team(TaskScanner<REQ> scanner, TaskActor<REQ, RESP> actor, ResultHandler<RESP> handler) {
+    // ------------------------ 构造方法 ------------------------
+    
+    public Team(ReqScanner<REQ> scanner, ReqActor<REQ, RESP> actor, RespHandler<RESP> handler) {
         
         this.scanner = scanner;
         this.actor = actor;
         this.handler = handler;
         this.start = false;
     }
+    
+    // ------------------------ 方法定义 ------------------------
     
     public void start(int period, TimeUnit unit) {
         if (start) {

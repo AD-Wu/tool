@@ -13,25 +13,24 @@ import java.util.concurrent.TimeUnit;
 public class Test {
     
     public static void main(String[] args) {
-        Task<User<String>> taskQueue = new Task<>(10);
-        Task<User<String>> respQueue = new Task<>(10);
+        Task<User<Callback>> taskQueue = new Task<>(10);
         
-        ReqScanner<User<String>> scanner = new ReqScanner<User<String>>(taskQueue) {
+        Boss<User<Callback>> boss = new Boss<User<Callback>>(taskQueue) {
             
             @Override
-            public User<String>[] scan() throws Exception {
+            public User<Callback>[] scan() throws Exception {
                 User[] users = new User[10];
                 for (int i = 0; i < 10; ++i) {
-                    users[i] = new User(new ICallback<String>() {
+                    users[i] = new User(new ICallback<Callback>() {
                         
                         @Override
-                        public void succeed(String res) throws Exception {
-                            System.out.println("succeed=" + res);
+                        public void succeed(Callback res) throws Exception {
+                            System.out.println("callback="+res.getId());
                         }
-                        
+    
                         @Override
-                        public void error(int status, String msg, String res) throws Exception {
-                            System.out.println("error=" + res);
+                        public void error(int status, String msg, Callback res) throws Exception {
+        
                         }
                     });
                 }
@@ -39,37 +38,26 @@ public class Test {
             }
             
             @Override
-            public boolean filter(User<String> user) throws Exception {
+            public boolean filter(User<Callback> user) throws Exception {
                 return user.getId() > 20;
             }
             
         };
         
-        ReqActor<User<String>, User<String>> actor = new ReqActor<User<String>, User<String>>(taskQueue, respQueue) {
-            
+        Worker<User<Callback>> worker = new Worker<User<Callback>>(taskQueue) {
+    
             @Override
-            public User<String> run(User<String> user) throws Exception {
-                user.setName("callback=" + user.getId());
-                return user;
+            public void run(User<Callback> user) throws Exception {
+                ICallback<Callback> callback = user.getCallback();
+                callback.succeed(new Callback(user.getId()));
             }
         };
         
-        RespHandler<User<String>> handler = new RespHandler<User<String>>(respQueue) {
-            
-            @Override
-            public void handle(User<String> user) throws Exception {
-                ICallback<String> callback = user.getCallback();
-                callback.succeed("结果-" + user.getId());
-            }
-        };
-        
-        Team<User<String>, User<String>> team = new Team<>(scanner, actor, handler);
+        Team<User<Callback>, User<Callback>> team = new Team<>(boss, worker);
         team.start(1, TimeUnit.SECONDS);
         while (true) {
             int task = taskQueue.size();
-            int resp = respQueue.size();
             System.out.println("task queue size = " + task);
-            System.out.println("resp queue size = " + resp);
             try {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {

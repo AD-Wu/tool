@@ -7,7 +7,7 @@ import com.x.commons.util.collection.Arrays;
  * @Date 2019-11-30 19:38
  * @Author AD
  */
-public abstract class ReqScanner<REQ> implements Runnable {
+public abstract class Boss<REQ> implements Runnable {
     
     // ------------------------ 变量定义 ------------------------
     
@@ -18,7 +18,7 @@ public abstract class ReqScanner<REQ> implements Runnable {
     
     // ------------------------ 构造方法 ------------------------
     
-    public ReqScanner(Task<REQ> queue) {
+    public Boss(Task<REQ> queue) {
         this.queue = queue;
     }
     

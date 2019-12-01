@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @Date 2019-11-30 21:31
  * @Author AD
  */
-public abstract class ReqActor<REQ, RESP> {
+public abstract class Worker<REQ> {
     
     // ------------------------ 变量定义 ------------------------
     
@@ -18,11 +18,6 @@ public abstract class ReqActor<REQ, RESP> {
      * 请求队列
      */
     private final Task<REQ> reqs;
-    
-    /**
-     * 响应队列
-     */
-    private final Task<RESP> resps;
     
     /**
      * 请求获取者
@@ -35,9 +30,8 @@ public abstract class ReqActor<REQ, RESP> {
     private ThreadPoolExecutor runner;
     // ------------------------ 构造方法 ------------------------
     
-    public ReqActor(Task<REQ> reqs, Task<RESP> resps) {
+    public Worker(Task<REQ> reqs) {
         this.reqs = reqs;
-        this.resps = resps;
     }
     
     // ------------------------ 方法定义 ------------------------
@@ -52,17 +46,14 @@ public abstract class ReqActor<REQ, RESP> {
                 runner.execute(() -> {
                     try {
                         // 执行
-                        RESP resp = run(req);
-                        // 将结果存入响应队列
-                        if (resp != null) {
-                            resps.put(resp);
-                        }
+                        run(req);
+                        
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
             }
-        }, "X-[ReqActor]");
+        });
     }
     
     /**
@@ -73,6 +64,6 @@ public abstract class ReqActor<REQ, RESP> {
         getter.shutdownNow();
     }
     
-    public abstract RESP run(REQ req) throws Exception;
+    public abstract void run(REQ req) throws Exception;
     
 }

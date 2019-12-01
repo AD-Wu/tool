@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @Desc 团队协作者，如：<br>
- * scanner -> reqQueue -> actor -> respQueue -> handler
+ * scanner -> reqQueue -> actor
  * @Date 2019-11-30 23:19
  * @Author AD
  */
@@ -17,17 +17,12 @@ public class Team<REQ, RESP> {
     /**
      * 请求扫描器
      */
-    private final ReqScanner<REQ> scanner;
+    private final Boss<REQ> boss;
     
     /**
      * 请求执行器
      */
-    private final ReqActor<REQ, RESP> actor;
-    
-    /**
-     * 结果处理器
-     */
-    private final RespHandler<RESP> handler;
+    private final Worker<REQ> worker;
     
     /**
      * 定时器，scanner用于定时执行任务
@@ -41,11 +36,10 @@ public class Team<REQ, RESP> {
     
     // ------------------------ 构造方法 ------------------------
     
-    public Team(ReqScanner<REQ> scanner, ReqActor<REQ, RESP> actor, RespHandler<RESP> handler) {
+    public Team(Boss<REQ> boss, Worker<REQ> worker) {
         
-        this.scanner = scanner;
-        this.actor = actor;
-        this.handler = handler;
+        this.boss = boss;
+        this.worker = worker;
         this.start = false;
     }
     
@@ -61,11 +55,10 @@ public class Team<REQ, RESP> {
             }
             
             this.timer = new Timer("Team");
-            timer.add(scanner, period, unit);
+            timer.add(boss, period, unit);
             
             timer.start();
-            actor.start();
-            handler.start();
+            worker.start();
             start = true;
         }
     }
@@ -79,8 +72,7 @@ public class Team<REQ, RESP> {
                 return;
             }
             timer.destroy();
-            actor.stop();
-            handler.stop();
+            worker.stop();
             start = false;
         }
     }

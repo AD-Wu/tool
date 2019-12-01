@@ -25,9 +25,9 @@ public class User<T> {
     
     private String birthday;
     
-    private ICallback<String> callback;
+    private final ICallback<T> callback;
     
-    public User(ICallback<String> callback) {
+    public User(ICallback<T> callback) {
         this.id = ++counter;
         this.name = "AD";
         this.age = 28;
@@ -36,7 +36,7 @@ public class User<T> {
         this.callback = callback;
     }
     
-    public ICallback<String> getCallback() {
+    public ICallback<T> getCallback() {
         return callback;
     }
     

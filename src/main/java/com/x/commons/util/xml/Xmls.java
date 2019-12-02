@@ -75,6 +75,7 @@ public final class Xmls {
         for (int i = 0, L = attris.getLength(); i < L; ++i) {
             Attr attr = (Attr) attris.item(i);
             System.out.print(" " + attr.getName() + "=\"" + attr.getValue() + "\"");
+            
         }
         System.out.println(">");
         NodeList nodes = element.getChildNodes();

@@ -1,23 +1,21 @@
 package com.x.commons.util.xml;
 
-import com.ax.commons.local.LocalManager;
-import com.ax.commons.utils.XMLHelper;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.basic.DateConverter;
 import com.x.commons.enums.Charset;
 import com.x.commons.util.file.Files;
-import com.x.commons.util.reflact.Loader;
 import com.x.commons.util.string.Strings;
 import com.x.commons.util.xml.data.ClassInfo;
 import com.x.commons.util.xml.enums.XStreamMode;
 import com.x.commons.util.xml.test.Parser;
 import com.x.commons.util.xml.test.Result;
 import com.x.commons.util.xml.test.XMLTest;
-import com.x.commons.util.yml.test.Config;
+import org.w3c.dom.*;
 
-import java.io.InputStream;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.FileInputStream;
 import java.util.List;
-import java.util.StringJoiner;
 
 /**
  * @Desc TODO
@@ -38,6 +36,71 @@ public final class Xmls {
     private Xmls() {}
     
     // ------------------------ 成员方法 ------------------------
+    
+    public static <T> T from(String path, Class<T> clazz) throws Exception {
+        DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = fact.newDocumentBuilder();
+        FileInputStream in = new FileInputStream(path);
+        Document doc = builder.parse(in);
+        String encoding = doc.getXmlEncoding();
+        DocumentType doctype = doc.getDoctype();
+        Element elem = doc.getDocumentElement();
+        
+        return null;
+    }
+    
+    public static void parseDocument(String path) throws Exception {
+        DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = fact.newDocumentBuilder();
+        FileInputStream in = new FileInputStream(path);
+        
+        Document doc = builder.parse(in);
+        
+        // 根节点名称
+        String rootName = doc.getDocumentElement().getTagName();
+        System.out.println("根节点: " + rootName);
+        
+        System.out.println("递归解析--------------begin------------------");
+        // 递归解析Element
+        Element element = doc.getDocumentElement();
+        parseElement(element);
+        System.out.println("递归解析--------------end------------------");
+        
+    }
+    
+    public static void parseElement(Element element) {
+        System.out.print("<" + element.getTagName());
+        NamedNodeMap attris = element.getAttributes();
+        for (int i = 0, L = attris.getLength(); i < L; ++i) {
+            Attr attr = (Attr) attris.item(i);
+            System.out.print(" " + attr.getName() + "=\"" + attr.getValue() + "\"");
+        }
+        System.out.println(">");
+        
+        NodeList nodes = element.getChildNodes();
+        Node node;
+        for (int i = 0, L = nodes.getLength(); i < L; i++) {
+            node = nodes.item(i);
+            // 判断是否属于节点
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                // 判断是否还有子节点
+                if (node.hasChildNodes()) {
+                    parseElement((Element) node);
+                } else if (node.getNodeType() != Node.COMMENT_NODE) {
+                    System.out.print(node.getTextContent());
+                }
+            }
+        }
+        System.out.println("</" + element.getTagName() + ">");
+    }
+    
+    public static void main(String[] args) throws Exception {
+        
+        // toXML();
+        // from();
+        String file ="/Users/sunday/Work/tool/src/main/resources/x-framework/parser/parser.xml";
+        parseDocument(file);
+    }
     
     public static String getXMLHeader() {
         return getXMLHeader(Charset.UTF8);
@@ -97,7 +160,7 @@ public final class Xmls {
             }
             try {
                 Object o = xs.fromXML(xmlPath);
-                return (T)o;
+                return (T) o;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -107,23 +170,17 @@ public final class Xmls {
         }
     }
     
-    public static XStream getXStream(){
+    public static XStream getXStream() {
         return getXStream(XStreamMode.NoReferences);
     }
-    public static XStream getXStream(XStreamMode mode){
+    
+    public static XStream getXStream(XStreamMode mode) {
         XStream xs = new XStream();
         xs.setMode(mode.code());
         return xs;
     }
     
     // ------------------------ 私有方法 ------------------------
-    
-    public static void main(String[] args) throws Exception {
-        
-        // toXML();
-        from();
-        
-    }
     
     private static void from() throws Exception {
         XStream xs = getXStream();
@@ -140,7 +197,6 @@ public final class Xmls {
         System.out.println(s);
         System.out.println(o);
         
-    
     }
     
     private static void toXML() {
@@ -151,7 +207,6 @@ public final class Xmls {
         String s = xs.toXML(test);
         System.out.println(s);
     }
-    
     
     private static XStream getXStream(ClassInfo[] classInfos, ClassInfo[] fieldInfos) {
         XStream xs = new XStream();
@@ -181,10 +236,5 @@ public final class Xmls {
         }
         return xs;
     }
-    
-    
-    
-    
-    
     
 }

@@ -1,6 +1,8 @@
 package com.x.commons.enums;
 
-import com.x.commons.util.string.Strings;
+import com.ax.commons.utils.ConvertHelper;
+
+import java.util.Date;
 
 /**
  * @Desc TODO
@@ -29,8 +31,8 @@ public enum Formatter {
     }
     
     public static void main(String[] args) {
-        String s ="12:12:12";
-        boolean date = Strings.isTime(s);
+        String s ="2018-12-12 12:12:12.000";
+        Date date = ConvertHelper.toDate(s);
         System.out.println(date);
     }
 }

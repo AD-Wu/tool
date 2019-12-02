@@ -14,6 +14,7 @@ import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.util.List;
 
@@ -98,8 +99,52 @@ public final class Xmls {
         
         // toXML();
         // from();
-        String file ="/Users/sunday/Work/tool/src/main/resources/x-framework/parser/parser.xml";
-        parseDocument(file);
+        // String file ="/Users/sunday/Work/tool/src/main/resources/x-framework/parser/parser.xml";
+        // parseDocument(file);
+        String msg = ("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
+        msg = msg + "<DESET>" +
+              "<R>" +
+              "<C N=\"rtnCode\">1</C>" +
+              "<C N=\"rtnMsg\">xxx</C>" +
+              "<C N=\"dataList\">" +
+              "<R>" +
+              "<C N=\"id\">1</C>" +
+              "<C N=\"deptCode\">1111</C>" +
+              "<C N=\"deptName\">11111111</C>" +
+              "</R>" +
+              "<R>" +
+              "<C N=\"id\">2</C>" +
+              "<C N=\"deptCode\">2222</C>" +
+              "<C N=\"deptName\">22222222</C>" +
+              "</R>" +
+              "</C>"+
+              "</R>" +
+              "</DESET>";
+    
+        DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = fact.newDocumentBuilder();
+        ByteArrayInputStream in = new ByteArrayInputStream(msg.getBytes());
+        Document doc = builder.parse(in);
+        String en = doc.getXmlEncoding();
+        String text = doc.getTextContent();
+        boolean b = doc.hasChildNodes();
+        NodeList nodes = doc.getChildNodes();
+        int length = nodes.getLength();
+        System.out.println(text);
+        System.out.println(en);
+        System.out.println(b);
+        System.out.println(nodes);
+        System.out.println(length);
+        String rootName = doc.getDocumentElement().getTagName();
+        System.out.println("根节点: " + rootName);
+    
+        System.out.println("递归解析--------------begin------------------");
+        // 递归解析Element
+        Element element = doc.getDocumentElement();
+        parseElement(element);
+        System.out.println("递归解析--------------end------------------");
+        
+        
     }
     
     public static String getXMLHeader() {

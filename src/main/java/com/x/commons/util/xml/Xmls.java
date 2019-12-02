@@ -77,7 +77,6 @@ public final class Xmls {
             System.out.print(" " + attr.getName() + "=\"" + attr.getValue() + "\"");
         }
         System.out.println(">");
-        
         NodeList nodes = element.getChildNodes();
         Node node;
         for (int i = 0, L = nodes.getLength(); i < L; i++) {
@@ -87,9 +86,9 @@ public final class Xmls {
                 // 判断是否还有子节点
                 if (node.hasChildNodes()) {
                     parseElement((Element) node);
-                } else if (node.getNodeType() != Node.COMMENT_NODE) {
-                    System.out.print(node.getTextContent());
                 }
+            }else if (node.getNodeType() != Node.COMMENT_NODE) {
+                System.out.print(node.getTextContent());
             }
         }
         System.out.println("</" + element.getTagName() + ">");

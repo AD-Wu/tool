@@ -3,9 +3,11 @@
 
 <parsers>
     <parser clazz="a">
-        <result clazz="b"></result>
+        <result clazz="b"/>
+        <result clazz="c"/>
+        <result clazz="d"/>
     </parser>
-    <parser clazz="c">
-        <result clazz="d"></result>
+    <parser clazz="e">
+        <result clazz="f"/>
     </parser>
 </parsers>

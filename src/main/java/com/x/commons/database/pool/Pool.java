@@ -24,7 +24,7 @@ public class Pool {
     
     private static final String POOL_DRIVER_URL = "jdbc:apache:commons:dbcp:";
     
-    private DB.Type type;
+    private DatabaseType type;
     
     private String poolName;
     
@@ -41,17 +41,17 @@ public class Pool {
                     if (!Strings.isNull(user)) {
                         type = type.toUpperCase(); if (Strings.isNull(driver)) {
                             if ("DERBY".equals(type)) {
-                                this.type = DB.Type.DERBY; driver = DB.DERBY.driver();
+                                this.type = DatabaseType.DERBY; driver = DB.DERBY.driver();
                             } else if ("MYSQL".equals(type)) {
-                                this.type = DB.Type.MYSQL; driver = DB.MYSQL.driver();
+                                this.type = DatabaseType.MYSQL; driver = DB.MYSQL.driver();
                             } else if ("ORACLE".equals(type)) {
-                                this.type = DB.Type.ORACLE; driver = DB.ORACLE.driver();
+                                this.type = DatabaseType.ORACLE; driver = DB.ORACLE.driver();
                             } else if ("SQLSERVER".equals(type)) {
-                                this.type = DB.Type.SQLSERVER; driver = DB.SQLSERVER.driver();
+                                this.type = DatabaseType.SQLSERVER; driver = DB.SQLSERVER.driver();
                             } else {
                                 if (!"OTHERS".equals(type)) {
                                     throw new IllegalArgumentException(Locals.text("commons.pool.type.invalid", type));
-                                } this.type = DB.Type.OTHERS; driver = DB.OTHERS.driver();
+                                } this.type = DatabaseType.OTHERS; driver = DB.OTHERS.driver();
                             }
                         }
                         
@@ -79,7 +79,7 @@ public class Pool {
                         PoolingDriver poolingDriver = (PoolingDriver) DriverManager.getDriver("jdbc:apache:commons:dbcp2:");
                         // 注册连接池
                         poolingDriver.registerPool(poolName, pool);
-                        if (this.type == DB.Type.DERBY && url.indexOf("create=true") > 0) {
+                        if (this.type == DatabaseType.DERBY && url.indexOf("create=true") > 0) {
                             Connection conn = null;
                             
                             try {
@@ -113,7 +113,7 @@ public class Pool {
         
     }
     
-    public DB.Type getType() {
+    public DatabaseType getType() {
         return this.type;
     }
     
@@ -127,7 +127,7 @@ public class Pool {
     
     void stop() throws Exception {
         PoolingDriver driver = (PoolingDriver) DriverManager.getDriver("jdbc:apache:commons:dbcp2:");
-        driver.closePool(this.poolName); if (this.type == DB.Type.DERBY) {
+        driver.closePool(this.poolName); if (this.type == DatabaseType.DERBY) {
             try {
                 DriverManager.getConnection("jdbc:derby:;shutdown=true");
             } catch (Exception e) {

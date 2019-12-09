@@ -10,19 +10,19 @@ import java.util.concurrent.TimeUnit;
  * @Date 2019-11-30 23:19
  * @Author AD
  */
-public class Team<REQ, RESP> {
+public class Team {
     
     // ------------------------ 变量定义 ------------------------
     
     /**
      * 请求扫描器
      */
-    private final Boss<REQ> boss;
+    private final Boss boss;
     
     /**
      * 请求执行器
      */
-    private final Worker<REQ> worker;
+    private final Worker worker;
     
     /**
      * 定时器，scanner用于定时执行任务
@@ -36,7 +36,7 @@ public class Team<REQ, RESP> {
     
     // ------------------------ 构造方法 ------------------------
     
-    public Team(Boss<REQ> boss, Worker<REQ> worker) {
+    public Team(Boss boss, Worker worker) {
         
         this.boss = boss;
         this.worker = worker;

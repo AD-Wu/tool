@@ -3,12 +3,13 @@ package com.x.commons.util.zip;
 import com.ax.commons.local.LocalManager;
 import com.x.commons.util.bean.ByteArray;
 import com.x.commons.util.bean.New;
-import com.x.commons.util.collection.Arrays;
+import com.x.commons.util.collection.XArrays;
 import com.x.commons.util.file.Files;
 
 import java.io.*;
 import java.util.Enumeration;
 import java.util.zip.*;
+
 
 /**
  * @Desc 压缩文件工具类
@@ -38,7 +39,7 @@ public final class Zips {
      */
     public static byte[] compressBytes(byte[] data) throws Exception {
         byte[] result = new byte[0];
-        if (Arrays.isEmpty(data)) {
+        if (XArrays.isEmpty(data)) {
             return data;
         }
         
@@ -76,7 +77,7 @@ public final class Zips {
      */
     public static byte[] decompressBytes(byte[] data) throws Exception {
         byte[] result = new byte[0];
-        if (Arrays.isEmpty(data)) {
+        if (XArrays.isEmpty(data)) {
             return data;
         }
         Inflater inflater = new Inflater();

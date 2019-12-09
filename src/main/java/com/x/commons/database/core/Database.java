@@ -2,7 +2,7 @@ package com.x.commons.database.core;
 
 import com.x.commons.database.pool.Pool;
 import com.x.commons.database.reader.IDataReader;
-import com.x.commons.util.collection.Arrays;
+import com.x.commons.util.collection.XArrays;
 
 import java.sql.*;
 
@@ -28,9 +28,9 @@ public abstract class Database implements IDatabase {
     
     protected void fillPrepareStatement(PreparedStatement ps, Object[] args, int[] sqlTypes) throws SQLException {
         if (ps == null) return;
-        if (!Arrays.isEmpty(args)) {
+        if (!XArrays.isEmpty(args)) {
             
-            if (!Arrays.isEmpty(sqlTypes)) {
+            if (!XArrays.isEmpty(sqlTypes)) {
                 int min = Math.min(args.length, sqlTypes.length);
                 for (int i = 0, k = 1; i < min; ++i, ++k) {
                     ps.setObject(k, args[i], sqlTypes[i]);
@@ -56,7 +56,7 @@ public abstract class Database implements IDatabase {
     
     @Override
     public int[] executeBatch(String[] sqls) throws Exception {
-        if (Arrays.isEmpty(sqls)) return new int[0];
+        if (XArrays.isEmpty(sqls)) return new int[0];
         try (Connection conn = getConnection();
              Statement stat = conn.createStatement();) {
             for (String sql : sqls) {
@@ -92,7 +92,7 @@ public abstract class Database implements IDatabase {
                     
                     if (rs.next()) {
                         
-                        if (Arrays.isEmpty(rows)) {
+                        if (XArrays.isEmpty(rows)) {
                             int count = rs.getMetaData().getColumnCount();
                             result = new Object[count];
                             for (int i = 0; i < count; ++i) {

@@ -118,14 +118,4 @@ public enum DB {
      */
     public abstract String driver();
     
-    /**
-     * 关系型数据库类型枚举
-     */
-    public enum Type {
-        MYSQL,
-        ORACLE,
-        DERBY,
-        SQLSERVER,
-        OTHERS;
-    }
 }

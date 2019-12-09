@@ -1,6 +1,6 @@
 package com.x.commons.collection;
 
-import com.x.commons.util.collection.Arrays;
+import com.x.commons.util.collection.XArrays;
 import com.x.commons.util.collection.Maps;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.convert.Converts;
@@ -23,7 +23,7 @@ public final class DataSet {
     }
 
     public DataSet(NameValue... nameValues) {
-        if (!Arrays.isEmpty(nameValues)) {
+        if (!XArrays.isEmpty(nameValues)) {
             Stream.of(nameValues).forEach(nv -> datas.put(nv.getName().toUpperCase(), nv.getValue()));
         }
 

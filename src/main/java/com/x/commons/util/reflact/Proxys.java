@@ -1,6 +1,6 @@
 package com.x.commons.util.reflact;
 
-import com.x.commons.util.collection.Arrays;
+import com.x.commons.util.collection.XArrays;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -19,7 +19,7 @@ public enum Proxys {
 
         final Class<?>[] interfaces = target.getClass().getInterfaces();
 
-        if (Arrays.isEmpty(interfaces)) {
+        if (XArrays.isEmpty(interfaces)) {
             throw new RuntimeException("The target class need to implements interface");
         }
 

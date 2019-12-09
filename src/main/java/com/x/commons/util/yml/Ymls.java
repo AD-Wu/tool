@@ -4,7 +4,7 @@ import com.x.commons.parser.Parsers;
 import com.x.commons.parser.core.IParser;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.bean.SB;
-import com.x.commons.util.collection.Arrays;
+import com.x.commons.util.collection.XArrays;
 import com.x.commons.util.file.Files;
 import com.x.commons.util.reflact.Clazzs;
 import com.x.commons.util.reflact.Fields;
@@ -200,7 +200,7 @@ public final class Ymls {
                      *  long[]不能强制转换成Object[],Long[]才可以
                      */
                     if (Clazzs.isArray(value.getClass())) {
-                        Object o = Arrays.convert(value, fieldClass);
+                        Object o = XArrays.convert(value, fieldClass);
                         field.set(t, o);
                     } else {
                         field.set(t, value);

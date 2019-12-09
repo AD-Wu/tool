@@ -2,7 +2,7 @@ package com.x.commons.database;
 
 import com.x.commons.database.core.IDatabase;
 import com.x.commons.database.factory.*;
-import com.x.commons.database.pool.DB;
+import com.x.commons.database.pool.DatabaseType;
 import com.x.commons.database.pool.Pool;
 import com.x.commons.database.pool.Pools;
 import com.x.commons.database.reader.IDataReader;
@@ -21,7 +21,7 @@ public class DatabaseAccess implements IDatabase {
         if (pool == null) {
             throw new Exception(Locals.text("commons.pool.name.invalid", poolName));
         } else {
-            DB.Type type = pool.getType();
+            DatabaseType type = pool.getType();
             switch(type) {
                 case MYSQL:
                     access = new MySQL(pool);

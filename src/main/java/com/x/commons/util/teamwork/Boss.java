@@ -1,6 +1,6 @@
 package com.x.commons.util.teamwork;
 
-import com.x.commons.util.collection.Arrays;
+import com.x.commons.util.collection.XArrays;
 
 /**
  * @Desc 请求扫描者
@@ -28,7 +28,7 @@ public abstract class Boss<REQ> implements Runnable {
         try {
             // 扫描请求，以数组的结果返回
             REQ[] reqs = scan();
-            if (!Arrays.isEmpty(reqs)) {
+            if (!XArrays.isEmpty(reqs)) {
                 // 遍历过滤
                 for (REQ req : reqs) {
                     if (filter(req)) {

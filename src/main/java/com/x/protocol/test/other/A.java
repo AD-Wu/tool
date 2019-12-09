@@ -36,7 +36,7 @@ public class A {
                 if (!path.endsWith("classes/")) {
                     String newPath = path + "!/" + s;
                     String newPaths[] = newPath.split("!");
-                    // System.out.println(Arrays.toString(newPaths));
+                    // System.out.println(XArrays.toString(newPaths));
                     final String jarPath = newPaths[0].substring(newPaths[0].indexOf("/"));
                     // System.out.println(jarPath);
                     // System.out.println("===========");

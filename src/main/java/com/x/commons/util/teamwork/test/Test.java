@@ -53,7 +53,7 @@ public class Test {
             }
         };
         
-        Team<User<Callback>, User<Callback>> team = new Team<>(boss, worker);
+        Team team = new Team(boss, worker);
         team.start(1, TimeUnit.SECONDS);
         while (true) {
             int task = taskQueue.size();

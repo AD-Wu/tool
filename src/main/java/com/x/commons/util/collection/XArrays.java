@@ -4,6 +4,7 @@ import com.x.commons.decoder.core.Primitive;
 import com.x.commons.util.reflact.Clazzs;
 
 import java.lang.reflect.Array;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -12,7 +13,7 @@ import java.util.stream.Stream;
  * @Date 2019-03-04 21:52
  * @Author AD
  */
-public final class Arrays {
+public final class XArrays {
     
     /**
      * 空 byte[] 数组
@@ -45,13 +46,23 @@ public final class Arrays {
     public static final double[] EMPTY_DOUBLE = new double[0];
     
     /**
+     * 空 String[] 数组
+     */
+    public static final String[] EMPTY_STRING = new String[0];
+    
+    /**
      * 空 Object[] 数组
      */
     public static final Object[] EMPTY = new Object[0];
     
-    private Arrays() {
+    private XArrays() {
     }
-    
+    public static <T> boolean isEmpty(Set<T> set) {
+        return set == null || set.size() == 0;
+    }
+    public static <T> boolean isEmpty(List<T> list) {
+        return list == null || list.size() == 0;
+    }
     public static <T> boolean isEmpty(T[] arrays) {
         return arrays == null || arrays.length == 0;
     }

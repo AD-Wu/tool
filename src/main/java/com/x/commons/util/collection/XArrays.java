@@ -1,6 +1,7 @@
 package com.x.commons.util.collection;
 
 import com.x.commons.decoder.core.Primitive;
+import com.x.commons.util.bean.New;
 import com.x.commons.util.reflact.Clazzs;
 
 import java.lang.reflect.Array;
@@ -57,12 +58,15 @@ public final class XArrays {
     
     private XArrays() {
     }
+    
     public static <T> boolean isEmpty(Set<T> set) {
         return set == null || set.size() == 0;
     }
+    
     public static <T> boolean isEmpty(List<T> list) {
         return list == null || list.size() == 0;
     }
+    
     public static <T> boolean isEmpty(T[] arrays) {
         return arrays == null || arrays.length == 0;
     }
@@ -99,6 +103,14 @@ public final class XArrays {
         return Stream.of(ts).collect(Collectors.toSet());
     }
     
+    public static <T> T[] toArray(List<T> list, Class<T> clazz) {
+        if (isEmpty(list)) {
+            return null;
+        }
+        T[] ts = (T[]) Array.newInstance(clazz, list.size());
+        return list.toArray(ts);
+    }
+    
     /**
      * 对象型数组和基本数据类型数组进行互转，如：byte[] <-> Byte[]
      *
@@ -119,7 +131,7 @@ public final class XArrays {
         if (!Clazzs.isArray(targetClass)) {
             return value;
         }
-        // 如果value的组成类型=targeClass的组成类型，返回原值
+        // 如果value的组成类型=targetClass的组成类型，返回原值
         if (targetClass.getComponentType() == value.getClass().getComponentType()) {
             return value;
         }
@@ -301,6 +313,8 @@ public final class XArrays {
         System.out.println("ints=" + ints.getClass());
         Object convert1 = convert(ints);
         System.out.println("ints after convert=" + convert1.getClass());
+        boolean empty = isEmpty(New.list());
+        System.out.println(empty);
         
     }
     

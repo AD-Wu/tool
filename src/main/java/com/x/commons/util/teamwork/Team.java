@@ -6,11 +6,11 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @Desc 团队协作者，如：<br>
- * scanner -> reqQueue -> actor
+ * boss -> reqQueue -> worker
  * @Date 2019-11-30 23:19
  * @Author AD
  */
-public class Team {
+public class Team<REQ> {
     
     // ------------------------ 变量定义 ------------------------
     
@@ -25,7 +25,7 @@ public class Team {
     private final Worker worker;
     
     /**
-     * 定时器，scanner用于定时执行任务
+     * 定时器，boss用于定时执行任务
      */
     private Timer timer;
     
@@ -76,5 +76,6 @@ public class Team {
             start = false;
         }
     }
+    
     
 }

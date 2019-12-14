@@ -19,14 +19,14 @@ import java.nio.ByteBuffer;
 public class Serializer implements ISerializer {
 
     @SneakyThrows
-    public Serializable serialize(@NonNull final DataInfo data, @NonNull final ByteBuffer buf) {
+    public Serializable serialize(@NonNull DataInfo data, @NonNull ByteBuffer buf) {
 
         Object req = data.getSelfClass().newInstance();
 
-        final FieldInfo[] fis = data.getFieldInfos();
+         FieldInfo[] fis = data.getFieldInfos();
 
         for (FieldInfo fi : fis) {
-            final Field f = fi.getField();
+             Field f = fi.getField();
             f.setAccessible(true);
             buf.position(buf.position() + fi.getSkipByte());
 

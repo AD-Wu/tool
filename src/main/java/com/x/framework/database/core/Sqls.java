@@ -14,7 +14,10 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Desc SQL工具类
@@ -92,6 +95,14 @@ public final class Sqls {
         return new SQLParams("", params, sqlTypes);
     }
     
+    /**
+     * 将数据库里的值转为对应的Java值
+     *
+     * @param columnValue 列值
+     * @param setInfo     set方法信息
+     *
+     * @return
+     */
     public static Object toJavaData(Object columnValue, MethodInfo setInfo) {
         int sqlType = setInfo.getSqlType();
         switch (sqlType) {
@@ -137,7 +148,7 @@ public final class Sqls {
         }
     }
     
-    public static SQLParams getWhereParams(Map<String, MethodInfo> methodInfos, Where[] wheres) {
+    public static SQLParams getWhereParams(Map<String, MethodInfo> getMethodMap, Where[] wheres) {
         if (!XArrays.isEmpty(wheres)) {
             SB sb = New.sb();
             List<Object> paramList = new ArrayList();
@@ -168,11 +179,11 @@ public final class Sqls {
                             int whereCount = 0;
                             for (int i = 0, L = keys.length; i < L; ++i) {
                                 String key = keys[i];
-                                if (methodInfos.containsKey(key)) {
+                                if (getMethodMap.containsKey(key)) {
                                     if (whereCount > 0) {
                                         sb.append(" OR ");
                                     }
-                                    analyzeWhere(key, operation, V, methodInfos, sb, paramList, sqlTypeList);
+                                    analyzeWhere(key, operation, V, getMethodMap, sb, paramList, sqlTypeList);
                                     ++whereCount;
                                 }
                             }
@@ -184,7 +195,7 @@ public final class Sqls {
                             if (sb.length() > 0) {
                                 sb.append(" AND ");
                             }
-                            if (!analyzeWhere(keys[0], operation, V, methodInfos, sb, paramList, sqlTypeList)) {
+                            if (!analyzeWhere(keys[0], operation, V, getMethodMap, sb, paramList, sqlTypeList)) {
                                 return null;
                             }
                         }
@@ -255,7 +266,7 @@ public final class Sqls {
             Object[] params = new Object[L];
             int[] sqlTypes = new int[L];
             
-            for(int i = 0; i < L; ++i) {
+            for (int i = 0; i < L; ++i) {
                 KeyValue kv = kvs[i];
                 String K = kv.getK();
                 if (K == null || K.length() == 0) {
@@ -287,7 +298,8 @@ public final class Sqls {
         }
     }
     
-    public static SQLParams getPrimaryParamsByBean(Map<String, MethodInfo> methodInfoMap, List<String> pks, Object data) throws Exception {
+    public static SQLParams getPrimaryParamsByBean(Map<String, MethodInfo> methodInfoMap, List<String> pks, Object data)
+            throws Exception {
         if (data == null) {
             return null;
         } else {
@@ -299,13 +311,14 @@ public final class Sqls {
                 int[] sqlTypes = new int[pksLength];
                 SB sb = New.sb(" WHERE ");
                 
-                for(int i = 0; i < pksLength; ++i) {
+                for (int i = 0; i < pksLength; ++i) {
                     MethodInfo getInfo = methodInfoMap.get(pks.get(i));
                     if (getInfo == null) {
                         return null;
                     }
                     
-                    params[i] = toSQLData(getInfo.getMethod().invoke(data), getInfo.getDbType(), getInfo.getSqlType(), getInfo.getMethod().getReturnType());
+                    params[i] = toSQLData(getInfo.getMethod()
+                            .invoke(data), getInfo.getDbType(), getInfo.getSqlType(), getInfo.getMethod().getReturnType());
                     sqlTypes[i] = getInfo.getSqlType();
                     if (i == 0) {
                         sb.append(getInfo.getKey());
@@ -321,72 +334,66 @@ public final class Sqls {
         }
     }
     
-    public static SQLParams getPrimaryParams(Map<String, MethodInfo> methodInfoMap, List<String> pks, Object[] params) {
-        int pksLength = pks.size();
+    public static SQLParams getPrimaryParams(Map<String, MethodInfo> getMethodMap, List<String> PKList, Object[] pks) {
+        int pksLength = PKList.size();
         if (pksLength == 0) {
             return null;
         } else {
             Object[] sqlDatas = new Object[pksLength];
             int[] sqlTypes = new int[pksLength];
             
-            for(int i = 0; i < pksLength; ++i) {
-                MethodInfo methodInfo = methodInfoMap.get(pks.get(i));
-                if (methodInfo == null) {
+            for (int i = 0; i < pksLength; ++i) {
+                MethodInfo getInfo = getMethodMap.get(PKList.get(i));
+                if (getInfo == null) {
                     return null;
                 }
-                sqlDatas[i] = toSQLData(params[i], methodInfo.getDbType(), methodInfo.getSqlType(), methodInfo.getMethod().getReturnType());
-                sqlTypes[i] = methodInfo.getSqlType();
+                sqlDatas[i] = toSQLData(pks[i], getInfo.getDbType(), getInfo.getSqlType(), getInfo.getMethod()
+                        .getReturnType());
+                sqlTypes[i] = getInfo.getSqlType();
             }
             
             return new SQLParams("", sqlDatas, sqlTypes);
         }
     }
     
-    public static SQLParams getUpdateBeanParams(MethodInfo[] methodInfos, List<String> var1, Object var2) {
-        if (var1 != null && var1.size() != 0) {
-            int var3 = methodInfos.length;
-            Object[] var4 = new Object[var3];
-            int[] var5 = new int[var3];
-            int var6 = 0;
-            HashMap var7 = new HashMap();
-            
-            int var8;
-            for(var8 = 0; var8 < var3; ++var8) {
-                MethodInfo var9 = methodInfos[var8];
-                if (var1.contains(var9.getKey())) {
-                    var7.put(var9.getKey(), var9);
+    public static SQLParams getUpdateBeanParams(MethodInfo[] methodInfos, List<String> updateColumns, Object data) {
+        if (!XArrays.isEmpty(updateColumns)) {
+            Object[] sqlDatas = new Object[methodInfos.length];
+            int[] sqlTypes = new int[methodInfos.length];
+            int index = 0;
+            Map<String, MethodInfo> updates = New.map();
+            // 需要更新都字段
+            for (int i = 0, L = methodInfos.length; i < L; ++i) {
+                MethodInfo methodInfo = methodInfos[i];
+                if (updateColumns.contains(methodInfo.getKey())) {
+                    updates.put(methodInfo.getKey(), methodInfo);
                 } else {
                     try {
-                        var4[var6] = toSQLData(var9.getMethod().invoke(var2), var9.getDbType(), var9.getSqlType(), var9.getMethod().getReturnType());
+                        fillSQLParam(sqlDatas, sqlTypes, data, index, methodInfo);
+                        ++index;
                     } catch (Exception e) {
                         e.printStackTrace();
                         return null;
                     }
-                    var5[var6] = var9.getSqlType();
-                    ++var6;
                 }
             }
-            
-            var8 = 0;
-            
-            for(int var14 = var1.size(); var8 < var14; ++var8) {
-                MethodInfo var10 = (MethodInfo)var7.get(var1.get(var8));
-                
+            // 更新条件字段
+            for (int i = 0, size = updateColumns.size(); i < size; ++i) {
+                MethodInfo methodInfo = updates.get(updateColumns.get(i));
                 try {
-                    var4[var6] = toSQLData(var10.getMethod().invoke(var2), var10.getDbType(), var10.getSqlType(), var10.getMethod().getReturnType());
+                    fillSQLParam(sqlDatas, sqlTypes, data, index, methodInfo);
+                    ++index;
                 } catch (Exception e) {
                     e.printStackTrace();
                     return null;
                 }
-                
-                var5[var6] = var10.getSqlType();
-                ++var6;
             }
-            return new SQLParams("", var4, var5);
+            return new SQLParams("", sqlDatas, sqlTypes);
         } else {
             return null;
         }
     }
+    
     /**
      * 根据Java里的类型获取对应的SQL数据类型
      *
@@ -476,6 +483,14 @@ public final class Sqls {
     }
     
     // ------------------------ 私有方法 ------------------------
+    
+    private static void fillSQLParam(Object[] sqlDatas, int[] sqlTypes, Object data, int index, MethodInfo info)
+            throws Exception {
+        sqlDatas[index] = toSQLData(info.getMethod().invoke(data),
+                info.getDbType(), info.getSqlType(), info.getMethod().getReturnType());
+        sqlTypes[index] = info.getSqlType();
+    }
+    
     private static Object toSQLData(Object param, DatabaseType dbType, int sqlType, Class<?> returnType) {
         if (sqlType == Types.CHAR && (returnType.equals(Boolean.TYPE) || returnType.equals(Boolean.class))) {
             return (Boolean) param ? "Y" : "N";

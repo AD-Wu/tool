@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2019-11-17 12:26
  * @Author AD
  */
@@ -68,7 +68,7 @@ public class HTTPResponse implements Serializable {
     // ----------------------- 成员方法 -----------------------
 
     /**
-     * TODO 获取响应头部指定信息
+     * 获取响应头部指定信息
      *
      * @param key
      * @return

@@ -1,7 +1,7 @@
 package com.x.commons.util.http.enums;
 
 /**
- * @Desc TODO http请求方法，如：POST，GET
+ * @Desc http请求方法，如：POST，GET
  * @Date 2019-11-17 12:21
  * @Author AD
  */

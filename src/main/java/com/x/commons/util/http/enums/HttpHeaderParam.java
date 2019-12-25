@@ -1,7 +1,7 @@
 package com.x.commons.util.http.enums;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2019-11-19 22:48
  * @Author AD
  */

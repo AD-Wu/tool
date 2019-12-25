@@ -2,14 +2,13 @@ package com.x.commons.parser.collection;
 
 import com.x.commons.parser.core.IParser;
 import com.x.commons.parser.string.annotation.Parser;
-import com.x.commons.util.bean.New;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2019-11-23 19:49
  * @Author AD
  */

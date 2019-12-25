@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2019-11-23 10:08
  * @Author AD
  */
@@ -305,7 +305,7 @@ public final class Ymls {
     public static void main(String[] args) throws Exception {
         // Config load = load("x-framework/yml/test.yml", Config.class);
         Map<String, Object> load = load("x-framework/yml/test.yml");
-        // System.out.println(load);
+        // System.getOutputStream.println(load);
         Yaml yaml = new Yaml();
         
         String dump = yaml.dump(load);

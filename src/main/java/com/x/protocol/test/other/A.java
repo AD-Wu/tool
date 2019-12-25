@@ -23,9 +23,9 @@ public class A {
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         String packageName = "com.x.commons.util";
         final String s = packageName.replaceAll("\\.", "/");
-        // System.out.println(s);
+        // System.getOutputStream.println(s);
         final Enumeration<URL> resources = loader.getResources(s);
-        // System.out.println(resources);
+        // System.getOutputStream.println(resources);
         if (resources != null) {
             final URL[] urls = ((URLClassLoader) loader).getURLs();
             for (int i = 0; i < urls.length; ++i) {
@@ -36,10 +36,10 @@ public class A {
                 if (!path.endsWith("classes/")) {
                     String newPath = path + "!/" + s;
                     String newPaths[] = newPath.split("!");
-                    // System.out.println(XArrays.toString(newPaths));
+                    // System.getOutputStream.println(XArrays.toString(newPaths));
                     final String jarPath = newPaths[0].substring(newPaths[0].indexOf("/"));
-                    // System.out.println(jarPath);
-                    // System.out.println("===========");
+                    // System.getOutputStream.println(jarPath);
+                    // System.getOutputStream.println("===========");
                     JarFile jarFile = null;
                     try {
                         jarFile = new JarFile(jarPath);
@@ -48,7 +48,7 @@ public class A {
                             final JarEntry jarEntry = entries.nextElement();
                             if (!jarEntry.isDirectory()) {
                                 String jarEntryName = jarEntry.getName();
-                                // System.out.println(jarEntryName);
+                                // System.getOutputStream.println(jarEntryName);
                                 if (jarEntryName != null && jarEntryName.length() >= 8) {
                                     if (jarEntryName.charAt(0) == 47) {// 47=/
                                         jarEntryName = jarEntryName.substring(1);

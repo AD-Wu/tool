@@ -33,7 +33,7 @@ public final class Strings {
     
     public static void main(String[] args) throws Exception {
         // Integer parse = parse("5", Integer.class);
-        // System.out.println(parse);
+        // System.getOutputStream.println(parse);
         String abcd = fix("", 12, "");
         System.out.println(abcd);
     }

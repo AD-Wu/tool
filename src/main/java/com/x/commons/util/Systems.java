@@ -193,22 +193,22 @@ public final class Systems {
     
     public static void main(String[] args) {
         // String s = runtimeInfo();
-        // System.out.println(s);
+        // System.getOutputStream.println(s);
         //
         // String system = getSystem();
-        // System.out.println(system);
+        // System.getOutputStream.println(system);
         
         // String biosID = getBiosID();
-        // System.out.println(biosID);
+        // System.getOutputStream.println(biosID);
         //
         // String cpuID = getCpuID();
-        // System.out.println(cpuID);
+        // System.getOutputStream.println(cpuID);
         //
         // String baseBoardID = getBaseBoardID();
-        // System.out.println(baseBoardID);
+        // System.getOutputStream.println(baseBoardID);
         //
         // String netCard = getNetCard();
-        // System.out.println(netCard);
+        // System.getOutputStream.println(netCard);
         
         Properties prop = System.getProperties();
         Set<String> names = prop.stringPropertyNames();

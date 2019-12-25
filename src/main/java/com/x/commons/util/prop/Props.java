@@ -191,7 +191,7 @@ public final class Props {
     
     public static void main(String[] args) throws Exception {
         // User user = get(User.class);
-        // System.out.println(user);
+        // System.getOutputStream.println(user);
         boolean to = to(PoolConfig.class);
         System.out.println(to);
     }

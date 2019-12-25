@@ -413,7 +413,7 @@
 //             if (KEY_TYPE_PUBLIC.equals(keyType)) {
 //                 X509EncodedKeySpec x509eks = new X509EncodedKeySpec(keybyte);
 //                 publicKey = (RSAPublicKey) keyFactory.generatePublic(x509eks);
-//                 System.out.println(publicKey.getAlgorithm());
+//                 System.getOutputStream.println(publicKey.getAlgorithm());
 //             } else {
 //                 PKCS8EncodedKeySpec pkcs8eks = new PKCS8EncodedKeySpec(keybyte);
 //                 privateKey = (RSAPrivateKey) keyFactory
@@ -467,7 +467,7 @@
 //             if (KEY_TYPE_PUBLIC.equals(keyType)) {
 //                 X509EncodedKeySpec x509eks = new X509EncodedKeySpec(keybyte);
 //                 publicKey = (RSAPublicKey) keyFactory.generatePublic(x509eks);
-//                 System.out.println(publicKey.getAlgorithm());
+//                 System.getOutputStream.println(publicKey.getAlgorithm());
 //             } else {
 //                 PKCS8EncodedKeySpec pkcs8eks = new PKCS8EncodedKeySpec(keybyte);
 //                 privateKey = (RSAPrivateKey) keyFactory
@@ -502,13 +502,13 @@
 // //         RSAGenerator rsaGenerator = new RSAGenerator().generateKeyPair();
 // //         String str="数表的质数又称素数。指整数在一个大于1的自然数中，除了1和此整数自身外，没法被其他自然数整除的数";
 // //         String encode = rsaGenerator.encryptByPublic(str);
-// //         System.out.println(encode);
-// //         System.out.println(rsaGenerator.decryptByPrivate(encode));
+// //         System.getOutputStream.println(encode);
+// //         System.getOutputStream.println(rsaGenerator.decryptByPrivate(encode));
 // //
-// //         System.out.println("用私钥加密公钥解密");
+// //         System.getOutputStream.println("用私钥加密公钥解密");
 // //         String encrypt = rsaGenerator.encryptByPrivate(str);
-// //         System.out.println(encrypt);
-// //         System.out.println(rsaGenerator.decryptByPublic(encrypt));
+// //         System.getOutputStream.println(encrypt);
+// //         System.getOutputStream.println(rsaGenerator.decryptByPublic(encrypt));
 // //     }
 // //
 // //     @Test
@@ -519,7 +519,7 @@
 // //         rsaGenerator.getKeyFromBase64File("public.txt", RSAGenerator.KEY_TYPE_PUBLIC);
 // //         String str="数表的质数又称素数。指整数在一个大于1的自然数中，除了1和此整数自身外，没法被其他自然数整除的数";
 // //         String encode = rsaGenerator.encryptByPublic(str);
-// //         System.out.println(encode);
-// //         System.out.println(rsaGenerator.decryptByPrivate(encode));
+// //         System.getOutputStream.println(encode);
+// //         System.getOutputStream.println(rsaGenerator.decryptByPrivate(encode));
 // //     }
 // // }

@@ -1,7 +1,8 @@
 package com.x.commons.util.http;
 
 import com.x.commons.util.http.data.Json;
-import com.x.commons.util.http.factory.HttpClientFactory;
+import com.x.commons.util.http.enums.HTTPMethod;
+import org.apache.http.client.methods.HttpRequestBase;
 
 /**
  * @Desc http工具类
@@ -12,8 +13,11 @@ public final class Https {
 
     private Https() {}
 
+    public static void get(String url){
+        HttpRequestBase req = HTTPMethod.GET.getHttpRequest(url);
+
+    }
     public static void post(String url, Json json) {
-        HttpClientFactory fact = new HttpClientFactory.Builder().retry(3).build();
     }
 
     public static <T> void post(String url, T param) {

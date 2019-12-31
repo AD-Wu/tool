@@ -11,57 +11,57 @@ public enum HTTPMethod {
     
     GET("GET") {
         @Override
-        public HttpRequestBase getHttpRequest() {
-            return new HttpGet();
+        public HttpRequestBase getHttpRequest(String url) {
+            return new HttpGet(url);
         }
     },
     
     POST("POST") {
         @Override
-        public HttpRequestBase getHttpRequest() {
-            return new HttpPost();
+        public HttpRequestBase getHttpRequest(String url) {
+            return new HttpPost(url);
         }
     },
     
     HEAD("HEAD") {
         @Override
-        public HttpRequestBase getHttpRequest() {
-            return new HttpHead();
+        public HttpRequestBase getHttpRequest(String url) {
+            return new HttpHead(url);
         }
     },
     
     PUT("PUT") {
         @Override
-        public HttpRequestBase getHttpRequest() {
-            return new HttpPut();
+        public HttpRequestBase getHttpRequest(String url) {
+            return new HttpPut(url);
         }
     },
     
     DELETE("DELETE") {
         @Override
-        public HttpRequestBase getHttpRequest() {
-            return new HttpDelete();
+        public HttpRequestBase getHttpRequest(String url) {
+            return new HttpDelete(url);
         }
     },
     
     TRACE("TRACE") {
         @Override
-        public HttpRequestBase getHttpRequest() {
-            return new HttpTrace();
+        public HttpRequestBase getHttpRequest(String url) {
+            return new HttpTrace(url);
         }
     },
     
     PATCH("PATCH") {
         @Override
-        public HttpRequestBase getHttpRequest() {
-            return new HttpPatch();
+        public HttpRequestBase getHttpRequest(String url) {
+            return new HttpPatch(url);
         }
     },
     
     OPTIONS("OPTIONS") {
         @Override
-        public HttpRequestBase getHttpRequest() {
-            return new HttpOptions();
+        public HttpRequestBase getHttpRequest(String url) {
+            return new HttpOptions(url);
         }
     };
     
@@ -75,6 +75,6 @@ public enum HTTPMethod {
         this.method = method;
     }
     
-    public abstract HttpRequestBase getHttpRequest();
+    public abstract HttpRequestBase getHttpRequest(String url);
     
 }

@@ -111,7 +111,7 @@ public class HttpClientFactory {
             return new HttpClientFactory(this);
         }
 
-        HttpClientBuilder getHttpClientBuilder() {
+        private HttpClientBuilder getHttpClientBuilder() {
             return builder;
         }
 

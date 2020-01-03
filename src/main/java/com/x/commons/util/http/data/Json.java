@@ -1,8 +1,10 @@
 package com.x.commons.util.http.data;
 
 import com.x.commons.util.bean.New;
+import com.x.commons.util.bean.SB;
 import com.x.commons.util.json.Jsons;
 
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -28,6 +30,18 @@ public class Json {
 
     public Object get(Object key) {
         return json.get(key);
+    }
+
+    public String toKeyValue(){
+        Iterator<Map.Entry<Object, Object>> it = json.entrySet().iterator();
+        SB sb = New.sb();
+        while (it.hasNext()){
+            Map.Entry<Object, Object> next = it.next();
+            String key = String.valueOf(next.getKey());
+            String value = String.valueOf(next.getValue());
+            sb.append(key).append("=").append(value).append("&");
+        }
+        return sb.deleteLast().get();
     }
 
     @Override

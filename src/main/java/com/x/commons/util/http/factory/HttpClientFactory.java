@@ -39,6 +39,10 @@ public class HttpClientFactory {
 
     // -------------------------- 构造方法 --------------------------
 
+    public HttpClientFactory() {
+        this.builder = new Builder().getHttpClientBuilder();
+    }
+
     public HttpClientFactory(Builder builder) {
         this.builder = builder.getHttpClientBuilder();
     }
@@ -96,11 +100,12 @@ public class HttpClientFactory {
 
         public Builder pool(int maxTotal, int maxPerRoute) {
             Registry<ConnectionSocketFactory> registry = RegistryBuilder
-                    .<ConnectionSocketFactory>create()
+                    .<ConnectionSocketFactory> create()
                     .register("http", PlainConnectionSocketFactory.INSTANCE)
                     .register("https", new SSL(SSLVersion.SSLv3).getSSLConnSocketFactory()).build();
             // 设置连接池大小
-            PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(registry);
+            PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(
+                    registry);
             connManager.setMaxTotal(maxTotal);
             connManager.setDefaultMaxPerRoute(maxPerRoute);
             builder.setConnectionManager(connManager);

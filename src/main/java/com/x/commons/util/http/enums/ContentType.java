@@ -1,13 +1,17 @@
 package com.x.commons.util.http.enums;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2019-11-16 22:05
  * @Author AD
  */
 public enum ContentType {
-    JSON("application/json;charset=utf-8"),
-    FORM("application/x-www-form-urlencoded;charset=utf-8");
+
+    TEXT("text/plain"),
+    XML("text/xml"),
+    HTML("text/html"),
+    JSON("application/json"),
+    FORM("application/x-www-form-urlencoded");
 
     public String get() {
         return this.contentType;

@@ -12,15 +12,10 @@ import org.apache.http.client.methods.HttpRequestBase;
  */
 public class DeleteRequest extends BaseHttpRequest {
     
-    private final String url;
-    
-    private final Json param;
-    
     private final String fixURL;
     
     public DeleteRequest(String url, Json param) {
-        this.url = url;
-        this.param = param;
+        super(url, param);
         this.fixURL = fixURL(url, param);
     }
     

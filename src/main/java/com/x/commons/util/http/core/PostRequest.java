@@ -16,10 +16,6 @@ import org.apache.http.entity.StringEntity;
  */
 public class PostRequest extends BaseHttpRequest {
     
-    private final String url;
-    
-    private final Json param;
-    
     private final boolean isForm;
     
     public PostRequest(String url, Json param) {
@@ -27,8 +23,7 @@ public class PostRequest extends BaseHttpRequest {
     }
     
     public PostRequest(String url, Json param, boolean isForm) {
-        this.url = url;
-        this.param = param;
+        super(url, param);
         this.isForm = isForm;
     }
     

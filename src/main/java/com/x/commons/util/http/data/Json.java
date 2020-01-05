@@ -3,6 +3,7 @@ package com.x.commons.util.http.data;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.bean.SB;
 import com.x.commons.util.json.Jsons;
+import com.x.commons.util.string.Strings;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -43,11 +44,12 @@ public class Json {
         }
         return sb.deleteLast().get();
     }
-
-    @Override
-    public String toString() {
+    
+    public String toJson(){
         return Jsons.to(json);
     }
+
+  
 
     /**
      * Json对象构建器
@@ -66,5 +68,10 @@ public class Json {
         }
 
     }
-
+    
+    @Override
+    public String toString() {
+        return Strings.defaultToString(this);
+    }
+    
 }

@@ -5,7 +5,7 @@ package com.x.commons.util.http.enums;
  * @Date 2019-11-17 10:12
  * @Author AD
  */
-public class HTTPKey {
+public class HttpKey {
 
     /**
      * 浏览器申明所接受的介质类型<br/>

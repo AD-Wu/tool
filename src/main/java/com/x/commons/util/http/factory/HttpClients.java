@@ -31,76 +31,136 @@ import java.net.UnknownHostException;
  * @Author AD
  * @Date 2019/11/18 9:45
  */
-public class HttpClientFactory {
-
+public final class HttpClients {
+    
     // -------------------------- 成员变量 --------------------------
-
-    private HttpClientBuilder builder;
-
+    
     // -------------------------- 构造方法 --------------------------
-
-    public HttpClientFactory() {
-        this.builder = new Builder().getHttpClientBuilder();
-    }
-
-    public HttpClientFactory(Builder builder) {
-        this.builder = builder.getHttpClientBuilder();
-    }
-
+    
+    private HttpClients() {}
+    
     // -------------------------- 成员方法 --------------------------
-
-    public HttpClient http() {
-        return builder.build();
+    
+    /**
+     * 获取默认的http请求客户端
+     *
+     * @return
+     */
+    public static HttpClient http() {
+        return getDefaultClient();
     }
-
-    public HttpClient https() {
+    
+    /**
+     * 获取自定义http请求客户端
+     *
+     * @param builder 自定义构建器：连接池、重试次数、代理
+     *
+     * @return
+     */
+    public static HttpClient http(Builder builder) {
+        return builder.getHttpClientBuilder().build();
+    }
+    
+    /**
+     * 获取默认的https请求客户端,SSL版本：SSLv3
+     *
+     * @return
+     */
+    public static HttpClient https() {
         return https(SSLVersion.SSLv3);
     }
-
-    public HttpClient https(SSLVersion version) {
+    
+    /**
+     * 获取指定SSL版本的https请求客户端
+     *
+     * @param version SSL版本
+     *
+     * @return
+     */
+    public static HttpClient https(SSLVersion version) {
         SSL ssl = new SSL(version);
         SSLConnectionSocketFactory factory = ssl.getSSLConnSocketFactory();
+        HttpClientBuilder builder = getDefaultBuilder();
         return builder.setSSLSocketFactory(factory).build();
     }
-
-    public HttpClient https(String keyStorePath) throws Exception {
-        return https(keyStorePath, "no-password");
+    
+    /**
+     * 获取指定SSL版本的https请求客户端
+     *
+     * @param version SSL版本
+     * @param builder 自定义构建器：连接池、重试次数、代理
+     *
+     * @return
+     */
+    public static HttpClient https(SSLVersion version, Builder builder) {
+        SSL ssl = new SSL(version);
+        SSLConnectionSocketFactory factory = ssl.getSSLConnSocketFactory();
+        HttpClientBuilder client = builder.getHttpClientBuilder();
+        return client.setSSLSocketFactory(factory).build();
     }
-
-    public HttpClient https(String keyStorePath, String keyStorepass) throws Exception {
+    
+    /**
+     * 获取指定指定证书的https请求客户端
+     *
+     * @param keyStorePath 证书路径
+     *
+     * @return
+     */
+    public static HttpClient https(String keyStorePath) throws Exception {
+        return https(keyStorePath, "no-password", new Builder());
+    }
+    
+    /**
+     * 获取指定指定证书的https请求客户端
+     *
+     * @param keyStorePath 证书路径
+     * @param builder      自定义构建器：连接池、重试次数、代理
+     *
+     * @return
+     */
+    public static HttpClient https(String keyStorePath, String keyStorepass, Builder builder) throws Exception {
         if (!Strings.isNull(keyStorePath)) {
             SSL ssl = new SSL(keyStorePath, keyStorepass);
             SSLConnectionSocketFactory factory = ssl.getSSLConnSocketFactory();
-            return builder.setSSLSocketFactory(factory).build();
+            HttpClientBuilder client = builder.getHttpClientBuilder();
+            return client.setSSLSocketFactory(factory).build();
         }
         throw new Exception("the keyStorePath is null");
     }
-
+    
+    private static HttpClientBuilder getDefaultBuilder() {
+        return new Builder().getHttpClientBuilder();
+    }
+    
+    private static HttpClient getDefaultClient() {
+        return getDefaultBuilder().build();
+    }
+    
     // -------------------------- 构建器 --------------------------
-
+    
     public static class Builder {
-
-        private HttpClientBuilder builder;
-
+        
+        private final HttpClientBuilder builder;
+        
         public Builder() {
             this.builder = HttpClientBuilder.create();
         }
-
+        
         public Builder retry(int tryCount) {
             builder.setRetryHandler(this.getRetryHandler(tryCount, false));
             return this;
         }
-
+        
         public Builder proxy(String ip, int port) {
             // 依次是代理地址，代理端口号，协议类型
             HttpHost proxy = new HttpHost(ip, port, "http");
             builder.setRoutePlanner(new DefaultProxyRoutePlanner(proxy));
             return this;
         }
-
+        
         public Builder pool(int maxTotal, int maxPerRoute) {
             Registry<ConnectionSocketFactory> registry = RegistryBuilder
-                    .<ConnectionSocketFactory> create()
+                    .<ConnectionSocketFactory>create()
                     .register("http", PlainConnectionSocketFactory.INSTANCE)
                     .register("https", new SSL(SSLVersion.SSLv3).getSSLConnSocketFactory()).build();
             // 设置连接池大小
@@ -111,21 +171,17 @@ public class HttpClientFactory {
             builder.setConnectionManager(connManager);
             return this;
         }
-
-        public HttpClientFactory build() {
-            return new HttpClientFactory(this);
-        }
-
+        
         private HttpClientBuilder getHttpClientBuilder() {
             return builder;
         }
-
+        
         // -------------------------- 私有方法 --------------------------
-
+        
         private HttpRequestRetryHandler getRetryHandler(int tryCount, boolean retryWhenIOInterrupted) {
-
+            
             return new HttpRequestRetryHandler() {
-
+                
                 @Override
                 public boolean retryRequest(final IOException e, final int executeCount, final HttpContext ctx) {
                     if (executeCount >= tryCount) {// 如果已经重试了n次，就放弃
@@ -149,7 +205,7 @@ public class HttpClientFactory {
                     if (e instanceof SSLException) {// SSL握手异常
                         return false;
                     }
-
+                    
                     HttpClientContext clientContext = HttpClientContext.adapt(ctx);
                     HttpRequest request = clientContext.getRequest();
                     // 如果请求是幂等的，就再次尝试
@@ -160,7 +216,7 @@ public class HttpClientFactory {
                 }
             };
         }
-
+        
     }
-
+    
 }

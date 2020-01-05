@@ -1,9 +1,6 @@
 package com.x.commons.util.http;
 
-import com.x.commons.util.http.core.DeleteRequest;
-import com.x.commons.util.http.core.GetRequest;
-import com.x.commons.util.http.core.PostRequest;
-import com.x.commons.util.http.core.PutRequest;
+import com.x.commons.util.http.core.*;
 import com.x.commons.util.http.data.HttpResult;
 import com.x.commons.util.http.data.Json;
 import com.x.commons.util.http.factory.HttpConfig;
@@ -55,6 +52,15 @@ public final class Https {
         return new PutRequest(url, param).send(config);
     }
     
+    public static HttpResult patch(String url, Json param) throws Exception {
+        HttpConfig config = HttpConfig.defaultConfig(isHttps(url));
+        return patch(url, param, config);
+    }
+    
+    public static HttpResult patch(String url, Json param, HttpConfig config) throws Exception {
+        return new PatchRequest(url, param).send(config);
+    }
+    
     public static HttpResult delete(String url, Json param) throws Exception {
         HttpConfig config = HttpConfig.defaultConfig(isHttps(url));
         return delete(url, param, config);
@@ -62,6 +68,33 @@ public final class Https {
     
     public static HttpResult delete(String url, Json param, HttpConfig config) throws Exception {
         return new DeleteRequest(url, param).send(config);
+    }
+    
+    public static HttpResult head(String url, Json param) throws Exception {
+        HttpConfig config = HttpConfig.defaultConfig(isHttps(url));
+        return head(url, param, config);
+    }
+    
+    public static HttpResult head(String url, Json param, HttpConfig config) throws Exception {
+        return new HeadRequest(url, param).send(config);
+    }
+    
+    public static HttpResult trace(String url, Json param) throws Exception {
+        HttpConfig config = HttpConfig.defaultConfig(isHttps(url));
+        return trace(url, param, config);
+    }
+    
+    public static HttpResult trace(String url, Json param, HttpConfig config) throws Exception {
+        return new TraceRequest(url, param).send(config);
+    }
+    
+    public static HttpResult options(String url, Json param) throws Exception {
+        HttpConfig config = HttpConfig.defaultConfig(isHttps(url));
+        return options(url, param, config);
+    }
+    
+    public static HttpResult options(String url, Json param, HttpConfig config) throws Exception {
+        return new OptionsRequest(url, param).send(config);
     }
     
     // ------------------------ 私有方法 ------------------------

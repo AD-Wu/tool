@@ -60,8 +60,9 @@ class HttpsTest {
     @Test
     void upload() throws Exception {
         String url = "http://localhost:8080/upload";
-        String[] paths = {"application.yml", "x-framework/x.yml"};
-        HttpResult upload = Https.upload(url, paths);
+        String[] paths = {"x-framework/parser.dtd", "x-framework/x.yml"};
+        Json put = new Json().put("a", "Sunday").put("b", 1);
+        HttpResult upload = Https.upload(url, paths,put);
         System.out.println(upload);
         String charset = upload.getCharset();
         charset = Strings.isNull(charset) ? Charset.UTF8 : charset;

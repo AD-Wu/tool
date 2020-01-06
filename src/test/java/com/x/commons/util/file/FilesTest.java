@@ -23,7 +23,7 @@ class FilesTest {
     void createFileAtResource(){
         // File file = Files.createFileAtResource("src.yml");
         // System.out.println(file.getName());
-        File f = Files.createFileAtResource("a/b/c", "folder.properties");
+        File f = Files.createFileAtResources("a/b/c", "folder.properties");
         System.out.println(f.getName());
     }
 }

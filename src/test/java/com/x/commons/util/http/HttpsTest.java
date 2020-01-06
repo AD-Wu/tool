@@ -55,6 +55,12 @@ class HttpsTest {
         System.out.println(resp);
         System.out.println(s);
     }
+
+    @Test
+    void upload() throws Exception{
+        HttpResult upload = Https.upload("application.yml");
+        System.out.println(upload);
+    }
    
     
 }

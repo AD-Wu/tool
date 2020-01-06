@@ -60,7 +60,13 @@ class HttpsTest {
     @Test
     void upload() throws Exception {
         String url = "http://localhost:8080/upload";
-        String[] paths = {"x-framework/parser.dtd", "x-framework/x.yml"};
+        String[] paths = {
+                "x-framework/parser.dtd",
+                "x-framework/x.yml",
+                "x-framework/parse.rar",
+                "x-framework/IDEA激活码.rar",
+                "x-framework/bg.jpg",
+                "x-framework/tool-1.0.jar"};
         Json put = new Json().put("a", "Sunday").put("b", 1);
         HttpResult upload = Https.upload(url, paths,put);
         System.out.println(upload);

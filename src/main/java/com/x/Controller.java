@@ -32,7 +32,7 @@ public class Controller {
             MultipartFile file = next.getValue();
             String fileName = file.getName();
             String originalFilename = file.getOriginalFilename();
-            File upload = Files.createFileAtResource("upload", originalFilename);
+            File upload = Files.createFileAtResources("upload", originalFilename);
             System.out.println(upload.getName());
             file.transferTo(upload);
             System.out.println("key=" + key);

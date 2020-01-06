@@ -152,8 +152,8 @@ public final class Files {
      * @param filename 文件名
      * @return 成功：File对象；失败：null
      */
-    public static File createFileAtResource(String filename) {
-        return createFileAtResource("", filename);
+    public static File createFileAtResources(String filename) {
+        return createFileAtResources("", filename);
     }
 
     /**
@@ -163,7 +163,7 @@ public final class Files {
      * @param filename 文件名
      * @return 成功：File对象；失败：null
      */
-    public static File createFileAtResource(String folder, String filename) {
+    public static File createFileAtResources(String folder, String filename) {
         String folderPath = fixPath(getResourcesPath() + folder, SP, true);
         return createFile(folderPath, filename);
     }

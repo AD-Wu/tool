@@ -550,8 +550,8 @@ public final class Files {
             return file;
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     /**

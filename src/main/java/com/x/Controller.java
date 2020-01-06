@@ -31,15 +31,13 @@ public class Controller {
             String key = next.getKey();
             MultipartFile file = next.getValue();
             String fileName = file.getName();
-            String folderPath = Files.getResourcesPath() + "upload";
-            boolean folder = Files.createFolder(folderPath);
-            Files.createFile(folderPath,"upload.yml","");
-            File upload = new File(folderPath + Files.SP + "upload.yml");
+            String originalFilename = file.getOriginalFilename();
+            File upload = Files.createFileAtResource("upload", originalFilename);
+            System.out.println(upload.getName());
             file.transferTo(upload);
             System.out.println("key=" + key);
             System.out.println("fileName=" + fileName);
-            System.out.println("path=" + folderPath);
-            System.out.println("create=" + folder);
+            System.out.println("originalFilename=" + originalFilename);
         }
         return LocalDateTime.now().toString();
     }

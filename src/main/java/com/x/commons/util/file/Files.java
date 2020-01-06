@@ -60,7 +60,7 @@ public final class Files {
         SB sb = New.sb();
         sb.append(getAppPath()).append("src").append(SP);
         sb.append("main").append(SP).append("resources");
-        return endWithSP ? sb.append("/").get() : sb.get();
+        return endWithSP ? sb.append(SP).get() : sb.get();
     }
     
     /**

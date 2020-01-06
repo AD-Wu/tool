@@ -13,7 +13,7 @@ import java.util.Map;
  * @Date 2019-11-16 20:42
  * @Author AD
  */
-public class Json {
+public class Json implements Iterable<Map.Entry<Object,Object>>{
 
     private Map<Object, Object> json;
 
@@ -21,7 +21,7 @@ public class Json {
         this.json = New.map();
     }
 
-    public Json(Map<Object, Object> map) {
+    public Json(Map map) {
         this.json = map;
     }
 
@@ -49,7 +49,11 @@ public class Json {
         return Jsons.to(json);
     }
 
-  
+    @Override
+    public Iterator<Map.Entry<Object, Object>> iterator() {
+        return json.entrySet().iterator();
+    }
+
 
     /**
      * Json对象构建器

@@ -1,6 +1,7 @@
 package com.x.commons.util.json;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 
@@ -53,6 +54,7 @@ public final class Jsons {
     }
 
     private static Gson gson() {
+        new GsonBuilder().disableHtmlEscaping().create();
         return new Gson();
     }
 

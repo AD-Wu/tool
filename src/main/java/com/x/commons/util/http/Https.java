@@ -1,22 +1,15 @@
 package com.x.commons.util.http;
 
+import com.x.commons.util.bean.New;
 import com.x.commons.util.file.Files;
 import com.x.commons.util.http.core.*;
 import com.x.commons.util.http.data.HttpResult;
 import com.x.commons.util.http.data.Json;
-import com.x.commons.util.http.factory.HttpClients;
 import com.x.commons.util.http.factory.HttpConfig;
-import com.x.commons.util.http.factory.HttpContexts;
 import com.x.commons.util.string.Strings;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * @Desc http工具类
@@ -109,26 +102,21 @@ public final class Https {
         return new OptionsRequest(url, param).send(config);
     }
 
-    public static HttpResult upload(String path) throws Exception {
-        File file = Files.getFile(path);
-        if (file == null || !file.isFile()) {
-            throw new Exception("file is null or file is a directory");
+    public static HttpResult upload(String url, String[] filePaths) throws Exception {
+        HttpConfig config = HttpConfig.defaultConfig(isHttps(url));
+        Map<String, File> files = New.map();
+        for (String path : filePaths) {
+            File file = Files.getFile(path);
+            if (file != null) {
+                files.put(file.getName(), file);
+            }
         }
-        FileBody body = new FileBody(file);
-        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-        HttpEntity entity = builder.addPart("AD-upload-" + file.getName(), body).build();
-        HttpPost post = new HttpPost("http://localhost:8080/upload");
-        post.setEntity(entity);
-        HttpClient client = HttpClients.http();
-        HttpResponse resp = null;
-        HttpResult result = null;
-        try {
-            resp = client.execute(post, HttpContexts.create());
-            result = new HttpResult(resp);
-        } finally {
-            ((CloseableHttpResponse) resp).close();
-        }
-        return result;
+        return upload(url, files, config);
+    }
+
+    public static HttpResult upload(String url, Map<String, File> files, HttpConfig config) throws Exception {
+        Json param = new Json(files);
+        return new FileUploadRequest(url, param).send(config);
     }
     // ------------------------ 私有方法 ------------------------
 

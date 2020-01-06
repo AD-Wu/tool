@@ -30,7 +30,7 @@ public class PostRequest extends BaseHttpRequest {
     @Override
     protected HttpRequestBase getRequest(HttpConfig config) throws Exception {
         HttpPost post = new HttpPost(url);
-        post.setEntity(getEntity(config));
+        post.setEntity(this.getEntity(config));
         return post;
     }
     

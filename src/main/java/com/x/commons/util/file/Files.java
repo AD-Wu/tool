@@ -4,7 +4,6 @@ import com.x.commons.encrypt.MD5;
 import com.x.commons.enums.Charsets;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.bean.SB;
-import com.x.commons.util.date.DateTimes;
 import com.x.commons.util.reflact.Loader;
 import com.x.commons.util.string.Strings;
 
@@ -208,14 +207,11 @@ public final class Files {
      */
     public static boolean createFile(String folder, String filename, String content, Charset charset) {
         if (createFolder(folder)) {
-            String path = endSP(folder) + filename;
+            String fixFolder = endSP(folder);
+            String path = fixFolder + filename;
             try {
                 File file = new File(path);
                 if (!file.exists()) {
-                    file.createNewFile();
-                } else {
-                    path = path + DateTimes.now();
-                    file = new File(path);
                     file.createNewFile();
                 }
                 try (PrintWriter writer = new PrintWriter(file, charset.name());) {

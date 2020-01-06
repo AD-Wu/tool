@@ -84,7 +84,7 @@ public final class HttpConfig {
             this.client = client;
             this.headers = HeaderBuilder.defaultBuild();
             this.context = HttpContexts.create();
-            this.defaultTimeout = 30;
+            this.defaultTimeout = 60;
             this.timeout(defaultTimeout);
             this.inEncoding = Charset.UTF8;
             this.outEncoding = Charset.UTF8;

@@ -2,6 +2,7 @@ package com.x;
 
 import com.x.commons.util.file.Files;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -22,7 +23,11 @@ public class Controller {
 
 
     @RequestMapping("upload")
-    public Object upload(MultipartHttpServletRequest request) throws IOException {
+    public Object upload(MultipartHttpServletRequest request,
+                         @RequestParam(value = "a", required = false) String aText,
+                         @RequestParam(value = "b", required = false) int b) throws IOException {
+        System.out.println("a="+aText);
+        System.out.println("b="+b);
         String className = request.getClass().getName();
         System.out.println(className);
         Iterator<Map.Entry<String, MultipartFile>> it = request.getFileMap().entrySet().iterator();

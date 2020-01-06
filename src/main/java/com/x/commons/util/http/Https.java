@@ -103,7 +103,12 @@ public final class Https {
     }
 
     public static HttpResult upload(String url, String[] filePaths) throws Exception {
-        HttpConfig config = HttpConfig.defaultConfig(isHttps(url));
+        return upload(url, filePaths, null);
+    }
+
+    public static HttpResult upload(String url,
+                                    String[] filePaths,
+                                    Json param) throws Exception {
         Map<String, File> files = New.map();
         for (String path : filePaths) {
             File file = Files.getFile(path);
@@ -111,13 +116,25 @@ public final class Https {
                 files.put(file.getName(), file);
             }
         }
-        return upload(url, files, config);
+        return upload(url, files, param);
     }
 
-    public static HttpResult upload(String url, Map<String, File> files, HttpConfig config) throws Exception {
-        Json param = new Json(files);
+    public static HttpResult upload(String url,
+                                    Map<String, File> files,
+                                    Json otherParam) throws Exception {
+        HttpConfig config = HttpConfig.defaultConfig(isHttps(url));
+        return upload(url, files, otherParam, config);
+    }
+
+    public static HttpResult upload(String url,
+                                    Map<String, File> files,
+                                    Json otherParam,
+                                    HttpConfig config) throws Exception {
+        Json param = new Json(files).putAll(otherParam);
         return new FileUploadRequest(url, param).send(config);
     }
+
+
     // ------------------------ 私有方法 ------------------------
 
     private static boolean isHttps(String url) {

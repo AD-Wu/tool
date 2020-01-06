@@ -13,7 +13,7 @@ import java.util.Map;
  * @Date 2019-11-16 20:42
  * @Author AD
  */
-public class Json implements Iterable<Map.Entry<Object,Object>>{
+public class Json implements Iterable<Map.Entry<Object, Object>> {
 
     private Map<Object, Object> json;
 
@@ -25,18 +25,35 @@ public class Json implements Iterable<Map.Entry<Object,Object>>{
         this.json = map;
     }
 
-    public void put(Object key, Object value) {
+    public Json put(Object key, Object value) {
         json.put(key, value);
+        return this;
+    }
+
+    public Json putAll(Map param) {
+        if (param == null) {
+            return this;
+        }
+        this.json.putAll(param);
+        return this;
+    }
+
+    public Json putAll(Json param) {
+        return putAll(param.toMap());
+    }
+
+    public Map<Object, Object> toMap() {
+        return this.json;
     }
 
     public Object get(Object key) {
         return json.get(key);
     }
 
-    public String toKeyValue(){
+    public String toKeyValue() {
         Iterator<Map.Entry<Object, Object>> it = json.entrySet().iterator();
         SB sb = New.sb();
-        while (it.hasNext()){
+        while (it.hasNext()) {
             Map.Entry<Object, Object> next = it.next();
             String key = String.valueOf(next.getKey());
             String value = String.valueOf(next.getValue());
@@ -44,8 +61,8 @@ public class Json implements Iterable<Map.Entry<Object,Object>>{
         }
         return sb.deleteLast().get();
     }
-    
-    public String toJson(){
+
+    public String toJson() {
         return Jsons.to(json);
     }
 
@@ -72,10 +89,10 @@ public class Json implements Iterable<Map.Entry<Object,Object>>{
         }
 
     }
-    
+
     @Override
     public String toString() {
         return Strings.defaultToString(this);
     }
-    
+
 }

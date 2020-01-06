@@ -9,6 +9,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -26,20 +27,23 @@ public class FileUploadRequest extends BaseHttpRequest {
     @Override
     protected HttpRequestBase getRequest(HttpConfig config) throws Exception {
         HttpPost post = new HttpPost(url);
-        post.setEntity(this.getEntity());
+        post.setEntity(this.getEntity(config));
         return post;
     }
 
-    private HttpEntity getEntity() {
+    private HttpEntity getEntity(HttpConfig config) {
         Iterator<Map.Entry<Object, Object>> it = param.iterator();
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.setCharset(Charset.forName(config.getInEncoding()));
         while (it.hasNext()) {
             Map.Entry<Object, Object> next = it.next();
-            String fileKey = String.valueOf(next.getKey());
+            String key = String.valueOf(next.getKey());
             Object value = next.getValue();
             if (value instanceof File) {
                 FileBody file = new FileBody((File) value);
-                builder.addPart(fileKey, file);
+                builder.addPart(key, file);
+            } else {
+                builder.addTextBody(key, String.valueOf(value));
             }
         }
         return builder.build();

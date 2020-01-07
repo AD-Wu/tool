@@ -4,8 +4,6 @@ import com.x.commons.timming.Timer;
 import com.x.commons.util.file.Files;
 import com.x.commons.util.reflact.Loader;
 
-import java.io.File;
-import java.net.URL;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,29 +15,29 @@ import static com.sun.nio.file.SensitivityWatchEventModifier.HIGH;
 import static java.nio.file.StandardWatchEventKinds.*;
 
 /**
- * @Desc TODO
+ * @Desc 监测文件夹下某个文件（包括文件夹）的变化，不能递归监测，只能监测一级
  * @Date 2019-10-22 22:35
  * @Author AD
  */
 public final class FolderWatcher implements IWatcher<FileWatched> {
-    
+
     private static final ClassLoader LOADER = Loader.get();
-    
+
     private WatchService watcher;
-    
+
     private Map<String, FileWatched> watchedMap;
-    
+
     /**
      * 间隔周期
      */
     private int period;
-    
+
     private TimeUnit timeUnit;
-    
+
     private String folderPath;
-    
+
     private Path folder;
-    
+
     public FolderWatcher(Builder builder) throws Exception {
         this.watcher = FileSystems.getDefault().newWatchService();
         this.watchedMap = new ConcurrentHashMap(10);
@@ -49,12 +47,11 @@ public final class FolderWatcher implements IWatcher<FileWatched> {
         this.period = 60;// 默认一分钟监听一次
         this.timeUnit = TimeUnit.SECONDS;
     }
-    
+
     /**
      * 增加监测文件
      *
      * @param watched 被监测的文件名
-     *
      * @return
      */
     @Override
@@ -62,12 +59,11 @@ public final class FolderWatcher implements IWatcher<FileWatched> {
         watchedMap.put(watched.getFilename(), watched);
         return this;
     }
-    
+
     /**
      * 删除监测文件
      *
      * @param watched 被删除的文件对象
-     *
      * @return
      */
     @Override
@@ -75,24 +71,22 @@ public final class FolderWatcher implements IWatcher<FileWatched> {
         watchedMap.remove(watched.getFilename());
         return this;
     }
-    
+
     /**
      * 设置监测间隔，默认单位秒
      *
      * @param period
-     *
      * @return
      */
     public FolderWatcher setPeriod(int period) {
         this.period = period;
         return this;
     }
-    
+
     /**
      * 设置监测间隔
      *
      * @param period
-     *
      * @return
      */
     public FolderWatcher setPeriod(int period, TimeUnit timeUnit) {
@@ -100,8 +94,9 @@ public final class FolderWatcher implements IWatcher<FileWatched> {
         this.timeUnit = timeUnit;
         return this;
     }
-    
+
     public void start() {
+        // 定时器，内部有线程池
         Timer timer = Timer.get();
         timer.add(() -> {
             try {
@@ -115,9 +110,8 @@ public final class FolderWatcher implements IWatcher<FileWatched> {
                     WatchEvent.Kind kind = event.kind();// modify、create、delete
                     FileWatched watched = watchedMap.get(filename);
                     if (watched != null) {
-                        String path = folderPath + File.separator + filename;
-                        URL url = LOADER.getResource(path);
-                        watched.change(new File(url.toURI()));
+                        String path = Files.fixPath(folderPath) + filename;
+                        watched.change(Files.getFile(path));
                     }
                 }
                 /**
@@ -136,56 +130,56 @@ public final class FolderWatcher implements IWatcher<FileWatched> {
                 e.printStackTrace();
             }
         }, period, timeUnit);
-        
+
     }
-    
+
     public static class Builder {
-        
+
         /**
          * 所监听的文件夹路径，必须是文件夹
          */
         private final String folderPath;
-        
+
         /**
          * 监听事件集合
          */
         private List<WatchEvent.Kind> events;
-        
+
         public Builder(String folderPath) throws Exception {
             if (!Files.getFile(folderPath).isDirectory()) {
                 throw new Exception(folderPath + " is not a directory");
             }
             this.folderPath = folderPath;
             this.events = new ArrayList<>(5);
-            
+
         }
-        
+
         WatchEvent.Kind[] getEvents() {
             return events.toArray(new WatchEvent.Kind[events.size()]);
         }
-        
+
         // 监听修改
         Builder modify() {
             events.add(ENTRY_MODIFY);
             return this;
         }
-        
+
         // 监听创建
         Builder create() {
             events.add(ENTRY_CREATE);
             return this;
         }
-        
+
         // 监听删除
         Builder delete() {
             events.add(ENTRY_DELETE);
             return this;
         }
-        
+
         FolderWatcher build() throws Exception {
             return new FolderWatcher(this);
         }
-        
+
     }
-    
+
 }

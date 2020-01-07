@@ -1,5 +1,7 @@
 package com.x.commons.util.file.monitor;
 
+import com.x.commons.util.file.Files;
+
 import java.io.File;
 
 /**
@@ -10,11 +12,24 @@ import java.io.File;
 public class TestFolderWatcher {
 
     public static void main(String[] args) throws Exception {
-        FolderWatcher watcher = new FolderWatcher.Builder("x-framework/config").modify().build();
+        FolderWatcher watcher =
+                new FolderWatcher.Builder(Files.getResourcesPath()).modify().build();
 
         watcher.setPeriod(13);
 
         watcher.addWatched(new FileWatched("value.properties") {
+
+            @Override
+            public void change(File file) {
+                String name = file.getName();
+                String path = file.getPath();
+                System.out.println(name);
+                System.out.println(path);
+                boolean b = file.canRead();
+            }
+        });
+
+        watcher.addWatched(new FileWatched("application.yml") {
             @Override
             public void change(File file) {
                 String name = file.getName();
@@ -29,5 +44,7 @@ public class TestFolderWatcher {
 
         System.out.println("不阻塞");
     }
+
+
 
 }

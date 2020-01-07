@@ -74,9 +74,69 @@ public final class Files {
     }
 
     /**
-     * 获取当前App路径，默认有文件分隔符结尾
+     * 获取项目的根路径，如：E:\DevKit\tool\target\classes
      *
      * @return
+     */
+    public static String getRootPath() {
+        return getRootPath(true);
+    }
+
+    /**
+     * 获取项目的根路径，如：E:\DevKit\tool\target\classes
+     *
+     * @param endWithSP 是否以文件分隔符结尾
+     * @return
+     */
+    public static String getRootPath(boolean endWithSP) {
+        // path = "/E:/DevKit/tool/target/classes/"
+        String path = Files.class.getResource("/").getPath();
+        File file = new File(path);
+        // E:\DevKit\tool\target\classes
+        String absPath = file.getAbsolutePath();
+        return endWithSP ? absPath + SP : absPath;
+    }
+
+    /**
+     * 获取某个类所在的绝对路径
+     *
+     * @param clazz 指定类
+     * @return
+     */
+    public static String getCurrentClassPath(Class<?> clazz) {
+        return getCurrentClassPath(clazz, true);
+    }
+
+    /**
+     * 获取某个类所在的绝对路径
+     *
+     * @param clazz     指定类
+     * @param endWithSP 是否以文件分隔符结尾
+     * @return
+     */
+    public static String getCurrentClassPath(Class<?> clazz, boolean endWithSP) {
+        // /E:/DevKit/tool/target/classes/com/x/commons/util/file/
+        String path = clazz.getResource("").getPath();
+        File file = new File(path);
+        // E:\\DevKit\\tool\\target\\classes\\com\\x\\commons\\util\\file
+        String absPath = file.getAbsolutePath();
+        return endWithSP ? absPath + SP : absPath;
+    }
+
+    /**
+     * 获取所有jar包的路径
+     *
+     * @return
+     */
+    public static String[] getJarsPath() {
+        String jarsPath = System.getProperty("java.class.path");
+        return jarsPath.split(";");
+    }
+
+    /**
+     * 获取当前应用路径，默认有文件分隔符结尾
+     *
+     * @return 项目根路径，如：E:\DevKit\tool
      */
     public static String getAppPath() {
         return getAppPath(true);
@@ -117,6 +177,27 @@ public final class Files {
                 }
             }
         }
+    }
+
+    /**
+     * 根据文件系统分隔符修正路径，并以分隔符结尾
+     *
+     * @param path 路径
+     * @return
+     */
+    public static String fixPath(String path) {
+        return fixPath(path, true);
+    }
+
+    /**
+     * 根据文件系统分隔符修正路径
+     *
+     * @param path      路径
+     * @param endWithSP 是否以文件系统的分隔符结尾
+     * @return
+     */
+    public static String fixPath(String path, boolean endWithSP) {
+        return fixPath(path, SP, endWithSP);
     }
 
     public static String fixPath(String path, String fileSeparator, boolean endWithSP) {
@@ -532,7 +613,11 @@ public final class Files {
      */
     public static Path getPath(String path) throws Exception {
         URL url = LOADER.getResource(path);
-        return Paths.get(url.toURI());
+        if(url!=null){
+            return Paths.get(url.toURI());
+        }else{
+           return  Paths.get(path);
+        }
     }
 
     /**
@@ -546,8 +631,12 @@ public final class Files {
     public static File getFile(String path) {
         URL url = LOADER.getResource(path);
         try {
-            File file = new File(url.toURI());
-            return file;
+            if(url!=null){
+                File file = new File(url.toURI());
+                return file;
+            }else{
+                return new File(path);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return null;

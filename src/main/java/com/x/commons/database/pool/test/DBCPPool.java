@@ -21,7 +21,7 @@ import java.sql.SQLException;
  * @Date 2019-11-08 17:31
  * @Author AD
  */
-public class DBCPPool {
+class DBCPPool {
     
     private static final String POOL_DRIVER_URL = "jdbc:apache:commons:dbcp:";
     

@@ -426,15 +426,17 @@ public final class Strings {
         if (totalLength <= 0) {
             return "";
         }
-        SB sb = New.sb(prefix).append(fix);
+        SB sb = New.sb(fix);
         int len = sb.length();
         if (len >= totalLength) {
             return sb.sub(len - totalLength);
         } else {
-            while (sb.length() < totalLength) {
-                sb.preAppend("0");
+            int prefixLen = prefix.length();
+            while (len < totalLength) {
+                sb.preAppend(prefix);
+                len = len + prefixLen;
             }
-            return sb.get();
+            return sb.sub(len - totalLength);
         }
     }
     

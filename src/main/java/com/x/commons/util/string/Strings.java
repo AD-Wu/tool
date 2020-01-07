@@ -112,8 +112,6 @@ public final class Strings {
     
     public static Double toDouble(String value) { return Double.valueOf(value);}
     
-    
-    
     /**
      * 比较两个字符串是否相等
      *
@@ -389,7 +387,7 @@ public final class Strings {
      */
     public static String replace(String pattern, Object... params) {
         if (isNull(pattern)) return "";
-        return MessageFormat.format(pattern, params);
+        return MessageFormat.format(pattern, toStrings(params));
     }
     
     /**
@@ -795,6 +793,17 @@ public final class Strings {
     private static char[] toUpperArray(String character) {
         
         return character.toUpperCase().toCharArray();
+    }
+    
+    private static String[] toStrings(Object... os) {
+        if (XArrays.isEmpty(os)) {
+            return new String[0];
+        }
+        String[] ss = new String[os.length];
+        for (int i = 0, L = os.length; i < L; i++) {
+            ss[i] = String.valueOf(os[i]);
+        }
+        return ss;
     }
     
 }

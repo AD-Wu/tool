@@ -22,7 +22,7 @@ public enum DB {
         
         @Override
         public String driver() {
-            return "com.mysql.jdbc.Driver";
+            return "com.mysql.cj.jdbc.Driver";
         }
     },
     ORACLE {

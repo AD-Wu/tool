@@ -13,20 +13,35 @@ import java.sql.Connection;
  * @Date：2020/1/7 18:03
  */
 public class PoolTest {
+    
     public static void main(String[] args) throws Exception {
         String url = DB.MYSQL.defaultURL("springboot");
         String user = "root";
         String pwd = "123456";
         String type = "mysql";
-        String poolName = "test";
+        String poolName = "ADPool";
+        
         PoolConfig config = new PoolConfig();
+        
         config.setUrl(url);
         config.setUser(user);
-        config.setPwd(pwd);
+        config.setPassword(pwd);
         config.setType(type);
         config.setPoolName(poolName);
+        
         Pool pool = Pools.start(config);
-        Connection conn = pool.getConnection();
-        conn.close();
+        Connection conn = null;
+        Connection connection = null;
+        try {
+            conn = pool.getConnection();
+            String status = pool.getStatus();
+            System.out.println(status);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            conn.close();
+        }
+        
     }
+    
 }

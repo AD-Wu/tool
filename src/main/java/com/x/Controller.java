@@ -22,7 +22,7 @@ import java.util.Map;
 public class Controller {
 
 
-    @RequestMapping("upload")
+    @RequestMapping(value = "upload")
     public Object upload(MultipartHttpServletRequest request,
                          @RequestParam(value = "a", required = false) String aText,
                          @RequestParam(value = "b", required = false) int b) throws IOException {

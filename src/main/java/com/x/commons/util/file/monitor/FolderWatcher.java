@@ -23,29 +23,32 @@ public final class FolderWatcher implements IWatcher<FileWatched> {
 
     private static final ClassLoader LOADER = Loader.get();
 
-    private WatchService watcher;
+    private final WatchService watcher;
 
-    private Map<String, FileWatched> watchedMap;
+    private final Map<String, FileWatched> watchedMap;
 
-    /**
-     * 间隔周期
-     */
     private int period;
 
     private TimeUnit timeUnit;
 
-    private String folderPath;
+    private final String folderPath;
 
-    private Path folder;
+    public static FolderWatcher getModifyWatcher(String folderPath) throws Exception {
+        return getModifyWatcher(folderPath, 60);
+    }
+
+    public static FolderWatcher getModifyWatcher(String folderPath, int period) throws Exception {
+        return new Builder(folderPath).period(period).modify().build();
+    }
 
     public FolderWatcher(Builder builder) throws Exception {
         this.watcher = FileSystems.getDefault().newWatchService();
         this.watchedMap = new ConcurrentHashMap(10);
         this.folderPath = builder.folderPath;
-        this.folder = Files.getPath(folderPath);
-        this.folder.register(watcher, builder.getEvents(), HIGH);
-        this.period = 60;// 默认一分钟监听一次
-        this.timeUnit = TimeUnit.SECONDS;
+        Path folder = Files.getPath(folderPath);
+        folder.register(watcher, builder.getEvents(), HIGH);
+        this.period = builder.period;// 默认一分钟监听一次
+        this.timeUnit = builder.timeUnit;// 默认秒
     }
 
     /**
@@ -136,6 +139,16 @@ public final class FolderWatcher implements IWatcher<FileWatched> {
     public static class Builder {
 
         /**
+         * 监听间隔
+         */
+        private int period = 60;
+
+        /**
+         * 时间单位
+         */
+        private TimeUnit timeUnit = TimeUnit.SECONDS;
+
+        /**
          * 所监听的文件夹路径，必须是文件夹
          */
         private final String folderPath;
@@ -143,7 +156,7 @@ public final class FolderWatcher implements IWatcher<FileWatched> {
         /**
          * 监听事件集合
          */
-        private List<WatchEvent.Kind> events;
+        private final List<WatchEvent.Kind> events;
 
         public Builder(String folderPath) throws Exception {
             if (!Files.getFile(folderPath).isDirectory()) {
@@ -151,32 +164,43 @@ public final class FolderWatcher implements IWatcher<FileWatched> {
             }
             this.folderPath = folderPath;
             this.events = new ArrayList<>(5);
-
         }
 
         WatchEvent.Kind[] getEvents() {
             return events.toArray(new WatchEvent.Kind[events.size()]);
         }
 
+        public Builder period(int period) {
+            if (period > 0) {
+                this.period = period;
+            }
+            return this;
+        }
+
+        public Builder timeUnit(TimeUnit unit) {
+            this.timeUnit = unit;
+            return this;
+        }
+
         // 监听修改
-        Builder modify() {
+        public Builder modify() {
             events.add(ENTRY_MODIFY);
             return this;
         }
 
         // 监听创建
-        Builder create() {
+        public Builder create() {
             events.add(ENTRY_CREATE);
             return this;
         }
 
         // 监听删除
-        Builder delete() {
+        public Builder delete() {
             events.add(ENTRY_DELETE);
             return this;
         }
 
-        FolderWatcher build() throws Exception {
+        public FolderWatcher build() throws Exception {
             return new FolderWatcher(this);
         }
 

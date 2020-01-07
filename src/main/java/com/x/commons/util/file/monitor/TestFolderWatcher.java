@@ -5,30 +5,14 @@ import com.x.commons.util.file.Files;
 import java.io.File;
 
 /**
- * @Desc TODO 文件监测测试，主要用于配置文件的监测
+ * @Desc 文件监测测试，主要用于配置文件的监测
  * @Date 2019-10-26 11:56
  * @Author AD
  */
 public class TestFolderWatcher {
 
     public static void main(String[] args) throws Exception {
-        FolderWatcher watcher =
-                new FolderWatcher.Builder(Files.getResourcesPath()).modify().build();
-
-        watcher.setPeriod(13);
-
-        watcher.addWatched(new FileWatched("value.properties") {
-
-            @Override
-            public void change(File file) {
-                String name = file.getName();
-                String path = file.getPath();
-                System.out.println(name);
-                System.out.println(path);
-                boolean b = file.canRead();
-            }
-        });
-
+        FolderWatcher watcher = FolderWatcher.getModifyWatcher(Files.getResourcesPath(), 10);
         watcher.addWatched(new FileWatched("application.yml") {
             @Override
             public void change(File file) {
@@ -39,12 +23,26 @@ public class TestFolderWatcher {
                 boolean b = file.canRead();
             }
         });
-
         watcher.start();
+
+        FolderWatcher modify = FolderWatcher.getModifyWatcher(
+                Files.getResourcesPath() + "x-framework/config", 5);
+        modify.addWatched(new FileWatched("value.properties") {
+            @Override
+            public void change(File file) {
+                String name = file.getName();
+                String path = file.getPath();
+                System.out.println(name);
+                System.out.println(path);
+                boolean b = file.canRead();
+            }
+        });
+        modify.start();
+
+
 
         System.out.println("不阻塞");
     }
-
 
 
 }

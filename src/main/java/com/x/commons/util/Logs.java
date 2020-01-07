@@ -10,9 +10,8 @@ import org.slf4j.LoggerFactory;
  */
 public class Logs {
 
-    public static Logger of(Class<?> clazz){
+    public static Logger of(Class<?> clazz) {
         return LoggerFactory.getLogger(clazz);
     }
-
 
 }

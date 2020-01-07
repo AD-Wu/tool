@@ -192,51 +192,23 @@ public final class Systems {
     }
     
     public static void main(String[] args) {
-        // String s = runtimeInfo();
-        // System.getOutputStream.println(s);
-        //
-        // String system = getSystem();
-        // System.getOutputStream.println(system);
-        
-        // String biosID = getBiosID();
-        // System.getOutputStream.println(biosID);
-        //
-        // String cpuID = getCpuID();
-        // System.getOutputStream.println(cpuID);
-        //
-        // String baseBoardID = getBaseBoardID();
-        // System.getOutputStream.println(baseBoardID);
-        //
-        // String netCard = getNetCard();
-        // System.getOutputStream.println(netCard);
-        
+
         Properties prop = System.getProperties();
         Set<String> names = prop.stringPropertyNames();
         int i = 0;
         SB sb = New.sb();
         for (String name : names) {
             String property = System.getProperty(name);
-            if (property.length() > 50) {
-                continue;
-            }
-            System.out.println(++i + ":" + name + " = " + property);
-            if (i % 3 == 0) {
-                sb.append(name + "=" + property + "\n");
-            } else {
-                if(i%2==0){
-                    sb.append("  " + name + "=" + property + "\n");
-                }else{
-                    sb.append("    " + name + "=" + property + "\n");
-                }
-                
-            }
-            
+            // if (property.length() > 50) {
+            //     continue;
+            // }
+            sb.append(++i + ":" + name + " = " + property).append("\n");
         }
         
         String srcPath = Files.getResourcesPath();
         System.out.println(srcPath);
         Files.createFile(srcPath, "application.properties", sb.toString());
-        
+        System.out.println(getSystem());
     }
     
 }

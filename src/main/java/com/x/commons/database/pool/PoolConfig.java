@@ -24,7 +24,7 @@ public class PoolConfig {
     @Doc("驱动类名")
     private String driver;
 
-    @Doc("连接池类型")
+    @Doc("连接类型,如：Mysql")
     private String type;
 
     @Doc("连接池名称")
@@ -65,7 +65,7 @@ public class PoolConfig {
 
     @Doc("归还连接时检测连接是否有效")
     private boolean testOnReturn = false;
-    
+
     @Doc("当发现池中的可用实例已经用光时，需要做的动作")
     private boolean exhaustedAction = true;
 
@@ -74,6 +74,7 @@ public class PoolConfig {
 
     // ---------------------- 构造方法 ----------------------
 
+    public PoolConfig() {}
 
     // ---------------------- 成员方法 ----------------------
 
@@ -342,15 +343,15 @@ public class PoolConfig {
     public void setPoolPreparedStatements(boolean poolPreparedStatements) {
         this.poolPreparedStatements = poolPreparedStatements;
     }
-    
-    
+
+
     /**
      * 获取 当发现池中的可用实例已经用光时，需要做的动作
      */
     public boolean isExhaustedAction() {
         return this.exhaustedAction;
     }
-    
+
     /**
      * 设置 当发现池中的可用实例已经用光时，需要做的动作
      */
@@ -362,6 +363,6 @@ public class PoolConfig {
     public String toString() {
         return Strings.defaultToString(this);
     }
-    
-    
+
+
 }

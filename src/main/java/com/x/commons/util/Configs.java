@@ -32,12 +32,17 @@ public final class Configs {
         return PROPS.get(key);
     }
     
-    public static <T> T get(String key, Class<T> clazz) throws Exception {
+    public static <T> T get(String key, Class<T> returnType) {
         String s = PROPS.get(key);
-        IParser<T, Object> parser = Parsers.getParser(clazz);
+        IParser<T, Object> parser = Parsers.getParser(returnType);
         if (parser != null) {
-            T parse = parser.parse(s);
-            return parse;
+            T parse = null;
+            try {
+                parse = parser.parse(s);
+                return parse;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }

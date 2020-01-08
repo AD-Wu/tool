@@ -60,8 +60,9 @@ public class RedisPool {
         }
     }
     
-    public Jedis getRedis() {
-        return pool.getResource();
+    public Redis getRedis() {
+        Jedis jedis = pool.getResource();
+        return new Redis(jedis);
     }
     
     public String getName() {return this.name;}

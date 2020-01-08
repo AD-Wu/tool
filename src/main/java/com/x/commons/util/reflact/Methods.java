@@ -32,7 +32,6 @@ public final class Methods {
     public static Method getMethod(Class<?> target, String methodName) {
         final Method[] ms = target.getDeclaredMethods();
         return Stream.of(ms).filter(m -> m.getName().equals(methodName)).findFirst().get();
-
     }
 
 }

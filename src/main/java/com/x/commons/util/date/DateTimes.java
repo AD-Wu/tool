@@ -21,7 +21,7 @@ public final class DateTimes {
     public static final DateTimeFormatter DEFAULT = DateTimeFormatter.ofPattern(
             "yyyy-MM-dd HH:mm:ss.SSS");
 
-    public static final DateTimeFormatter NO_SIGN = DateTimeFormatter.ofPattern(
+    public static final DateTimeFormatter NO_MARK = DateTimeFormatter.ofPattern(
             "yyyyMMddHHmmssSSS");
 
     // ------------------------ 构造方法 ------------------------

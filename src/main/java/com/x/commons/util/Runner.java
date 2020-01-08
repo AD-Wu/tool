@@ -12,12 +12,22 @@ public final class Runner {
 
     private static final int threadNum = 3;
 
-    private static final ExecutorService RUNNER = Executors.newFixedThreadPool(threadNum);
+    private static ExecutorService runner;
 
     private Runner() {}
 
     public static void add(Runnable runnable) {
-        RUNNER.submit(runnable);
+        if (runner != null) {
+            runner.submit(runnable);
+        } else {
+            synchronized (Runner.class) {
+                if (runner == null) {
+                    runner = Executors.newFixedThreadPool(threadNum);
+                }
+                runner.submit(runnable);
+            }
+        }
+
     }
 
 

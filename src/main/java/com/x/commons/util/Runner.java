@@ -1,7 +1,8 @@
 package com.x.commons.util;
 
+import com.x.commons.util.bean.New;
+
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @Desc
@@ -22,7 +23,7 @@ public final class Runner {
         } else {
             synchronized (Runner.class) {
                 if (runner == null) {
-                    runner = Executors.newFixedThreadPool(threadNum);
+                    runner = New.threadPool(threadNum);
                 }
                 runner.submit(runnable);
             }

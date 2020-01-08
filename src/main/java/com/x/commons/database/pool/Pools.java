@@ -3,6 +3,7 @@ package com.x.commons.database.pool;
 import com.x.commons.local.Locals;
 import com.x.commons.util.bean.New;
 
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -28,24 +29,22 @@ public final class Pools {
     }
     
     public static void stop(String name) throws Exception {
-        Pool pool = (Pool) POOLS.remove(name);
+        Pool pool = POOLS.remove(name);
         if (pool != null) {
             pool.stop();
         }
     }
     
     public static void stopAll() {
-        Pool[] pools = POOLS.values().toArray(new Pool[POOLS.size()]);
-        Pools.POOLS.clear();
-        
-        for (int i = 0, L = pools.length; i < L; ++i) {
-            Pool pool = pools[i];
+        Iterator<Pool> it = POOLS.values().iterator();
+        while (it.hasNext()){
             try {
-                pool.stop();
+                it.next().stop();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        POOLS.clear();
         
     }
     

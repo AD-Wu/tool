@@ -3,12 +3,14 @@ package com.x.commons.util.bean;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 /**
  * @Desc TODO
  * @Date 2019-10-23 21:56
  * @Author AD
  */
+@Component
 public class XBeans implements ApplicationContextAware {
 
     private static ApplicationContext context;

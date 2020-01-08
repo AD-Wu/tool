@@ -42,32 +42,29 @@ public class Pool {
                                 case "MYSQL":
                                     this.type = DatabaseType.MYSQL;
                                     driver = DB.MYSQL.driver();
-                                    config.setDriver(driver);
                                     break;
                                 case "ORACLE":
                                     this.type = DatabaseType.ORACLE;
                                     driver = DB.ORACLE.driver();
-                                    config.setDriver(driver);
                                     break;
                                 case "SQLSERVER":
                                     this.type = DatabaseType.SQLSERVER;
                                     driver = DB.SQLSERVER.driver();
-                                    config.setDriver(driver);
                                     break;
                                 case "DERBY":
                                     this.type = DatabaseType.DERBY;
                                     driver = DB.DERBY.driver();
-                                    config.setDriver(driver);
+
                                     break;
                                 case "OTHERS":
                                     this.type = DatabaseType.OTHERS;
                                     driver = DB.OTHERS.driver();
-                                    config.setDriver(driver);
                                     break;
                                 default:
                                     throw new IllegalArgumentException(
                                             Locals.text("commons.pool.type.invalid", type));
                             }
+                            config.setDriver(driver);
                         } else {
                             driver = config.getDriver();
                         }

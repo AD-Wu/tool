@@ -1,40 +1,42 @@
 package com.x.commons.enums;
 
-import com.ax.commons.utils.ConvertHelper;
-
-import java.util.Date;
-
 /**
  * @Desc TODO
  * @Date 2019-12-01 17:50
  * @Author AD
  */
-public enum Formatter {
+public class Formatter {
     
-    Total("yyyy-MM-dd HH:mm:ss.SSS"),
-    TotalSlash("yyyy/MM/dd HH:mm:ss.SSS"),
-    TotalAllSlash("yyyy/MM/dd/HH/mm/ss/SSS"),
-    TotalSlashNoMillSeconds("yyyy/MM/dd HH:mm:ss"),
-    TotalAllSlashNoMillSeconds("yyyy/MM/dd/HH/mm/ss"),
-    NoMillSeconds("yyyy-MM-dd HH:mm:ss"),
-    NoSplit("yyyyMMddHHmmssSSS"),
-    NoMillSecondsSplit("yyyyMMddHHmmss"),
+    /**
+     * yyyy-MM-dd HH:mm:ss.SSS
+     */
+    public static final String TOTAL = "yyyy-MM-dd HH:mm:ss.SSS";
     
-    Date_Total("yyyy-MM-dd"),
-    Date_Total_Slash("yyyy/MM/dd"),
-    Date_Total_No_Split("yyyyMMdd");
+    /**
+     * yyyy-MM-dd HH:mm:ss
+     */
+    public static final String TOTAL_NO_MILL_SECONDS = "yyyy-MM-dd HH:mm:ss";
     
-    private final String pattern;
+    /**
+     * yyyyMMddHHmmssSSS
+     */
+    public static final String NO_MARK = "yyyyMMddHHmmssSSS";
     
-    private Formatter(String pattern) {
-        this.pattern = pattern;
-    }
+    /**
+     * yyyyMMddHHmmss
+     */
+    public static final String NO_MARK_MILL_SECONDS = "yyyyMMddHHmmss";
     
-    public static void main(String[] args) {
-        String s ="2018-12-12 12:12:12.000";
-        Date date = ConvertHelper.toDate(s);
-        System.out.println(date);
-    }
+    /**
+     * yyyy/MM/dd HH:mm:ss.SSS
+     */
+    public static final String TOTAL_SLASH = "yyyy/MM/dd HH:mm:ss.SSS";
+    
+    /**
+     * yyyy/MM/dd HH:mm:ss
+     */
+    public static final String TOTAL_SLASH_O_MILL_SECONDS = "yyyy/MM/dd HH:mm:ss";
+    
 }
     
 

@@ -2,6 +2,7 @@ package com.x.commons.util.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.x.commons.util.string.Strings;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 
@@ -12,50 +13,65 @@ import lombok.SneakyThrows;
  * @Author AD
  */
 public final class Jsons {
-
+    
     private Jsons() {}
-
+    
     /**
      * 将对象解析成JSON字符串
      *
      * @param src
+     *
      * @return
      */
-    public static String to(Object src) {
-        return gson().toJson(src);
+    public static String toJson(Object src, String dateTimeFormatter) {
+        return gson(dateTimeFormatter).toJson(src);
     }
-
+    
     /**
      * 将JSON字符串解析成对应的对象
      *
      * @param json
      * @param clazz
-     * @param <T>
+     * @param dateTimeFormatter
+     *
      * @return
      */
     @SneakyThrows
-    public static <T> T from(String json, @NonNull Class<T> clazz) {
-        return gson().fromJson(json, clazz);
+    public static <T> T fromJson(String json, @NonNull Class<T> clazz, String dateTimeFormatter) {
+        return gson(dateTimeFormatter).fromJson(json, clazz);
     }
-
+    
     /**
      * 判断是否是有效的json字符串
      *
      * @param check
+     *
      * @return
      */
     public static boolean valid(String check) {
         try {
-            from(check, Object.class);
+            fromJson(check, Object.class, null);
             return true;
         } catch (Exception e) {
             return false;
         }
     }
-
-    private static Gson gson() {
-        new GsonBuilder().disableHtmlEscaping().create();
+    
+    /**
+     * 获取Google的Gson对象
+     *
+     * @return
+     */
+    public static Gson gson() {
         return new Gson();
     }
-
+    
+    private static Gson gson(String dateTimeFormatter) {
+        if (Strings.isNull(dateTimeFormatter)) {
+            return gson();
+        } else {
+            return new GsonBuilder().setDateFormat(dateTimeFormatter).create();
+        }
+    }
+    
 }

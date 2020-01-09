@@ -36,8 +36,16 @@ public final class Clazzs {
         return c.newInstance();
     }
 
+    public static <T> T newInstance(String className, Class<T> returnType) throws Exception {
+        Class<?> clazz = Class.forName(className);
+        if (clazz.equals(returnType) || returnType.isAssignableFrom(clazz)) {
+            return (T) newInstance(clazz);
+        }
+        return null;
+    }
+
     public static boolean isPrimitive(Class<?> clazz) {
-        return clazz == null ? false : clazz.isPrimitive();
+        return clazz != null && clazz.isPrimitive();
     }
 
     public static boolean isString(Class<?> clazz) {

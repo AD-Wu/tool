@@ -24,7 +24,7 @@ public class RedisPool {
     
     private JedisPool pool;
     
-    public RedisPool(RedisPoolConfig config) throws Exception {
+     RedisPool(RedisPoolConfig config) throws Exception {
         this.name = config.getName();
         this.host = config.getHost();
         this.port = config.getPort();

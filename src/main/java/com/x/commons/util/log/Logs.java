@@ -25,7 +25,7 @@ public final class Logs {
     
     public static boolean createLogbackXML(String filename) throws Exception {
         // 读取文件内容
-        String logPath = Files.getCurrentClassPath(Logs.class) + "log.xml";
+        String logPath = Files.getCurrentClassPath(Logs.class) + "logback.xml";
         String txt = Files.readTxt(logPath);
         // 修正目标文件名
         String fixName = fixFilename(filename, false);

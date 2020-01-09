@@ -126,6 +126,8 @@ public final class New {
         return new SB(s);
     }
 
+    public static SB sb(String... ss){return new SB(ss);}
+
     public static MD5 md5() throws Exception { return new MD5(); }
 
 }

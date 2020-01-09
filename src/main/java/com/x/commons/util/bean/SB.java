@@ -1,5 +1,7 @@
 package com.x.commons.util.bean;
 
+import com.x.commons.util.collection.XArrays;
+
 /**
  * @Date 2018-12-19 20:44
  * @Author AD
@@ -13,6 +15,15 @@ public final class SB {
     }
 
     SB(String s) {sb = new StringBuilder(s);}
+
+    SB(String... ss) {
+        sb = new StringBuilder();
+        if (!XArrays.isEmpty(ss)) {
+            for (String s : ss) {
+                sb.append(s);
+            }
+        }
+    }
 
     public SB append(Object o) {
         sb.append(o);

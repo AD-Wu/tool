@@ -17,7 +17,7 @@ public final class Proxys {
         final Class<?>[] interfaces = target.getClass().getInterfaces();
 
         if (XArrays.isEmpty(interfaces)) {
-            throw new RuntimeException("The target class need to implements interface");
+            throw new RuntimeException("The target class need toJson implements interface");
         }
 
         return (R) Proxy.newProxyInstance(Loader.get(), interfaces, new InvocationHandler() {

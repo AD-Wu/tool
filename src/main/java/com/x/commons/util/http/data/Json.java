@@ -63,7 +63,7 @@ public class Json implements Iterable<Map.Entry<Object, Object>> {
     }
 
     public String toJson() {
-        return Jsons.to(json);
+        return Jsons.toJson(json);
     }
 
     @Override

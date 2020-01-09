@@ -15,12 +15,14 @@ import java.io.File;
  * @Date 2019-11-01 22:38
  * @Author AD
  */
-public class Logs {
-
+public final class Logs {
+    
+    private Logs() {}
+    
     public static Logger get(Class<?> clazz) {
         return LoggerFactory.getLogger(clazz);
     }
-
+    
     public static boolean createLogbackXML(String filename) throws Exception {
         // 读取文件内容
         String logPath = Files.getCurrentClassPath(Logs.class) + "log.xml";
@@ -32,13 +34,13 @@ public class Logs {
         // 判断文件是否存在
         File file = new File(targetPath + fixName);
         if (file.exists()) {
-            fixName = fixFilename(fixName, true);
+            return true;
         }
         // 生成文件
         return Files.createFile(targetPath, fixName, txt);
-
+        
     }
-
+    
     private static String fixFilename(String filename, boolean timeMS) {
         if (Strings.isNull(filename, ".xml")) {
             return "logback.xml";
@@ -61,5 +63,5 @@ public class Logs {
             }
         }
     }
-
+    
 }

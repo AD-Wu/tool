@@ -65,7 +65,7 @@ public final class DateTimes {
      * @param date
      * @return
      */
-    public static LocalDateTime to(Date date) {
+    public static LocalDateTime toLocalDateTime(Date date) {
         TimeZone timeZone = TimeZone.getDefault();
         return date.toInstant().atZone(timeZone.toZoneId()).toLocalDateTime();
     }
@@ -76,7 +76,7 @@ public final class DateTimes {
      * @param localDateTime
      * @return
      */
-    public static Date to(LocalDateTime localDateTime) {
+    public static Date toDate(LocalDateTime localDateTime) {
         // 时区偏移
         String zoneID = TimeZone.getDefault().getID();
         ZonedDateTime of = ZonedDateTime.of(localDateTime, ZoneId.of(zoneID));
@@ -101,9 +101,12 @@ public final class DateTimes {
      * @return yyyy-MM-dd HH:mm:ss.SSS
      */
     public static String format(Date date) {
-        LocalDateTime dateTime = to(date);
-        String format = dateTime.format(DEFAULT);
-        return format;
+        LocalDateTime dateTime = toLocalDateTime(date);
+        return dateTime.format(DEFAULT);
+    }
+
+    public static String format(LocalDateTime dateTime) {
+        return format(toDate(dateTime));
     }
 
     // ------------------------ 私有方法 ------------------------
@@ -113,7 +116,7 @@ public final class DateTimes {
         System.out.println(format);
 
         LocalDateTime localDateTime = LocalDateTime.now();
-        Date to = to(localDateTime);
+        Date to = toDate(localDateTime);
         String format1 = format(to);
         System.out.println(format1);
     }

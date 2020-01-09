@@ -6,7 +6,7 @@ package com.x.commons.util.bean;
  */
 public final class SB {
     
-    StringBuilder sb;
+    private StringBuilder sb;
     
     SB() {
         sb = new StringBuilder();

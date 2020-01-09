@@ -34,7 +34,6 @@ public class TestFolderWatcher {
                 String path = file.getPath();
                 System.out.println(name);
                 System.out.println(path);
-                boolean b = file.canRead();
             }
         });
         modify.start();

@@ -1,5 +1,5 @@
 //
-// Source code recreated from a .class file by IntelliJ IDEA
+// Source code recreated fromJson a .class file by IntelliJ IDEA
 // (powered by Fernflower decompiler)
 //
 
@@ -147,6 +147,7 @@ public final class Timer {
                     return instance;
                 }
                 instance = new Timer("system", 0, 100, 60L, 0);
+                // 启动checker线程，开始检测任务
                 instance.start();
             }
             return instance;

@@ -3,6 +3,7 @@ package com.x.commons.util.file.monitor;
 import com.x.commons.timming.Timer;
 import com.x.commons.util.file.Files;
 
+import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,9 @@ public final class FolderWatcher implements IWatcher<FileWatched> {
     
     private final String folderPath;
     
-    private volatile boolean stop = true;
+    private Runnable runnable;
+    
+    private volatile boolean start = false;
     
     public static FolderWatcher getModifyWatcher(String folderPath) throws Exception {
         return getModifyWatcher(folderPath, 60);
@@ -103,42 +106,54 @@ public final class FolderWatcher implements IWatcher<FileWatched> {
     
     public void start() {
         // 定时器，内部有线程池
-        if (stop) {
+        if (!start) {
             Timer timer = Timer.get();
-            timer.add(() -> {
-                try {
-                    /**
-                     * take：获取变化信息的监控池，没有则一直等待，适合长时间监控
-                     * poll：获取变化信息的监控池，没有则返回null,适合某个时间点监控
-                     */
-                    WatchKey key = watcher.take();
-                    for (WatchEvent event : key.pollEvents()) {
-                        String filename = String.valueOf(event.context());
-                        WatchEvent.Kind kind = event.kind();// modify、create、delete
-                        FileWatched watched = watchedMap.get(filename);
-                        if (watched != null) {
-                            String path = Files.fixPath(folderPath) + filename;
-                            watched.change(Files.getFile(path));
+            this.runnable = new Runnable() {
+                
+                @Override
+                public void run() {
+                    try {
+                        /**
+                         * take：获取变化信息的监控池，没有则一直等待，适合长时间监控
+                         * poll：获取变化信息的监控池，没有则返回null,适合某个时间点监控
+                         */
+                        WatchKey key = watcher.take();
+                        for (WatchEvent event : key.pollEvents()) {
+                            String filename = String.valueOf(event.context());
+                            WatchEvent.Kind kind = event.kind();// modify、create、delete
+                            FileWatched watched = watchedMap.get(filename);
+                            if (watched != null) {
+                                String path = Files.fixPath(folderPath) + filename;
+                                watched.change(Files.getFile(path));
+                            }
                         }
-                    }
-                    /**
-                     * -每次take()\poll()都会导致线程监控阻塞，操作文件可能时间长，
-                     *     如果监听目录下有其他事件发生，将会导致事件丢失。
-                     *
-                     * -重置操作表示重启该线程，后续的事件都会被读到。
-                     */
-                    if (key != null) {
-                        boolean reset = key.reset();
-                        if (!reset) {
-                            return;
+                        /**
+                         * -每次take()\poll()都会导致线程监控阻塞，操作文件可能时间长，
+                         *     如果监听目录下有其他事件发生，将会导致事件丢失。
+                         *
+                         * -重置操作表示重启该线程，后续的事件都会被读到。
+                         */
+                        if (key != null) {
+                            boolean reset = key.reset();
+                            if (!reset) {
+                                return;
+                            }
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-            }, period, timeUnit);
+            };
+            timer.add(this.runnable, period, timeUnit);
+            start = true;
         }
-        
+    }
+    
+    public void stop() throws IOException {
+        start = false;
+        Timer.get().remove(this.runnable);
+        watcher.close();
+        watchedMap.clear();
     }
     
     public static class Builder {

@@ -23,8 +23,33 @@ public final class Jsons {
      *
      * @return
      */
+    public static String toJson(Object src) {
+        return toJson(src, "");
+    }
+    
+    /**
+     * 将对象解析成JSON字符串
+     *
+     * @param src
+     * @param dateTimeFormatter
+     *
+     * @return
+     */
     public static String toJson(Object src, String dateTimeFormatter) {
         return gson(dateTimeFormatter).toJson(src);
+    }
+    
+    /**
+     * 将JSON字符串解析成对应的对象
+     *
+     * @param json
+     * @param clazz
+     *
+     * @return
+     */
+    @SneakyThrows
+    public static <T> T fromJson(String json, @NonNull Class<T> clazz) {
+        return fromJson(json, clazz, "");
     }
     
     /**
@@ -73,5 +98,4 @@ public final class Jsons {
             return new GsonBuilder().setDateFormat(dateTimeFormatter).create();
         }
     }
-    
 }

@@ -24,6 +24,9 @@ public final class DateTimes {
     public static final DateTimeFormatter NO_MARK = DateTimeFormatter.ofPattern(
             "yyyyMMddHHmmssSSS");
 
+    public static final DateTimeFormatter NO_MARK_SECONDS = DateTimeFormatter.ofPattern(
+            "yyyyMMddHHmmss");
+
     // ------------------------ 构造方法 ------------------------
 
     private DateTimes() {}
@@ -105,8 +108,24 @@ public final class DateTimes {
         return dateTime.format(DEFAULT);
     }
 
+    /**
+     * 将LocalDateTime解析成字符串时间
+     *
+     * @param dateTime
+     * @return
+     */
     public static String format(LocalDateTime dateTime) {
-        return format(toDate(dateTime));
+        return format(dateTime, DEFAULT);
+    }
+
+    /**
+     * 将LocalDateTime解析成指定字符串时间
+     *
+     * @param dateTime
+     * @return
+     */
+    public static String format(LocalDateTime dateTime, DateTimeFormatter formatter) {
+        return dateTime.format(formatter);
     }
 
     // ------------------------ 私有方法 ------------------------

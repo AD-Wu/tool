@@ -4,7 +4,7 @@ import com.x.commons.interfaces.IMapFactory;
 import com.x.commons.socket.client.SocketClientFactory;
 import com.x.commons.socket.config.ClientConfig;
 import com.x.commons.socket.config.ServerConfig;
-import com.x.commons.util.Logs;
+import com.x.commons.util.log.Logs;
 
 import java.util.Map;
 import java.util.Optional;
@@ -20,7 +20,7 @@ public enum SocketManager {
         @Override
         public ISocket start(int port, String... ip) throws Exception {
             while (serverMap.containsKey(port)) {
-                Logs.of(this.getClass()).warn("The port is using,will start with the new port:{}", ++port);
+                Logs.get(this.getClass()).warn("The port is using,will start with the new port:{}", ++port);
             }
             ISocket server = serverFactory.get(new ServerConfig(port));
             serverMap.put(port, server);

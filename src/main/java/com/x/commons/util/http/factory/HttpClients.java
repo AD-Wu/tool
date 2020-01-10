@@ -146,8 +146,8 @@ public final class HttpClients {
             this.pool(MAX_POOL_SIZE, MAX_PER_ROUTE);
         }
 
-        public Builder retry(int tryCount) {
-            builder.setRetryHandler(this.getRetryHandler(tryCount, false));
+        public Builder retry(int tryCount,boolean retryWhenIOInterrupted) {
+            builder.setRetryHandler(this.getRetryHandler(tryCount, retryWhenIOInterrupted));
             return this;
         }
 
@@ -209,10 +209,7 @@ public final class HttpClients {
                     HttpClientContext clientContext = HttpClientContext.adapt(ctx);
                     HttpRequest request = clientContext.getRequest();
                     // 如果请求是幂等的，就再次尝试
-                    if (!(request instanceof HttpEntityEnclosingRequest)) {
-                        return true;
-                    }
-                    return false;
+                    return !(request instanceof HttpEntityEnclosingRequest);
                 }
             };
         }

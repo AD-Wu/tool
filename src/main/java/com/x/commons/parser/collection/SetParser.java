@@ -3,9 +3,9 @@ package com.x.commons.parser.collection;
 import com.x.commons.parser.core.IParser;
 import com.x.commons.parser.string.annotation.Parser;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @Desc
@@ -17,7 +17,7 @@ public class SetParser implements IParser<Set<Object>, List<Object>> {
     
     @Override
     public Set<Object> parse(List<Object> list) throws Exception {
-        return list.stream().collect(Collectors.toSet());
+        return new HashSet<>(list);
     }
     
 }

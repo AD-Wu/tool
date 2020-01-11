@@ -5,8 +5,10 @@ import com.x.commons.parser.string.annotation.Parser;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.reflact.Clazzs;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 /**
  * @Desc 解析类工具
@@ -18,9 +20,13 @@ public final class Parsers {
     
     // ------------------------ 成员变量 ------------------------
     
-    private static final Map<Class, IParser> map = New.concurrentMap();
+    private static Map<Class, IParser> parsers;
     
     private static final String PATH = "x-framework/parser.xml";
+    
+    private static volatile boolean inited = false;
+    
+    private static final Object LOCK = new Object();
     
     // ------------------------ 构造方法 ------------------------
     
@@ -28,15 +34,23 @@ public final class Parsers {
     
     // ------------------------ 成员方法 ------------------------
     
-    public static <R, S> IParser<R, S> getParser(Class<R> resultClass) {
-        IParser parser = map.get(resultClass);
-        return parser;
-        
+    public static <R, S> IParser<R, S> getParser(Class<R> returnType) {
+        if (!inited) {
+            synchronized (LOCK) {
+                if (!inited) {
+                    parsers = New.map();
+                    init();
+                    initCustom();
+                    inited = true;
+                }
+            }
+        }
+        return parsers.get(returnType);
     }
     
     public static boolean addParser(Class<?> result, Class<? extends IParser> parser) {
         try {
-            map.put(result, Clazzs.newInstance(parser));
+            parsers.put(result, Clazzs.newInstance(parser));
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -60,7 +74,7 @@ public final class Parsers {
             try {
                 for (Class<?> result : results) {
                     IParser parser = Clazzs.newInstance(clazz);
-                    map.put(result, parser);
+                    parsers.put(result, parser);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -72,12 +86,21 @@ public final class Parsers {
      * 初始化自定义解析类
      */
     private static void initCustom() {
-    
-    }
-    
-    static {
-        init();
-        initCustom();
+        // 获取接口的实现类，需要在实现类上加Google的@AutoService
+        ServiceLoader<IParser> load = ServiceLoader.load(IParser.class);
+        Iterator<IParser> it = load.iterator();
+        while (it.hasNext()) {
+            IParser parser = it.next();
+            Class<? extends IParser> subClass = parser.getClass();
+            if (subClass.isAnnotationPresent(Parser.class)) {
+                // 根据@Parser注解获取返回值类型
+                Parser p = subClass.getAnnotation(Parser.class);
+                Class<?>[] returnType = p.result();
+                for (Class<?> type : returnType) {
+                    parsers.put(type, parser);
+                }
+            }
+        }
     }
     
 }

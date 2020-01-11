@@ -1,42 +1,57 @@
 package com.x.commons.enums;
 
+import java.time.format.DateTimeFormatter;
+
 /**
  * @Desc TODO
  * @Date 2019-12-01 17:50
  * @Author AD
  */
-public class Formatter {
+public enum Formatter {
     
     /**
      * yyyy-MM-dd HH:mm:ss.SSS
      */
-    public static final String TOTAL = "yyyy-MM-dd HH:mm:ss.SSS";
+    TOTAL("yyyy-MM-dd HH:mm:ss.SSS"),
     
     /**
      * yyyy-MM-dd HH:mm:ss
      */
-    public static final String TOTAL_NO_MILL_SECONDS = "yyyy-MM-dd HH:mm:ss";
+    TOTAL_NO_MILL_SECONDS("yyyy-MM-dd HH:mm:ss"),
     
     /**
      * yyyyMMddHHmmssSSS
      */
-    public static final String NO_MARK = "yyyyMMddHHmmssSSS";
+    NO_MARK("yyyyMMddHHmmssSSS"),
     
     /**
      * yyyyMMddHHmmss
      */
-    public static final String NO_MARK_MILL_SECONDS = "yyyyMMddHHmmss";
+    NO_MARK_MILL_SECONDS("yyyyMMddHHmmss"),
     
     /**
      * yyyy/MM/dd HH:mm:ss.SSS
      */
-    public static final String TOTAL_SLASH = "yyyy/MM/dd HH:mm:ss.SSS";
+    TOTAL_SLASH("yyyy/MM/dd HH:mm:ss.SSS"),
     
     /**
      * yyyy/MM/dd HH:mm:ss
      */
-    public static final String TOTAL_SLASH_O_MILL_SECONDS = "yyyy/MM/dd HH:mm:ss";
+    TOTAL_SLASH_O_MILL_SECONDS("yyyy/MM/dd HH:mm:ss");
     
+    private final String pattern;
+    
+    private Formatter(String pattern) {
+        this.pattern = pattern;
+    }
+    
+    public String pattern() {
+        return this.pattern;
+    }
+    
+    public DateTimeFormatter get() {
+        return DateTimeFormatter.ofPattern(this.pattern);
+    }
 }
     
 

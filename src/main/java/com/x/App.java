@@ -7,7 +7,6 @@ package com.x;
 
 import com.x.commons.util.file.Files;
 import com.x.commons.util.test.Auto;
-import com.x.commons.util.test.AutoRun;
 
 // @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 public class App {
@@ -17,7 +16,7 @@ public class App {
         Auto.run(App.class);
     }
 
-    @AutoRun
+    // @AutoRun
     public static void test(){
         String[] jarsPath = Files.getJarsPath();
         for (String s : jarsPath) {

@@ -23,6 +23,13 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>com.google.auto.service</groupId>
+            <artifactId>auto-service</artifactId>
+            <version>1.0-rc6</version>
+        </dependency>
+
+
         <!-- xml解析包 -->
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>

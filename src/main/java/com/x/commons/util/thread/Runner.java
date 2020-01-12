@@ -1,4 +1,4 @@
-package com.x.commons.util;
+package com.x.commons.util.thread;
 
 import com.x.commons.util.bean.New;
 import com.x.commons.util.collection.XArrays;

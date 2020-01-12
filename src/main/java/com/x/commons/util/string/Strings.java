@@ -32,8 +32,8 @@ public final class Strings {
     // ======================== 变量 ========================
     
     public static void main(String[] args) throws Exception {
-        // Integer parse = parse("5", Integer.class);
-        // System.getOutputStream.println(parse);
+        // Integer autoParse = autoParse("5", Integer.class);
+        // System.getOutputStream.println(autoParse);
         String abcd = fix("", 12, "");
         System.out.println(abcd);
     }

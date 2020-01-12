@@ -1,7 +1,9 @@
 package com.x.commons.util;
 
 import com.x.commons.util.bean.New;
+import com.x.commons.util.collection.XArrays;
 
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -10,13 +12,13 @@ import java.util.concurrent.ExecutorService;
  * @Author AD
  */
 public final class Runner {
-
+    
     private static final int threadNum = 3;
-
+    
     private static ExecutorService runner;
-
+    
     private Runner() {}
-
+    
     public static void add(Runnable runnable) {
         if (runner != null) {
             runner.submit(runnable);
@@ -28,8 +30,12 @@ public final class Runner {
                 runner.submit(runnable);
             }
         }
-
     }
-
-
+    
+    public static void add(Runnable... runnables) {
+        if (XArrays.isEmpty(runnables)) {
+            Arrays.stream(runnables).forEach(Runner::add);
+        }
+    }
+    
 }

@@ -1,5 +1,8 @@
 package com.x.commons.util;
 
+import com.x.commons.util.collection.XArrays;
+
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -23,8 +26,10 @@ public final class Threads {
         return t.get();
     }
     
-    public static void run(Runnable runnable) {
-        Runner.add(runnable);
+    public static void run(Runnable... runnables) {
+        if(XArrays.isEmpty(runnables)){
+            Arrays.stream(runnables).forEach(Runner::add);
+        }
     }
     
 }

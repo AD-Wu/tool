@@ -9,9 +9,9 @@ import java.util.concurrent.atomic.AtomicReference;
  * @Author AD
  */
 public final class Threads {
-
+    
     private Threads() {}
-
+    
     public static Thread get(String threadName) {
         Map<Thread, StackTraceElement[]> all = Thread.getAllStackTraces();
         AtomicReference<Thread> t = new AtomicReference<>();
@@ -22,5 +22,9 @@ public final class Threads {
         });
         return t.get();
     }
-
+    
+    public static void run(Runnable runnable) {
+        Runner.add(runnable);
+    }
+    
 }

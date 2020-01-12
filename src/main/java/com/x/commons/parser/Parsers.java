@@ -3,7 +3,9 @@ package com.x.commons.parser;
 import com.x.commons.parser.core.IParser;
 import com.x.commons.parser.string.annotation.Parser;
 import com.x.commons.util.bean.New;
+import com.x.commons.util.log.Logs;
 import com.x.commons.util.reflact.Clazzs;
+import com.x.commons.util.string.Strings;
 
 import java.util.Iterator;
 import java.util.List;
@@ -38,10 +40,8 @@ public final class Parsers {
         if (!inited) {
             synchronized (LOCK) {
                 if (!inited) {
-                    parsers = New.map();
                     init();
                     initCustom();
-                    inited = true;
                 }
             }
         }
@@ -64,6 +64,7 @@ public final class Parsers {
      * 从com.x.commons.util.string.parser包中初始化解析类
      */
     private static void init() {
+        parsers = New.map();
         // 获取包下所有加@Parser和实现IParser接口的类
         String packageName = Parsers.class.getPackage().getName();
         List<Class<IParser>> parserClazzs = Clazzs.getClass(packageName, Parser.class, IParser.class);
@@ -77,9 +78,10 @@ public final class Parsers {
                     parsers.put(result, parser);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Logs.get(Parsers.class).error(Strings.getExceptionTrace(e));
             }
         });
+        inited = true;
     }
     
     /**

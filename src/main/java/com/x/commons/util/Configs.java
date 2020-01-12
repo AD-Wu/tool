@@ -4,7 +4,9 @@ import com.x.commons.parser.Parsers;
 import com.x.commons.parser.core.IParser;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.file.Files;
+import com.x.commons.util.log.Logs;
 import com.x.commons.util.prop.Props;
+import com.x.commons.util.string.Strings;
 import com.x.commons.util.yml.Ymls;
 
 import java.io.File;
@@ -20,7 +22,11 @@ public final class Configs {
     
     // ------------------------ 变量定义 ------------------------
     
-    private static final Map<String, String> PROPS = New.concurrentMap();
+    private static Map<String, String> props;
+    
+    private static volatile boolean inited = false;
+    
+    private static final Object LOCK = new Object();
     
     // ------------------------ 构造方法 ------------------------
     
@@ -29,18 +35,27 @@ public final class Configs {
     // ------------------------ 方法定义 ------------------------
     
     public static String get(String key) {
-        return PROPS.get(key);
+        return props.get(key);
     }
     
     public static <T> T get(String key, Class<T> returnType) {
-        String s = PROPS.get(key);
+        if (!inited) {
+            synchronized (LOCK) {
+                if (!inited) {
+                    init();
+                }
+            }
+        }
+        String s = props.get(key);
         IParser<T, Object> parser = Parsers.getParser(returnType);
         if (parser != null) {
             T parse = null;
             try {
                 parse = parser.parse(s);
+                double a = 3/0;
                 return parse;
             } catch (Exception e) {
+                Logs.get(Configs.class).error(Strings.getExceptionTrace(e));
                 e.printStackTrace();
             }
         }
@@ -48,7 +63,8 @@ public final class Configs {
     }
     // ------------------------ 私有方法 ------------------------
     
-    static {
+    private static void init() {
+        props = New.concurrentMap();
         String src = Files.getResourcesPath();
         File[] files = Files.getFiles(src, New.list());
         for (File file : files) {
@@ -56,23 +72,24 @@ public final class Configs {
             if (name.endsWith(".yml") || name.endsWith(".yaml")) {
                 try {
                     Map<String, String> prop = Ymls.loadAsFlatMap(file.getPath());
-                    PROPS.putAll(prop);
+                    props.putAll(prop);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Logs.get(Configs.class).error(Strings.getExceptionTrace(e));
                 }
             } else if (name.endsWith(".properties")) {
                 try {
                     Map<String, String> load = Props.load(file.getPath());
-                    PROPS.putAll(load);
+                    props.putAll(load);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Logs.get(Configs.class).error(Strings.getExceptionTrace(e));
                 }
             }
         }
+        inited = true;
     }
     
     public static void main(String[] args) throws Exception {
-        System.out.println(PROPS);
+        System.out.println(props);
         LocalDateTime time = get("user.birthday", LocalDateTime.class);
         System.out.println(time);
     }

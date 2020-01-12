@@ -24,8 +24,6 @@ public final class Parsers {
     
     private static Map<Class, IParser> parsers;
     
-    private static final String PATH = "x-framework/parser.xml";
-    
     private static volatile boolean inited = false;
     
     private static final Object LOCK = new Object();

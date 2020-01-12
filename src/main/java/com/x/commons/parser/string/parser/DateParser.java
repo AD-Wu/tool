@@ -1,9 +1,8 @@
 package com.x.commons.parser.string.parser;
 
-import com.x.commons.util.date.DateTimes;
-import com.x.commons.util.string.Strings;
 import com.x.commons.parser.string.annotation.Parser;
 import com.x.commons.parser.string.core.IStringParser;
+import com.x.commons.util.date.DateTimes;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -18,7 +17,8 @@ public class DateParser extends IStringParser<Date, String> {
     
     @Override
     public Date parseFrom(String s) throws Exception {
-        return new Date(s);
+        LocalDateTime dateTime = DateTimes.autoParse(s);
+        return dateTime == null ? null : DateTimes.toDate(dateTime);
     }
     
 }

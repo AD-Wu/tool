@@ -44,7 +44,27 @@ public enum Formatter {
     /**
      * yyyy/MM/dd HH:mm:ss
      */
-    TOTAL_SLASH_NO_MILL_SECONDS("yyyy/MM/dd HH:mm:ss");
+    TOTAL_SLASH_NO_MILL_SECONDS("yyyy/MM/dd HH:mm:ss"),
+    
+    /**
+     * yyyy年MM月dd日 HH时mm分ss秒SSS毫秒
+     */
+    TOTAL_CHINESE("yyyy年MM月dd日 HH时mm分ss秒SSS毫秒"),
+    
+    /**
+     * yyyy年MM月dd日 HH时mm分ss秒SSS毫秒
+     */
+    TOTAL_CHINESE_NO_MILL_SECONDS("yyyy年MM月dd日 HH时mm分ss秒"),
+    
+    /**
+     * yyyy年MM月dd日 HH时mm分ss秒SSS毫秒
+     */
+    TOTAL_CHINESE_NO_SPACE("yyyy年MM月dd日HH时mm分ss秒SSS毫秒"),
+    
+    /**
+     * yyyy年MM月dd日 HH时mm分ss秒SSS毫秒
+     */
+    TOTAL_CHINESE_NO_SPACE_MILL_SECONDS("yyyy年MM月dd日HH时mm分ss秒");
     
     private final String pattern;
     
@@ -106,6 +126,11 @@ public enum Formatter {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(this.pattern);
         TemporalAccessor accessor = formatter.parse(dateTime);
         return LocalDateTime.from(accessor);
+    }
+    
+    public static void main(String[] args) throws Exception {
+        LocalDateTime autoParse = DateTimes.autoParse("1700年3月2日1时2分3秒");
+        System.out.println(autoParse);
     }
     
 }

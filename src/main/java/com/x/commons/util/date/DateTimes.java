@@ -100,6 +100,10 @@ public final class DateTimes {
     public static LocalDateTime parse(String dateTime, String pattern) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         Date date = sdf.parse(dateTime);
+        long time = date.getTime();
+        System.out.println(date);
+        System.out.println(time);
+        
         return toLocalDateTime(date);
     }
     

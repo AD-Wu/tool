@@ -100,12 +100,6 @@ public final class DateTimes {
     public static LocalDateTime parse(String dateTime, String pattern) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         Date date = sdf.parse(dateTime);
-        long time = date.getTime();
-        Instant instant = Instant.ofEpochMilli(time);
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-        System.out.println("date "+date);
-        System.out.println("time "+time);
-        System.out.println(">> "+localDateTime);
         return toLocalDateTime(date);
     }
     

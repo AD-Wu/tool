@@ -112,6 +112,9 @@ public final class DateTimes {
      */
     public static LocalDateTime toLocalDateTime(Date date) {
         ZoneId zoneId = ZoneId.systemDefault();
+        System.out.println(date);
+        System.out.println(zoneId);
+        LocalDateTime local = date.toInstant().atZone(zoneId).toLocalDateTime();
         return date.toInstant().atZone(zoneId).toLocalDateTime();
     }
     

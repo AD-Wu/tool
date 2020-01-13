@@ -29,14 +29,15 @@ public class Test {
 
                         @Override
                         public void succeed(Callback res) throws Exception {
-                            System.out.println("callback="+res.getId());
+                            System.out.println("callback=" + res.getId());
                         }
 
                         @Override
                         public void error(int status, String msg, Callback res) throws Exception {
-
+                            System.out.println(msg);
                         }
                     });
+
                 }
                 return users;
             }

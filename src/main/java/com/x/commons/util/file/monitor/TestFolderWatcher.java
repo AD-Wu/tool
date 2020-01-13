@@ -26,7 +26,7 @@ public class TestFolderWatcher {
         watcher.start();
 
         FolderWatcher modify = FolderWatcher.getModifyWatcher(
-                Files.getResourcesPath() + "x-framework/config", 5);
+                Files.getResourcesPath() + "x-framework", 5);
         modify.addWatched(new FileWatched("value.properties") {
             @Override
             public void change(File file) {

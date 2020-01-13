@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Desc Bean类方法数据，一般是Get、Set
+ * @Desc Bean类所有方法数据，一般是Get、Set
  * @Date 2019-12-05 22:13
  * @Author AD
  */

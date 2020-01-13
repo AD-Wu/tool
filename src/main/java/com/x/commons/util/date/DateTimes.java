@@ -101,9 +101,11 @@ public final class DateTimes {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         Date date = sdf.parse(dateTime);
         long time = date.getTime();
-        System.out.println(date);
-        System.out.println(time);
-        
+        Instant instant = Instant.ofEpochMilli(time);
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+        System.out.println("date "+date);
+        System.out.println("time "+time);
+        System.out.println(">> "+localDateTime);
         return toLocalDateTime(date);
     }
     
@@ -115,8 +117,8 @@ public final class DateTimes {
      * @return
      */
     public static LocalDateTime toLocalDateTime(Date date) {
-        TimeZone timeZone = TimeZone.getDefault();
-        return date.toInstant().atZone(timeZone.toZoneId()).toLocalDateTime();
+        ZoneId zoneId = ZoneId.systemDefault();
+        return date.toInstant().atZone(zoneId).toLocalDateTime();
     }
     
     /**

@@ -4,6 +4,7 @@ import com.x.commons.collection.KeyValue;
 import com.x.commons.util.string.Strings;
 import com.x.framework.caching.datas.matchers.DateComparer;
 import com.x.framework.caching.datas.matchers.IComparer;
+import com.x.framework.caching.datas.matchers.LocalDateTimeComparer;
 import com.x.framework.caching.datas.matchers.StringComparer;
 import com.x.framework.caching.methods.MethodInfo;
 
@@ -97,8 +98,8 @@ public final class ValueSorter {
                 asc = isAsc ? DateComparer.LESS : DateComparer.GREATER;
                 desc = isAsc ? DateComparer.GREATER : DateComparer.LESS;
             } else if (type.equals(LocalDateTime.class)) {
-                asc = isAsc ? DateComparer.LESS : DateComparer.GREATER;
-                desc = isAsc ? DateComparer.GREATER : DateComparer.LESS;
+                asc = isAsc ? LocalDateTimeComparer.LESS : LocalDateTimeComparer.GREATER;
+                desc = isAsc ? LocalDateTimeComparer.GREATER : LocalDateTimeComparer.LESS;
             }
         }
 

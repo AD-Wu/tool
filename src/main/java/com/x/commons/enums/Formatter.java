@@ -5,6 +5,7 @@ import com.x.commons.util.date.DateTimes;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.Date;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -98,9 +99,16 @@ public enum Formatter {
     }
 
     public static void main(String[] args) throws Exception {
-        LocalDateTime a = DateTimes.autoParse("1700-3-2 1:2:3.234");
+        LocalDateTime a = DateTimes.autoParse("1100-3-2 1:2:3.234");
         System.out.println("===");
-        LocalDateTime b = DateTimes.autoParse("1100-3-2 1:2:3.234");
+        LocalDateTime b = DateTimes.autoParse("2300-3-2 1:2:3.234");
+        System.out.println("######################");
+        Date date = DateTimes.toDate(a);
+        Date date1 = DateTimes.toDate(b);
+        System.out.println(a);
+        System.out.println(date);
+        System.out.println(b);
+        System.out.println(date1);
     }
 
 }

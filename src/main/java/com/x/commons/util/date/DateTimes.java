@@ -5,10 +5,11 @@ import com.x.commons.util.log.Logs;
 import org.slf4j.Logger;
 
 import java.text.SimpleDateFormat;
-import java.time.*;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * @Date 2018-12-19 23:32
@@ -99,9 +100,9 @@ public final class DateTimes {
     public static LocalDateTime parse(String dateTime, String pattern) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         Date date = sdf.parse(dateTime);
-        LOG.info("source={}", dateTime);
-        LOG.info("pattern={}", pattern);
-        LOG.info("Date={}", date);
+        LOG.debug("source={}", dateTime);
+        LOG.debug("pattern={}", pattern);
+        LOG.debug("Date={}", date);
         return toLocalDateTime(date);
     }
 
@@ -120,8 +121,8 @@ public final class DateTimes {
          * date=1100-3-2 1:2:3.234 => localDateTime=1100-03-09T01:07:46.234
          */
         LocalDateTime result = fixLocalDateTime(date, before);
-        LOG.info("LocalDateTime={}", before);
-        LOG.info("After fix localDateTime={}", result);
+        LOG.debug("LocalDateTime={}", before);
+        LOG.debug("After fix localDateTime={}", result);
         return result;
     }
 
@@ -132,11 +133,29 @@ public final class DateTimes {
      * @return
      */
     public static Date toDate(LocalDateTime localDateTime) {
-        // 时区偏移
-        String zoneID = TimeZone.getDefault().getID();
-        ZonedDateTime of = ZonedDateTime.of(localDateTime, ZoneId.of(zoneID));
-        Instant instant = of.toInstant();
-        return Date.from(instant);
+        Date date = new Date();
+        // LocalDateTime使用正数，如：1100=1100;Date：1100=1100-1900
+        int localYear = localDateTime.getYear();
+        int year = localYear - 1900;
+        date.setYear(year);
+        date.setMonth(localDateTime.getMonthValue() - 1);
+        date.setDate(localDateTime.getDayOfMonth());
+        date.setHours(localDateTime.getHour());
+        date.setMinutes(localDateTime.getMinute());
+        date.setSeconds(localDateTime.getSecond());
+        LOG.debug("LocalDateTime={}", localDateTime);
+        LOG.debug("Date={}", date);
+        return date;
+        /**
+         * 不使用这种方式，如：
+         * LocalDateTime = 1100-03-02T01:02:03.234 =>
+         * Date = Fri Feb 24 00:56:20 CST 1100
+         */
+        // String zoneID = TimeZone.getDefault().getID();// 时区偏移
+        // ZonedDateTime of = ZonedDateTime.of(localDateTime, ZoneId.of(zoneID));
+        // Instant instant = of.toInstant();
+        // Date from = Date.from(instant);
+        // return from;
     }
 
     /**

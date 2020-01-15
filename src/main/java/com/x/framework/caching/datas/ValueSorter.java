@@ -2,15 +2,10 @@ package com.x.framework.caching.datas;
 
 import com.x.commons.collection.KeyValue;
 import com.x.commons.util.string.Strings;
-import com.x.framework.caching.datas.matchers.DateComparer;
-import com.x.framework.caching.datas.matchers.IComparer;
-import com.x.framework.caching.datas.matchers.LocalDateTimeComparer;
-import com.x.framework.caching.datas.matchers.StringComparer;
+import com.x.framework.caching.datas.matchers.*;
 import com.x.framework.caching.methods.MethodInfo;
 
 import java.lang.reflect.Method;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -90,19 +85,59 @@ public final class ValueSorter {
         Class<?> type = method.getReturnType();
         IComparer asc = null;
         IComparer desc = null;
-        if (!type.isPrimitive()) {
-            if (type.equals(String.class)) {
+
+        // 根据方法的返回值类型，判断使用哪种类型比较器
+        int code = ClassCode.getType(type);
+        switch (code) {
+            case ClassCode.BYTE:
+                asc = isAsc ? ByteComparer.LESS : ByteComparer.GREATER;
+                desc = isAsc ? ByteComparer.GREATER : ByteComparer.LESS;
+                break;
+            case ClassCode.SHORT:
+                asc = isAsc ? ShortComparer.LESS : ShortComparer.GREATER;
+                desc = isAsc ? ShortComparer.GREATER : ShortComparer.LESS;
+                break;
+            case ClassCode.INT:
+                asc = isAsc ? IntComparer.LESS : IntComparer.GREATER;
+                desc = isAsc ? IntComparer.GREATER : IntComparer.LESS;
+                break;
+            case ClassCode.LONG:
+                asc = isAsc ? LongComparer.LESS : LongComparer.GREATER;
+                desc = isAsc ? LongComparer.GREATER : LongComparer.LESS;
+                break;
+            case ClassCode.FLOAT:
+                asc = isAsc ? FloatComparer.LESS : FloatComparer.GREATER;
+                desc = isAsc ? FloatComparer.GREATER : FloatComparer.LESS;
+                break;
+            case ClassCode.DOUBLE:
+                asc = isAsc ? DoubleComparer.LESS : DoubleComparer.GREATER;
+                desc = isAsc ? DoubleComparer.GREATER : DoubleComparer.LESS;
+                break;
+            case ClassCode.BOOLEAN:
+                asc = isAsc ? BooleanComparer.LESS : BooleanComparer.GREATER;
+                desc = isAsc ? BooleanComparer.GREATER : BooleanComparer.LESS;
+                break;
+            case ClassCode.CHAR:
+                asc = isAsc ? CharComparer.LESS : CharComparer.GREATER;
+                desc = isAsc ? CharComparer.GREATER : CharComparer.LESS;
+                break;
+            case ClassCode.STRING:
                 asc = isAsc ? StringComparer.LESS : StringComparer.GREATER;
                 desc = isAsc ? StringComparer.GREATER : StringComparer.LESS;
-            } else if (type.equals(Date.class)) {
+                break;
+            case ClassCode.DATE:
                 asc = isAsc ? DateComparer.LESS : DateComparer.GREATER;
                 desc = isAsc ? DateComparer.GREATER : DateComparer.LESS;
-            } else if (type.equals(LocalDateTime.class)) {
+                break;
+            case ClassCode.LOCAL_DATE_TIME:
                 asc = isAsc ? LocalDateTimeComparer.LESS : LocalDateTimeComparer.GREATER;
                 desc = isAsc ? LocalDateTimeComparer.GREATER : LocalDateTimeComparer.LESS;
-            }
+                break;
+            default:
+                desc = isAsc ? StringComparer.GREATER : StringComparer.LESS;
+                asc = isAsc ? StringComparer.LESS : StringComparer.GREATER;
+                break;
         }
-
-        return null;
+        return new ValueSorter(method, asc, desc);
     }
 }

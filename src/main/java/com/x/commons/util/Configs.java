@@ -51,9 +51,7 @@ public final class Configs {
         if (parser != null) {
             T parse = null;
             try {
-                parse = parser.parse(s);
-                double a = 3/0;
-                return parse;
+                return parser.parse(s);
             } catch (Exception e) {
                 Logs.get(Configs.class).error(Strings.getExceptionTrace(e));
                 e.printStackTrace();
@@ -92,6 +90,7 @@ public final class Configs {
         System.out.println(props);
         LocalDateTime time = get("user.birthday", LocalDateTime.class);
         System.out.println(time);
+        System.out.println(props);
     }
     
 }

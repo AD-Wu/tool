@@ -25,9 +25,9 @@ import java.util.Map;
  * @Author：AD
  * @Date：2020/1/15 16:44
  */
-public final class Caches {
+public final class CacheHelper {
 
-    private Caches() {}
+    private CacheHelper() {}
 
     public static <T> T[] getPageData(Class<T> clazz, T[] var1, int var2, int var3) {
         if (var1 != null && var1.length != 0) {

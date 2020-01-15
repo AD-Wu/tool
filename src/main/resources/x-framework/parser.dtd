@@ -1,8 +1,0 @@
-<!ELEMENT parsers (other+|parser)+>
-
-<!ELEMENT other EMPTY>
-<!ELEMENT parser (result)+>
-<!ATTLIST parser clazz ID #REQUIRED>
-
-<!ELEMENT result EMPTY>
-<!ATTLIST result clazz ID #REQUIRED>

@@ -5,6 +5,7 @@ import com.x.commons.parser.core.IParser;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.bean.SB;
 import com.x.commons.util.collection.XArrays;
+import com.x.commons.util.date.DateTimes;
 import com.x.commons.util.file.Files;
 import com.x.commons.util.reflact.Clazzs;
 import com.x.commons.util.reflact.Fields;
@@ -14,10 +15,7 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -149,6 +147,13 @@ public final class Ymls {
                     sb.append(s).append(",");
                 }
                 result.put(fixKey, sb.deleteLast().get());
+            } else if (value instanceof Date) {
+                Date date = (Date) value;
+                long time = date.getTime();
+                int offsetMillSeconds = TimeZone.getDefault().getRawOffset();
+                long actualTime = time - offsetMillSeconds;
+                String format = DateTimes.format(actualTime);
+                result.put(fixKey, format);
             } else {
                 result.put(fixKey, value.toString());
             }
@@ -274,7 +279,7 @@ public final class Ymls {
      * @param prefix 需查找内容的前缀
      * @param props  从yml/yaml所加载的源数据
      *
-     * @return Map<String                                                               ,                                                                                                                               LinkedHashMap                                                                                                                               <                                                                                                                               String                                                               ,                                                                                                                               Map>>
+     * @return Map<String                                                                                                                                                                                                                                                               ,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               LinkedHashMap                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               <                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               String                                                                                                                                                                                                                                                               ,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Map>>
      * 源数据的某个子结构
      */
     private static Map<String, Object> findPropsByPrefix(String prefix, Map<String, Object> props) {

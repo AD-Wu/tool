@@ -11,6 +11,7 @@ import com.x.commons.util.yml.Ymls;
 
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -87,10 +88,12 @@ public final class Configs {
     }
     
     public static void main(String[] args) throws Exception {
-        System.out.println(props);
         LocalDateTime time = get("user.birthday", LocalDateTime.class);
         System.out.println(time);
         System.out.println(props);
+    
+        Date released = get("released", Date.class);
+        System.out.println(released);
     }
     
 }

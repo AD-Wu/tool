@@ -161,7 +161,7 @@ public final class Ymls {
      * @param t             Field所在类对象
      * @param props         从yml/yaml解析出来的源数据
      * @param fieldMap      fieldName-Field的映射
-     * @param fieldClassMap fidle name-field class的映射
+     * @param fieldClassMap field name-field class的映射
      * @param <T>
      *
      * @throws Exception

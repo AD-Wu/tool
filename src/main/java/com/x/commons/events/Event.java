@@ -33,7 +33,12 @@ public class Event {
 
     // ------------------------ 构造方法 ------------------------
 
-    public Event() {}
+    protected Event() {
+    }
+
+    public Event(String type) {
+        this.type = type;
+    }
 
     // ------------------------ 方法定义 ------------------------
 

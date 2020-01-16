@@ -61,17 +61,17 @@ public final class ValueSorter {
     }
 
     /**
-     * @param getPropMap get方法信息，prop=属性名，methodInfo=对应的方法信息
+     * @param getMethodInfos get方法信息，prop=属性名，methodInfo=对应的方法信息
      * @param kv         key=prop,value=asc|desc
      * @return
      */
-    public static ValueSorter getValueSorter(Map<String, MethodInfo> getPropMap, KeyValue kv) {
+    public static ValueSorter getValueSorter(Map<String, MethodInfo> getMethodInfos, KeyValue kv) {
         // 判断有效性
         if (kv == null || Strings.isNull(kv.getK())) {
             return null;
         }
         String prop = kv.getK().toUpperCase();
-        MethodInfo methodInfo = getPropMap.get(prop);
+        MethodInfo methodInfo = getMethodInfos.get(prop);
         if (methodInfo == null) {
             return null;
         }

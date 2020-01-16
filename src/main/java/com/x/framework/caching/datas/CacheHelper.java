@@ -7,6 +7,7 @@ import com.x.commons.util.bean.SB;
 import com.x.commons.util.collection.XArrays;
 import com.x.commons.util.convert.Converts;
 import com.x.commons.util.date.DateTimes;
+import com.x.commons.util.string.Strings;
 import com.x.framework.caching.methods.MethodInfo;
 
 import java.lang.reflect.Array;
@@ -26,32 +27,31 @@ public final class CacheHelper {
 
     private CacheHelper() {}
 
-    public static <T> T[] getPageData(Class<T> clazz, T[] var1, int var2, int var3) {
-        if (var1 != null && var1.length != 0) {
+    public static <T> T[] getPageData(Class<T> clazz, T[] src, int var2, int length) {
+        if (!XArrays.isEmpty(src)) {
             if (var2 <= 0) {
                 var2 = 1;
             }
-            if (var3 <= 0) {
-                var3 = 1;
+            if (length <= 0) {
+                length = 1;
             }
-            int var4 = (var2 - 1) * var3;
-            int var5 = var1.length;
-            if (var4 < var5) {
-                if (var4 + var3 > var1.length) {
-                    var3 = var1.length - var4;
+            int srcPos = (var2 - 1) * length;
+            if (srcPos < src.length) {
+                if (srcPos + length > src.length) {
+                    length = src.length - srcPos;
                 }
-                if (var3 < 1) {
+                if (length < 1) {
                     return (T[]) Array.newInstance(clazz, 0);
                 } else {
-                    T[] var6 = (T[]) Array.newInstance(clazz, var3);
-                    System.arraycopy(var1, var4, var6, 0, var3);
-                    return var6;
+                    T[] result = (T[]) Array.newInstance(clazz, length);
+                    System.arraycopy(src, srcPos, result, 0, length);
+                    return result;
                 }
             } else {
                 return (T[]) Array.newInstance(clazz, 0);
             }
         } else {
-            return var1;
+            return src;
         }
     }
 
@@ -112,135 +112,116 @@ public final class CacheHelper {
         }
     }
 
-    public static int getHistoryCacheKey(String var0, Where[] var1, KeyValue[] var2) {
-        if (var0 != null && var0.length() != 0) {
-            StringBuilder var3 = new StringBuilder(var0);
-            int var6;
-            Object var9;
-            if (var1 != null && var1.length > 0) {
-                Where[] var4 = new Where[var1.length];
-                System.arraycopy(var1, 0, var4, 0, var1.length);
-                Arrays.sort(var4, new Comparator<Where>() {
-                    public int compare(Where var1, Where var2) {
-                        if (var1 != null && var2 != null) {
-                            String var3 = var1.getK();
-                            String var4 = var2.getK();
-                            if (var3 == null && var4 == null) {
+    public static int getHistoryCacheKey(String var0, Where[] wheres, KeyValue[] kvs) {
+        if (!Strings.isNull(var0)) {
+            SB sb = New.sb(var0);
+            Object value;
+            if (!XArrays.isEmpty(wheres)) {
+                Where[] copyWheres = new Where[wheres.length];
+                System.arraycopy(wheres, 0, copyWheres, 0, wheres.length);
+                Arrays.sort(copyWheres, new Comparator<Where>() {
+                    public int compare(Where where1, Where where2) {
+                        if (where1 != null && where2 != null) {
+                            String k1 = where1.getK();
+                            String k2 = where2.getK();
+                            if (k1 == null && k2 == null) {
                                 return 0;
-                            } else if (var3 == null && var4 != null) {
+                            } else if (k1 == null && k2 != null) {
                                 return -1;
                             } else {
-                                return var3 != null && var4 == null ? 1 : var3.compareToIgnoreCase(
-                                        var4);
+                                return k1 != null && k2 == null ? 1 : k1.compareToIgnoreCase(
+                                        k2);
                             }
                         } else {
                             return 0;
                         }
                     }
                 });
-                Where[] var5 = var4;
-                var6 = var4.length;
 
-                for (int var7 = 0; var7 < var6; ++var7) {
-                    Where var8 = var5[var7];
-                    if (var8 != null) {
-                        var3.append("$");
-                        var3.append(var8.getK());
-                        var3.append(var8.getO());
-                        var9 = var8.getV();
-                        if (var9 != null) {
-                            if (var9 instanceof Date) {
-                                var3.append(((Date) var9).getTime());
+                for (int i = 0, L = copyWheres.length; i < L; ++i) {
+                    Where where = copyWheres[i];
+                    if (where != null) {
+                        sb.append("$");
+                        sb.append(where.getK());
+                        sb.append(where.getO());
+                        value = where.getV();
+                        if (value != null) {
+                            if (value instanceof Date) {
+                                sb.append(((Date) value).getTime());
                             } else {
-                                var3.append(var9);
+                                sb.append(value);
                             }
                         }
                     }
                 }
             }
 
-            if (var2 != null && var2.length > 0) {
-                KeyValue[] var10 = var2;
-                int var12 = var2.length;
-
-                for (var6 = 0; var6 < var12; ++var6) {
-                    KeyValue var13 = var10[var6];
-                    if (var13 != null) {
-                        String var14 = var13.getK();
-                        if (var14 != null && var14.length() != 0) {
-                            var3.append("$");
-                            var3.append(var14);
-                            var3.append(":");
-                            var9 = var13.getV();
-                            if (var9 != null && "DESC".equals(var9.toString().toUpperCase())) {
-                                var3.append("DESC");
+            if (!XArrays.isEmpty(kvs)) {
+                for (int i = 0, L = kvs.length; i < L; ++i) {
+                    KeyValue kv = kvs[i];
+                    if (kv != null) {
+                        String key = kv.getK();
+                        if (key != null && key.length() != 0) {
+                            sb.append("$");
+                            sb.append(key);
+                            sb.append(":");
+                            value = kv.getV();
+                            if (value != null && "DESC".equals(value.toString().toUpperCase())) {
+                                sb.append("DESC");
                             } else {
-                                var3.append("ASC");
+                                sb.append("ASC");
                             }
                         }
                     }
                 }
             }
-
-            String var11 = var3.toString().toUpperCase();
-            return var11.hashCode();
+            String result = sb.toString().toUpperCase();
+            return result.hashCode();
         } else {
             return 0;
         }
     }
 
-    public static String getPrimaryValueAsString(Object[] var0) {
-        if (var0 != null && var0.length != 0) {
-            StringBuilder var1 = new StringBuilder();
-            Object[] var2 = var0;
-            int var3 = var0.length;
-
-            for (int var4 = 0; var4 < var3; ++var4) {
-                Object var5 = var2[var4];
-                var1.append(var5);
-                var1.append("|");
+    public static String getPrimaryValueAsString(Object[] os) {
+        if (os != null && os.length != 0) {
+            SB sb = New.sb();
+            for (int i = 0, L = os.length; i < L; ++i) {
+                Object o = os[i];
+                sb.append(o);
+                sb.append("|");
             }
-
-            return String.valueOf(var1.toString().hashCode());
+            return String.valueOf(sb.toString().hashCode());
         } else {
             return null;
         }
     }
 
-    public static String[] upperCasePrimaryKeys(String[] var0) {
-        String[] var1 = new String[var0.length];
-        int var2 = 0;
+    public static String[] upperCasePrimaryKeys(String[] pks) {
+        String[] keys = new String[pks.length];
 
-        for (int var3 = var0.length; var2 < var3; ++var2) {
-            var1[var2] = var0[var2].toUpperCase();
+        for (int i = 0, L = pks.length; i < L; ++i) {
+            keys[i] = pks[i].toUpperCase();
         }
 
-        return var1;
+        return keys;
     }
 
-    public static String getPrimaryValueByWheres(String[] var0, Where[] var1) {
-        if (var1.length != var0.length) {
+    public static String getPrimaryValueByWheres(String[] pks, Where[] wheres) {
+        if (wheres.length != pks.length) {
             return null;
         } else {
-            StringBuilder var2 = new StringBuilder();
-            String[] var3 = var0;
-            int var4 = var0.length;
-
-            for (int var5 = 0; var5 < var4; ++var5) {
-                String var6 = var3[var5];
+            SB sb = New.sb();
+            for (int i = 0, L = pks.length; i < L; ++i) {
+                String pk = pks[i];
                 boolean var7 = false;
-                Where[] var8 = var1;
-                int var9 = var1.length;
-
-                for (int var10 = 0; var10 < var9; ++var10) {
-                    Where var11 = var8[var10];
-                    if (var6.equals(var11.getK())) {
-                        if (!"=".equals(var11.getO())) {
+                for (int k = 0, len = wheres.length; k < len; ++k) {
+                    Where where = wheres[k];
+                    if (pk.equals(where.getK())) {
+                        if (!"=".equals(where.getO())) {
                             return null;
                         }
-
-                        var2.append(var11.getV());
-                        var2.append("|");
+                        sb.append(where.getV());
+                        sb.append("|");
                         var7 = true;
                         break;
                     }
@@ -251,52 +232,46 @@ public final class CacheHelper {
                 }
             }
 
-            return String.valueOf(var2.toString().hashCode());
+            return String.valueOf(sb.toString().hashCode());
         }
     }
 
-    public static String getPrimaryValueByKeys(Map<String, MethodInfo> var0, String[] var1, Object var2) throws Exception {
-        if (var2 == null) {
+    public static String getPrimaryValueByKeys(Map<String, MethodInfo> getMethodInfos, String[] pks, Object o) throws Exception {
+        if (o == null) {
             return null;
         } else {
-            StringBuilder var3 = new StringBuilder();
-            String[] var4 = var1;
-            int var5 = var1.length;
+            SB sb = New.sb();
 
-            for (int var6 = 0; var6 < var5; ++var6) {
-                String var7 = var4[var6];
-                MethodInfo var8 = (MethodInfo) var0.get(var7);
-                var3.append(var8.getMethod().invoke(var2));
-                var3.append("|");
+            for (int i = 0, L = pks.length; i < L; ++i) {
+                String pk = pks[i];
+                MethodInfo info = getMethodInfos.get(pk);
+                sb.append(info.getMethod().invoke(o));
+                sb.append("|");
             }
 
-            return String.valueOf(var3.toString().hashCode());
+            return String.valueOf(sb.toString().hashCode());
         }
     }
 
-    public static ValueMatcher[] getWhereMatchers(Map<String, MethodInfo> var0, Where[] var1) throws Exception {
-        ValueMatcher[] var2 = new ValueMatcher[var1.length];
-        int var3 = 0;
+    public static ValueMatcher[] getWhereMatchers(Map<String, MethodInfo> getMethodInfos, Where[] wheres) throws Exception {
+        ValueMatcher[] matchers = new ValueMatcher[wheres.length];
 
-        for (int var4 = var1.length; var3 < var4; ++var3) {
-            ValueMatcher var5 = ValueMatcher.getValueMatcher(var0, var1[var3]);
-            if (var5 == null) {
-                throw new Exception("Where condition error: " + getWhereString(var1));
+        for (int i = 0, L = wheres.length; i < L; ++i) {
+            ValueMatcher matcher = ValueMatcher.getValueMatcher(getMethodInfos, wheres[i]);
+            if (matcher == null) {
+                throw new Exception("Where condition error: " + getWhereString(wheres));
             }
-
-            var2[var3] = var5;
+            matchers[i] = matcher;
         }
 
-        return var2;
+        return matchers;
     }
 
-    public static boolean matchCondition(ValueMatcher[] var0, Object var1) throws Exception {
-        ValueMatcher[] var2 = var0;
-        int var3 = var0.length;
+    public static boolean matchCondition(ValueMatcher[] matchers, Object o) throws Exception {
 
-        for (int var4 = 0; var4 < var3; ++var4) {
-            ValueMatcher var5 = var2[var4];
-            if (!var5.match(var1)) {
+        for (int i = 0, L = matchers.length; i < L; ++i) {
+            ValueMatcher matcher = matchers[i];
+            if (!matcher.match(o)) {
                 return false;
             }
         }
@@ -304,33 +279,28 @@ public final class CacheHelper {
         return true;
     }
 
-    public static void sortArray(Map<String, MethodInfo> var0, KeyValue[] var1, Object[] var2) {
-        if (var1 != null && var1.length != 0 && var2 != null && var2.length >= 2) {
-            int var3 = var1.length;
-            final ValueSorter[] var4 = new ValueSorter[var3];
+    public static void sortArray(Map<String, MethodInfo> getMethodInfos, KeyValue[] kvs, Object[] os) {
+        if (kvs != null && kvs.length != 0 && os != null && os.length >= 2) {
+            final ValueSorter[] sorters = new ValueSorter[kvs.length];
 
-            for (int var5 = 0; var5 < var3; ++var5) {
-                var4[var5] = ValueSorter.getValueSorter(var0,var1[var5]);
+            for (int i = 0, L = kvs.length; i < L; ++i) {
+                sorters[i] = ValueSorter.getValueSorter(getMethodInfos, kvs[i]);
             }
 
-            Arrays.sort(var2, new Comparator<Object>() {
-                public int compare(Object var1, Object var2) {
-                    ValueSorter[] var3 = var4;
-                    int var4x = var3.length;
+            Arrays.sort(os, new Comparator<Object>() {
+                public int compare(Object o1, Object o2) {
 
-                    for (int var5 = 0; var5 < var4x; ++var5) {
-                        ValueSorter var6 = var3[var5];
-                        if (var6 != null) {
-                            if (var6.matchAsc(var1, var2)) {
+                    for (int i = 0, L = sorters.length; i < L; ++i) {
+                        ValueSorter sorter = sorters[i];
+                        if (sorter != null) {
+                            if (sorter.matchAsc(o1, o2)) {
                                 return -1;
                             }
-
-                            if (var6.matchDesc(var1, var2)) {
+                            if (sorter.matchDesc(o1, o2)) {
                                 return 1;
                             }
                         }
                     }
-
                     return 0;
                 }
             });

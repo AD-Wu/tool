@@ -54,7 +54,6 @@ public class ValueMatcher {
             Method[] methods;
             if (props.length > 1) {
                 List<Method> methodList = New.list();
-
                 for (int i = 0, L = props.length; i < L; ++i) {
                     String prop = props[i];
                     MethodInfo info = getMethodInfos.get(prop);
@@ -62,11 +61,9 @@ public class ValueMatcher {
                         methodList.add(info.getMethod());
                     }
                 }
-
                 if (methodList.size() == 0) {
                     return null;
                 }
-
                 methods = methodList.toArray(new Method[methodList.size()]);
             } else {
                 methods = new Method[1];
@@ -74,10 +71,8 @@ public class ValueMatcher {
                 if (firstMethodInfo == null) {
                     return null;
                 }
-
                 methods[0] = firstMethodInfo.getMethod();
             }
-
             Object value = where.getV();
             Class<?> returnType = methods[0].getReturnType();
             IComparer comparer = null;

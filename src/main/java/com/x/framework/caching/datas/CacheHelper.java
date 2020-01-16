@@ -1,16 +1,13 @@
 package com.x.framework.caching.datas;
 
-import com.ax.commons.collection.KeyValue;
-import com.ax.commons.collection.Where;
-import com.ax.commons.utils.ConvertHelper;
-import com.ax.framework.caching.datas.ValueMatcher;
-import com.ax.framework.caching.datas.ValueSorter;
-import com.ax.framework.caching.datas.ValueUpdater;
-import com.ax.framework.caching.methods.MethodInfo;
+import com.x.commons.collection.KeyValue;
+import com.x.commons.collection.Where;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.bean.SB;
 import com.x.commons.util.collection.XArrays;
+import com.x.commons.util.convert.Converts;
 import com.x.commons.util.date.DateTimes;
+import com.x.framework.caching.methods.MethodInfo;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -210,7 +207,7 @@ public final class CacheHelper {
         }
     }
 
-    public static String[] upperCasePromaryKeys(String[] var0) {
+    public static String[] upperCasePrimaryKeys(String[] var0) {
         String[] var1 = new String[var0.length];
         int var2 = 0;
 
@@ -310,16 +307,15 @@ public final class CacheHelper {
     public static void sortArray(Map<String, MethodInfo> var0, KeyValue[] var1, Object[] var2) {
         if (var1 != null && var1.length != 0 && var2 != null && var2.length >= 2) {
             int var3 = var1.length;
-            final com.ax.framework.caching.datas.ValueSorter[] var4 = new com.ax.framework.caching.datas.ValueSorter[var3];
+            final ValueSorter[] var4 = new ValueSorter[var3];
 
             for (int var5 = 0; var5 < var3; ++var5) {
-                var4[var5] = com.ax.framework.caching.datas.ValueSorter.getValueSorter(var0,
-                                                                                       var1[var5]);
+                var4[var5] = ValueSorter.getValueSorter(var0,var1[var5]);
             }
 
             Arrays.sort(var2, new Comparator<Object>() {
                 public int compare(Object var1, Object var2) {
-                    com.ax.framework.caching.datas.ValueSorter[] var3 = var4;
+                    ValueSorter[] var3 = var4;
                     int var4x = var3.length;
 
                     for (int var5 = 0; var5 < var4x; ++var5) {
@@ -341,69 +337,53 @@ public final class CacheHelper {
         }
     }
 
-    public static com.ax.framework.caching.datas.ValueUpdater[] getUpdaters(Map<String, MethodInfo> var0, KeyValue[] var1) throws Exception {
-        com.ax.framework.caching.datas.ValueUpdater[] var2 = new com.ax.framework.caching.datas.ValueUpdater[var1.length];
-        int var3 = 0;
+    public static ValueUpdater[] getUpdaters(Map<String, MethodInfo> var0, KeyValue[] kvs) throws Exception {
+        ValueUpdater[] updaters = new ValueUpdater[kvs.length];
 
-        for (int var4 = var1.length; var3 < var4; ++var3) {
-            KeyValue var5 = var1[var3];
-            String var6 = var5.getK().toUpperCase();
-            MethodInfo var7 = (MethodInfo) var0.get(var6);
-            Method var8 = var7.getMethod();
-            com.ax.framework.caching.datas.ValueUpdater var9 = new ValueUpdater(var6, var8,
-                                                                                fixValueType(var8,
-                                                                                             var5.getV()));
-            var2[var3] = var9;
+        for (int i = 0, L = kvs.length; i < L; ++i) {
+            KeyValue kv = kvs[i];
+            String K = kv.getK().toUpperCase();
+            MethodInfo methodInfo = var0.get(K);
+            Method method = methodInfo.getMethod();
+            ValueUpdater updater = new ValueUpdater(K, method, fixValueType(method, kv.getV()));
+            updaters[i] = updater;
         }
 
-        return var2;
+        return updaters;
     }
 
-    private static Object fixValueType(Method var0, Object var1) {
-        Class[] var2 = var0.getParameterTypes();
-        if (var2.length == 0) {
-            return var1;
+    private static Object fixValueType(Method method, Object converted) {
+        Class[] paramTypes = method.getParameterTypes();
+        if (XArrays.isEmpty(paramTypes)) {
+            return converted;
         } else {
-            Class var3 = var2[0];
-            if (var3.equals(String.class)) {
-                if (var1 != null) {
-                    return var1.toString();
-                }
-            } else {
-                if (var3.equals(Integer.TYPE) || var3.equals(Integer.class)) {
-                    return ConvertHelper.toInt(var1);
-                }
+            Class<?> firstParamType = paramTypes[0];
+            int type = ClassCode.getType(firstParamType);
+            switch (type) {
+                case ClassCode.BYTE:
+                    return Converts.toByte(converted);
+                case ClassCode.SHORT:
+                    return Converts.toShort(converted);
+                case ClassCode.INT:
+                    return Converts.toInt(converted);
+                case ClassCode.LONG:
+                    return Converts.toLong(converted);
+                case ClassCode.FLOAT:
+                    return Converts.toFloat(converted);
+                case ClassCode.DOUBLE:
+                    return Converts.toDouble(converted);
+                case ClassCode.BOOLEAN:
+                    return Converts.toBoolean(converted);
+                case ClassCode.STRING:
+                    return String.valueOf(converted);
+                case ClassCode.DATE:
+                    return Converts.toDate(converted);
+                case ClassCode.LOCAL_DATE_TIME:
+                    return Converts.toLocalDateTime(converted);
+                default:
+                    return converted;
 
-                if (var3.equals(Short.TYPE) || var3.equals(Short.class)) {
-                    return ConvertHelper.toShort(var1);
-                }
-
-                if (var3.equals(Boolean.TYPE) || var3.equals(Boolean.class)) {
-                    return ConvertHelper.toBoolean(var1);
-                }
-
-                if (var3.equals(Long.TYPE) || var3.equals(Long.class)) {
-                    return ConvertHelper.toLong(var1);
-                }
-
-                if (var3.equals(Float.TYPE) || var3.equals(Float.class)) {
-                    return ConvertHelper.toFloat(var1);
-                }
-
-                if (var3.equals(Double.TYPE) || var3.equals(Double.class)) {
-                    return ConvertHelper.toDouble(var1);
-                }
-
-                if (var3.equals(Date.class)) {
-                    if (var1 != null) {
-                        return ConvertHelper.toDate(var1);
-                    }
-                } else if (var3.equals(Byte.TYPE) || var3.equals(Byte.class)) {
-                    return ConvertHelper.toByte(var1);
-                }
             }
-
-            return var1;
         }
     }
 }

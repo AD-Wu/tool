@@ -1,9 +1,12 @@
 package com.x.framework.caching.datas.matchers;
 
+import com.x.commons.util.bean.New;
+
 import java.text.Collator;
+import java.util.Map;
 
 public enum StringComparer implements IComparer<String> {
-    EQUALS {
+    EQUALS("=") {
         @Override
         public boolean compare(String first, String second) {
             if (first == second) {
@@ -14,13 +17,13 @@ public enum StringComparer implements IComparer<String> {
             return false;
         }
     },
-    NO_EQUALS {
+    NO_EQUALS("<>") {
         @Override
         public boolean compare(String first, String second) {
             return !EQUALS.compare(first, second);
         }
     },
-    GREATER {
+    GREATER(">") {
         @Override
         public boolean compare(String first, String second) {
             if (first == second) {
@@ -35,7 +38,7 @@ public enum StringComparer implements IComparer<String> {
         }
     },
 
-    GREATER_EQUALS {
+    GREATER_EQUALS(">=") {
         @Override
         public boolean compare(String first, String second) {
             if (first == second) {
@@ -49,7 +52,7 @@ public enum StringComparer implements IComparer<String> {
             }
         }
     },
-    LESS {
+    LESS("<") {
         @Override
         public boolean compare(String first, String second) {
             if (first == second) {
@@ -63,7 +66,7 @@ public enum StringComparer implements IComparer<String> {
             }
         }
     },
-    LESS_EQUALS {
+    LESS_EQUALS("<=") {
         @Override
         public boolean compare(String first, String second) {
             if (first == second) {
@@ -79,4 +82,23 @@ public enum StringComparer implements IComparer<String> {
     };
 
     private static final Collator LOCAL = Collator.getInstance();
+
+    private final String operator;
+
+    private StringComparer(String operator) {
+        this.operator = operator;
+    }
+
+    private static final Map<String, IComparer> map = New.concurrentMap();
+
+    public static IComparer getComparer(String operator) {
+        return map.get(operator);
+    }
+
+    static {
+        StringComparer[] comparers = values();
+        for (StringComparer comparer : comparers) {
+            map.put(comparer.operator, comparer);
+        }
+    }
 }

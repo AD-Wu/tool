@@ -26,7 +26,7 @@ public final class ValueSorter {
         this.desc = desc;
     }
 
-    public boolean MatchAsc(Object o1, Object o2) {
+    public boolean matchAsc(Object o1, Object o2) {
         if (o1 == o2) {
             return false;
         } else if (o1 == null && o2 != null) {
@@ -43,7 +43,7 @@ public final class ValueSorter {
         }
     }
 
-    public boolean MatchDesc(Object o1, Object o2) {
+    public boolean matchDesc(Object o1, Object o2) {
         if (o1 == o2) {
             return false;
         } else if (o1 == null && o2 != null) {
@@ -65,7 +65,7 @@ public final class ValueSorter {
      * @param kv         key=prop,value=asc|desc
      * @return
      */
-    public static ValueSorter newInstance(Map<String, MethodInfo> getPropMap, KeyValue kv) {
+    public static ValueSorter getValueSorter(Map<String, MethodInfo> getPropMap, KeyValue kv) {
         // 判断有效性
         if (kv == null || Strings.isNull(kv.getK())) {
             return null;
@@ -140,4 +140,5 @@ public final class ValueSorter {
         }
         return new ValueSorter(method, asc, desc);
     }
+
 }

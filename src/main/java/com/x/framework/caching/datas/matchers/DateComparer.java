@@ -1,9 +1,12 @@
 package com.x.framework.caching.datas.matchers;
 
+import com.x.commons.util.bean.New;
+
 import java.util.Date;
+import java.util.Map;
 
 public enum DateComparer implements IComparer<Date> {
-    EQUALS {
+    EQUALS("=") {
         @Override
         public boolean compare(Date first, Date second) {
             if (first == second) {
@@ -14,13 +17,13 @@ public enum DateComparer implements IComparer<Date> {
             return false;
         }
     },
-    NO_EQUALS {
+    NO_EQUALS("<>") {
         @Override
         public boolean compare(Date first, Date second) {
             return !EQUALS.compare(first, second);
         }
     },
-    GREATER {
+    GREATER(">") {
         @Override
         public boolean compare(Date first, Date second) {
             if (first == second) {
@@ -35,7 +38,7 @@ public enum DateComparer implements IComparer<Date> {
         }
     },
 
-    GREATER_EQUALS {
+    GREATER_EQUALS(">=") {
         @Override
         public boolean compare(Date first, Date second) {
             if (first == second) {
@@ -49,7 +52,7 @@ public enum DateComparer implements IComparer<Date> {
             }
         }
     },
-    LESS {
+    LESS("<") {
         @Override
         public boolean compare(Date first, Date second) {
             if (first == second) {
@@ -63,7 +66,7 @@ public enum DateComparer implements IComparer<Date> {
             }
         }
     },
-    LESS_EQUALS {
+    LESS_EQUALS("<=") {
         @Override
         public boolean compare(Date first, Date second) {
             if (first == second) {
@@ -77,4 +80,24 @@ public enum DateComparer implements IComparer<Date> {
             }
         }
     };
+
+
+    private final String operator;
+
+    private DateComparer(String operator) {
+        this.operator = operator;
+    }
+
+    private static final Map<String, IComparer> map = New.concurrentMap();
+
+    public static IComparer getComparer(String operator) {
+        return map.get(operator);
+    }
+
+    static {
+        DateComparer[] comparers = values();
+        for (DateComparer comparer : comparers) {
+            map.put(comparer.operator, comparer);
+        }
+    }
 }

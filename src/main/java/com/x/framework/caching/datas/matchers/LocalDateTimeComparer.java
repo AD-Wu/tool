@@ -1,6 +1,9 @@
 package com.x.framework.caching.datas.matchers;
 
+import com.x.commons.util.bean.New;
+
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * @Desc：
@@ -8,7 +11,7 @@ import java.time.LocalDateTime;
  * @LocalDateTime：2020/1/14 18:06
  */
 public enum LocalDateTimeComparer implements IComparer<LocalDateTime> {
-    EQUALS {
+    EQUALS("=") {
         @Override
         public boolean compare(LocalDateTime first, LocalDateTime second) {
             if (first == second) {
@@ -19,13 +22,13 @@ public enum LocalDateTimeComparer implements IComparer<LocalDateTime> {
             return false;
         }
     },
-    NO_EQUALS {
+    NO_EQUALS("<>") {
         @Override
         public boolean compare(LocalDateTime first, LocalDateTime second) {
             return !EQUALS.compare(first, second);
         }
     },
-    GREATER {
+    GREATER(">") {
         @Override
         public boolean compare(LocalDateTime first, LocalDateTime second) {
             if (first == second) {
@@ -40,7 +43,7 @@ public enum LocalDateTimeComparer implements IComparer<LocalDateTime> {
         }
     },
 
-    GREATER_EQUALS {
+    GREATER_EQUALS(">=") {
         @Override
         public boolean compare(LocalDateTime first, LocalDateTime second) {
             if (first == second) {
@@ -54,7 +57,7 @@ public enum LocalDateTimeComparer implements IComparer<LocalDateTime> {
             }
         }
     },
-    LESS {
+    LESS("<") {
         @Override
         public boolean compare(LocalDateTime first, LocalDateTime second) {
             if (first == second) {
@@ -68,7 +71,7 @@ public enum LocalDateTimeComparer implements IComparer<LocalDateTime> {
             }
         }
     },
-    LESS_EQUALS {
+    LESS_EQUALS("<=") {
         @Override
         public boolean compare(LocalDateTime first, LocalDateTime second) {
             if (first == second) {
@@ -82,4 +85,23 @@ public enum LocalDateTimeComparer implements IComparer<LocalDateTime> {
             }
         }
     };
+
+    private final String operator;
+
+    private LocalDateTimeComparer(String operator) {
+        this.operator = operator;
+    }
+
+    private static final Map<String, IComparer> map = New.concurrentMap();
+
+    public static IComparer getComparer(String operator) {
+        return map.get(operator);
+    }
+
+    static {
+        LocalDateTimeComparer[] comparers = values();
+        for (LocalDateTimeComparer comparer : comparers) {
+            map.put(comparer.operator, comparer);
+        }
+    }
 }

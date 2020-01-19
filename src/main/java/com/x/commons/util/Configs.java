@@ -91,7 +91,7 @@ public final class Configs {
         LocalDateTime time = get("user.birthday", LocalDateTime.class);
         System.out.println(time);
         System.out.println(props);
-
+    
         Date released = get("released", Date.class);
         System.out.println(released);
     

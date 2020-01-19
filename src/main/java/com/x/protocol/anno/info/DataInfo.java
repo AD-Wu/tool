@@ -23,6 +23,7 @@ public final class DataInfo {
     private boolean history;
     private String table;
     private String version;
+    private String[] pks;
 
     private Class<?> selfClass;
     private FieldInfo[] fieldInfos;

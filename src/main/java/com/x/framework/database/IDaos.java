@@ -1,8 +1,7 @@
 package com.x.framework.database;
 
-import com.ax.commons.database.core.IDatabase;
-import com.ax.framework.database.IDao;
-import com.ax.framework.database.core.ITableInfoGetter;
+import com.x.commons.database.core.IDatabase;
+import com.x.framework.database.core.ITableInfoGetter;
 
 /**
  * @Desc：
@@ -10,7 +9,7 @@ import com.ax.framework.database.core.ITableInfoGetter;
  * @Date：2020/1/19 15:46
  */
 public interface IDaos {
-    <T> com.x.framework.database.IDao<T> getDao(Class<T> clazz);
+    <T> IDao<T> getDao(Class<T> clazz);
 
     <T> IDao<T> getDao(Class<T> clazz, ITableInfoGetter<T> tableInfoGetter);
 

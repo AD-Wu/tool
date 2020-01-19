@@ -1,10 +1,6 @@
 package com.x.framework.database;
 
 import com.ax.commons.database.pool.PoolManager;
-import com.ax.framework.database.CachingDao;
-import com.ax.framework.database.DaoManager;
-import com.ax.framework.database.core.SqlInfo;
-import com.ax.protocol.core.DataConfig;
 import com.x.commons.database.DatabaseAccess;
 import com.x.commons.database.core.IDatabase;
 import com.x.commons.database.pool.DatabaseType;
@@ -17,7 +13,9 @@ import com.x.commons.util.convert.Converts;
 import com.x.commons.util.log.Logs;
 import com.x.framework.caching.datas.CacheManager;
 import com.x.framework.database.core.ITableInfoGetter;
+import com.x.framework.database.core.SQLInfo;
 import com.x.framework.database.core.TableInfo;
+import com.x.protocol.anno.info.DataInfo;
 import com.x.protocol.config.DatabaseConfig;
 import com.x.protocol.core.IProtocol;
 
@@ -39,15 +37,13 @@ public class Daos implements IDaos {
     public Daos(String name, DatabaseConfig config) throws Exception {
         this.name = name;
         PoolConfig poolConfig = new PoolConfig();
-        poolConfig.setConnectionString(config.getConnString());
-        poolConfig.setDriverClass(config.getDriverClass());
+        poolConfig.setUrl(config.getConnString());
+        poolConfig.setDriver(config.getDriverClass());
         poolConfig.setInitialSize(Converts.toInt(config.getInitialSize(), 0));
         poolConfig.setMaxActive(Converts.toInt(config.getMaxActive(), 0));
-        poolConfig.setMaxIdle(Converts.toInt(config.getMaxIdle(), 8));
         poolConfig.setMaxWait(Converts.toLong(config.getMaxWait(), 60000L));
         poolConfig.setMinEvictableIdleTimeMillis(Converts.toLong(config.getMinEvictableIdleTimeMillis(), 1800000L));
         poolConfig.setMinIdle(Converts.toInt(config.getMinIdle(), 5));
-        poolConfig.setNumTestsPerEvictionRun(Converts.toInt(config.getNumTestsPerEvictionRun(), 20));
         poolConfig.setPassword(config.getPassword());
         poolConfig.setPoolName(name);
         poolConfig.setTestOnBorrow(Converts.toBoolean(config.getTestOnBorrow(), false));
@@ -56,7 +52,7 @@ public class Daos implements IDaos {
         poolConfig.setTimeBetweenEvictionRunsMillis(Converts.toLong(config.getTimeBetweenEvictionRunsMillis(), 60000L));
         poolConfig.setType(config.getType());
         poolConfig.setUser(config.getUser());
-        poolConfig.setValidateQuery(config.getValidateQuery());
+        poolConfig.setValidationQuery(config.getValidateQuery());
 
         try {
             Pool pool = Pools.start(poolConfig);
@@ -96,18 +92,18 @@ public class Daos implements IDaos {
                         return dao;
                     }
 
-                    SqlInfo<T> var5 = this.getDaoMethods(clazz, tableInfoGetter);
+                    SQLInfo<T> info = this.getDaoMethods(clazz, tableInfoGetter);
 
                     try {
-                        if (var5.isCaching()) {
-                            dao = new CachingDao(this.protocol, var5);
+                        if (info.isCaching()) {
+                            dao = new CacheDao(this.protocol, info);
                         } else {
-                            dao = new Dao(this.protocol, var5);
+                            dao = new Dao(this.protocol, info);
                         }
 
                         this.daosMap.put(clazz, dao);
-                    } catch (Exception var8) {
-                        var8.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -116,17 +112,17 @@ public class Daos implements IDaos {
         }
     }
 
-    private <T> SqlInfo<T> getDaoMethods(Class<T> clazz, ITableInfoGetter<T> tableInfoGetter) {
+    private <T> SQLInfo<T> getDaoMethods(Class<T> clazz, ITableInfoGetter<T> tableInfoGetter) {
         if (tableInfoGetter == null) {
             tableInfoGetter = new ITableInfoGetter<T>() {
-                public TableInfo getTableInfo(Class<T> var1) {
-                    DataConfig var2 = DaoManager.this.protocol.getDataConfig(var1);
-                    return var2 == null ? null : new TableInfo(var2.getTable(), var2.getPks(), var2.isCaching(), var2.isCachingHistory());
+                public TableInfo getTableInfo(Class<T> clazz) {
+                    DataInfo info = Daos.this.protocol.getDataConfig(clazz);
+                    return info == null ? null : new TableInfo(info.getTable(), info.getPks(), info.isCache(), info.isHistory());
                 }
             };
         }
 
-        return new SqlInfo(clazz, tableInfoGetter.getTableInfo(clazz), this.type);
+        return new SQLInfo(clazz, tableInfoGetter.getTableInfo(clazz), this.type);
     }
 
     public synchronized void stop() {

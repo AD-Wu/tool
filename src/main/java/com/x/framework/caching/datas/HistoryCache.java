@@ -30,7 +30,7 @@ class HistoryCache<T> {
         map.clear();
     }
 
-    T[] getDatas(int key) {
+    T[] get(int key) {
         HistoryData<T> history = map.get(key);
         return history == null ? null : history.getDatas();
     }

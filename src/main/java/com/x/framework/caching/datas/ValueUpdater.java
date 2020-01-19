@@ -31,7 +31,7 @@ public final class ValueUpdater {
      * @param o
      * @throws Exception
      */
-    public void setValueTo(Object o) throws Exception {
+    public void setValue(Object o) throws Exception {
         method.invoke(o, value);
     }
 

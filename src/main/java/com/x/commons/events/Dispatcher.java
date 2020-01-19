@@ -81,6 +81,46 @@ public class Dispatcher {
         }
     }
 
+    public void removeAllListeners() {
+        synchronized(this.lock) {
+            map.clear();
+        }
+    }
+
+    public int dispatch(Event var1) {
+        if (var1 == null) {
+            return 0;
+        } else {
+            Listeners var2 = map.get(var1.getType());
+            if (var2 == null) {
+                return 0;
+            } else {
+                ListenerInfo[] var3 = var2.getListeners();;
+                int var4 = 0;
+                ListenerInfo[] var5 = var3;
+                int var6 = var3.length;
+
+                for(int var7 = 0; var7 < var6; ++var7) {
+                    ListenerInfo var8 = var5[var7];
+                    if (var1.isStopped()) {
+                        break;
+                    }
+
+                    var1.setParams(var8.getParams());
+
+                    try {
+                        var8.getListener().onEvent(var1);
+                        ++var4;
+                    } catch (Exception var10) {
+                        var10.printStackTrace();
+                        var1.setException(var10);
+                    }
+                }
+
+                return var4;
+            }
+        }
+    }
 
     private void addListener(String token, ListenerInfo info) {
         if (!Strings.isNull(token)) {

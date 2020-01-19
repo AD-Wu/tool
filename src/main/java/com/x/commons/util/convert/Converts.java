@@ -342,6 +342,12 @@ public final class Converts {
         return "TRUE".equals(t) || "Y".equals(t) || "YES".equals(t) || ("1".equals(t));
     }
 
+    public static boolean toBoolean(Object value,boolean defaultValue) {
+        if (value == null) {return false;}
+        String t = Strings.toUppercase(value);
+        return "TRUE".equals(t) || "Y".equals(t) || "YES".equals(t) || ("1".equals(t));
+    }
+
     public static boolean toBoolean(@NonNull byte[] bs) { return bs[0] == 0 ? false : true;}
 
     public static boolean toBoolean(@NonNull byte[] bs, int expect) { return expect == toInt(bs);}

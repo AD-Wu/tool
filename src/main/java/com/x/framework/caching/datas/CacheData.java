@@ -470,22 +470,22 @@ public class CacheData<T> {
         }
     }
 
-    T[] getPage(int var1, int var2, Where[] wheres, KeyValue[] kvs) throws Exception {
+    T[] getPage(int var1, int pageSize, Where[] wheres, KeyValue[] kvs) throws Exception {
         if (var1 <= 0) {
             var1 = 1;
         }
 
-        if (var2 <= 0) {
-            var2 = 1;
+        if (pageSize <= 0) {
+            pageSize = 1;
         }
 
-        int var5 = (var1 - 1) * var2;
+        int var5 = (var1 - 1) * pageSize;
         int dataSize = this.datas.size();
         if (var5 < dataSize && dataSize != 0) {
             int cacheKey = 0;
             T[] historyDatas;
             if (this.history != null && this.history.size() > 0) {
-                cacheKey = CacheHelper.getHistoryCacheKey("page|" + var1 + "|" + var2, wheres, kvs);
+                cacheKey = CacheHelper.getHistoryCacheKey("page|" + var1 + "|" + pageSize, wheres, kvs);
                 historyDatas = this.history.get(cacheKey);
                 if (historyDatas != null) {
                     return historyDatas;
@@ -511,28 +511,28 @@ public class CacheData<T> {
                     return (T[]) Array.newInstance(this.dataClass, 0);
                 }
 
-                if (var5 + var2 > dataSize) {
-                    var2 = dataSize - var5;
+                if (var5 + pageSize > dataSize) {
+                    pageSize = dataSize - var5;
                 }
 
-                if (var2 < 1) {
+                if (pageSize < 1) {
                     return (T[]) Array.newInstance(this.dataClass, 0);
                 }
 
                 historyDatas = (T[]) Array.newInstance(this.dataClass, dataSize);
                 historyDatas = dataList.toArray(historyDatas);
             } else {
-                if (var5 + var2 > datas.length) {
-                    var2 = datas.length - var5;
+                if (var5 + pageSize > datas.length) {
+                    pageSize = datas.length - var5;
                 }
 
-                if (var2 < 1) {
+                if (pageSize < 1) {
                     return (T[]) Array.newInstance(this.dataClass, 0);
                 }
 
                 if (kvs == null || kvs.length == 0) {
-                    historyDatas = (T[]) Array.newInstance(this.dataClass, var2);
-                    System.arraycopy(datas, var5, historyDatas, 0, var2);
+                    historyDatas = (T[]) Array.newInstance(this.dataClass, pageSize);
+                    System.arraycopy(datas, var5, historyDatas, 0, pageSize);
                     if (this.history != null) {
                         this.history.put(cacheKey, historyDatas);
                     }
@@ -545,8 +545,8 @@ public class CacheData<T> {
             }
 
             CacheHelper.sortArray(this.methods.getMethodsGetMap(), kvs, historyDatas);
-            T[] resultDatas = (T[]) Array.newInstance(this.dataClass, var2);
-            System.arraycopy(historyDatas, var5, resultDatas, 0, var2);
+            T[] resultDatas = (T[]) Array.newInstance(this.dataClass, pageSize);
+            System.arraycopy(historyDatas, var5, resultDatas, 0, pageSize);
             if (this.history != null) {
                 this.history.put(cacheKey, resultDatas);
             }

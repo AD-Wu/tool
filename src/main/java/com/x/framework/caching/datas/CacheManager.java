@@ -172,12 +172,12 @@ public final class CacheManager {
         }
     }
 
-    public static <T> T[] getPage(Class<T> dataClass, int var1, int var2, Where[] wheres, KeyValue[] kvs) throws Exception {
+    public static <T> T[] getPage(Class<T> dataClass, int var1, int pageSize, Where[] wheres, KeyValue[] kvs) throws Exception {
         if (dataClass == null) {
             return null;
         } else {
             CacheData cache = cacheMap.get(dataClass);
-            return cache == null ? null : (T[])cache.getPage(var1, var2, wheres, kvs);
+            return cache == null ? null : (T[])cache.getPage(var1, pageSize, wheres, kvs);
         }
     }
 

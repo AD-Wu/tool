@@ -10,7 +10,7 @@ import com.ax.framework.database.core.ITableInfoGetter;
  * @Date：2020/1/19 15:46
  */
 public interface IDaos {
-    <T> IDao<T> getDao(Class<T> clazz);
+    <T> com.x.framework.database.IDao<T> getDao(Class<T> clazz);
 
     <T> IDao<T> getDao(Class<T> clazz, ITableInfoGetter<T> tableInfoGetter);
 

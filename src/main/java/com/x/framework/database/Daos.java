@@ -1,6 +1,5 @@
 package com.x.framework.database;
 
-import com.ax.commons.database.pool.PoolManager;
 import com.x.commons.database.DatabaseAccess;
 import com.x.commons.database.core.IDatabase;
 import com.x.commons.database.pool.DatabaseType;
@@ -130,7 +129,7 @@ public class Daos implements IDaos {
             this.isStopped = true;
 
             try {
-                PoolManager.stop(this.name);
+                Pools.stop(this.name);
             } catch (Exception e) {
                 e.printStackTrace();
             }

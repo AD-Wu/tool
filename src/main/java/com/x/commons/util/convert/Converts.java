@@ -343,9 +343,9 @@ public final class Converts {
     }
 
     public static boolean toBoolean(Object value,boolean defaultValue) {
-        if (value == null) {return false;}
+        if (value == null) {return defaultValue;}
         String t = Strings.toUppercase(value);
-        return "TRUE".equals(t) || "Y".equals(t) || "YES".equals(t) || ("1".equals(t));
+        return "TRUE".equals(t) || "Y".equals(t) || "YES".equals(t) || ("1".equals(t))||defaultValue;
     }
 
     public static boolean toBoolean(@NonNull byte[] bs) { return bs[0] == 0 ? false : true;}

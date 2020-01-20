@@ -26,7 +26,7 @@ import java.util.Map;
  * @Date：2020/1/19 17:56
  */
 public class Daos implements IDaos {
-    private final Map<Class<?>, IDao> daosMap = New.map();
+    private final Map<Class, IDao> daosMap = New.map();
     private final Object daosLock = new Object();
     private final String name;
     private IProtocol protocol;
@@ -36,21 +36,21 @@ public class Daos implements IDaos {
     public Daos(String name, DatabaseConfig config) throws Exception {
         this.name = name;
         PoolConfig poolConfig = new PoolConfig();
-        poolConfig.setUrl(config.getConnString());
+        poolConfig.setPoolName(name);
+        poolConfig.setType(config.getType());
+        poolConfig.setUrl(config.getURL());
         poolConfig.setDriver(config.getDriverClass());
+        poolConfig.setUser(config.getUser());
+        poolConfig.setPassword(config.getPassword());
         poolConfig.setInitialSize(Converts.toInt(config.getInitialSize(), 0));
         poolConfig.setMaxActive(Converts.toInt(config.getMaxActive(), 0));
         poolConfig.setMaxWait(Converts.toLong(config.getMaxWait(), 60000L));
         poolConfig.setMinEvictableIdleTimeMillis(Converts.toLong(config.getMinEvictableIdleTimeMillis(), 1800000L));
         poolConfig.setMinIdle(Converts.toInt(config.getMinIdle(), 5));
-        poolConfig.setPassword(config.getPassword());
-        poolConfig.setPoolName(name);
         poolConfig.setTestOnBorrow(Converts.toBoolean(config.getTestOnBorrow(), false));
         poolConfig.setTestOnReturn(Converts.toBoolean(config.getTestOnReturn(), false));
         poolConfig.setTestWhileIdle(Converts.toBoolean(config.getTestWhileIdle(), true));
         poolConfig.setTimeBetweenEvictionRunsMillis(Converts.toLong(config.getTimeBetweenEvictionRunsMillis(), 60000L));
-        poolConfig.setType(config.getType());
-        poolConfig.setUser(config.getUser());
         poolConfig.setValidationQuery(config.getValidateQuery());
 
         try {
@@ -107,7 +107,7 @@ public class Daos implements IDaos {
                 }
             }
 
-            return (IDao)dao;
+            return dao;
         }
     }
 

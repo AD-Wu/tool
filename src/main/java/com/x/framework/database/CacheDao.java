@@ -264,19 +264,19 @@ public class CacheDao<T> implements IDao<T> {
     }
 
     @Override
-    public T[] getPage(int var1, int pageSize, Where[] wheres, KeyValue[] kvs) throws Exception {
-        return CacheManager.getPage(this.dataClass, var1, pageSize, wheres, kvs);
+    public T[] getPage(int page, int pageSize, Where[] wheres, KeyValue[] kvs) throws Exception {
+        return CacheManager.getPage(this.dataClass, page, pageSize, wheres, kvs);
     }
 
     @Override
-    public int update(KeyValue[] kvs, Where[] wheres) throws Exception {
+    public int update(KeyValue[] updates, Where[] wheres) throws Exception {
         CacheData<T> cacheData = CacheManager.lock(this.dataClass);
 
         int count = -1;
         try {
-            count = this.dao.update(kvs, wheres);
+            count = this.dao.update(updates, wheres);
             if (count != -1) {
-                CacheManager.update(cacheData, kvs, wheres);
+                CacheManager.update(cacheData, updates, wheres);
             }
 
         } finally {
@@ -317,12 +317,12 @@ public class CacheDao<T> implements IDao<T> {
     }
 
     @Override
-    public T[] getPage(int var1, int pageSize, String[] columns, Object[] values, KeyValue[] kvs) throws Exception {
-        return this.getPage(var1, pageSize, Sqls.getWheres(columns, values), kvs);
+    public T[] getPage(int page, int pageSize, String[] columns, Object[] values, KeyValue[] kvs) throws Exception {
+        return this.getPage(page, pageSize, Sqls.getWheres(columns, values), kvs);
     }
 
     @Override
-    public int update(String[] keys, Object[] keyValues, String[] columns, Object[] values) throws Exception {
-        return this.update(Sqls.getUpdates(keys, keyValues), Sqls.getWheres(columns, values));
+    public int update(String[] updates, Object[] keyValues, String[] columns, Object[] values) throws Exception {
+        return this.update(Sqls.getUpdates(updates, keyValues), Sqls.getWheres(columns, values));
     }
 }

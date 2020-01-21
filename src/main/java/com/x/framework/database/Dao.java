@@ -45,7 +45,7 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
     }
 
     @Override
-    public void addCacheListener(String var1, IListener var2) {
+    public void addCacheListener(String token, IListener listener) {
         throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
     }
 
@@ -55,17 +55,17 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
     }
 
     @Override
-    public boolean hasCacheListener(String var1) {
+    public boolean hasCacheListener(String token) {
         throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
     }
 
     @Override
-    public boolean hasCacheListener(String var1, IListener var2) {
+    public boolean hasCacheListener(String token, IListener listener) {
         throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
     }
 
     @Override
-    public void removeCacheListener(String var1) {
+    public void removeCacheListener(String token) {
         throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
     }
 
@@ -75,7 +75,7 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
     }
 
     @Override
-    public void removeCacheListener(String var1, IListener var2) {
+    public void removeCacheListener(String token, IListener listener) {
         throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
     }
 
@@ -262,8 +262,8 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
     }
 
     @Override
-    public T[] getList(Where[] wheres, KeyValue[] kvs) throws Exception {
-        SQLParams sqlParams = sqlInfo.getRetrieve(wheres, kvs);
+    public T[] getList(Where[] wheres, KeyValue[] order) throws Exception {
+        SQLParams sqlParams = sqlInfo.getRetrieve(wheres, order);
         if (sqlParams == null) {
             return null;
         } else {
@@ -281,20 +281,20 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
     }
 
     @Override
-    public T[] getPage(int var1, int pageSize, Where[] wheres, KeyValue[] kvs) throws Exception {
-        SQLParams sqlParams = sqlInfo.getRetrieve(wheres, kvs);
+    public T[] getPage(int page, int pageSize, Where[] wheres, KeyValue[] order) throws Exception {
+        SQLParams sqlParams = sqlInfo.getRetrieve(wheres, order);
         if (sqlParams == null) {
             return null;
         } else {
-            if (var1 <= 0) {
-                var1 = 1;
+            if (page <= 0) {
+                page = 1;
             }
 
             if (pageSize <= 0) {
                 pageSize = 1;
             }
 
-            int totalLength = (var1 - 1) * pageSize;
+            int totalLength = (page - 1) * pageSize;
 
             try {
                 DaoPageReader<T> reader = sqlInfo.getPageReader(pageSize);
@@ -311,8 +311,8 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
     }
 
     @Override
-    public int update(KeyValue[] kvs, Where[] wheres) throws Exception {
-        SQLParams sqlParams = sqlInfo.getUpdate(kvs, wheres);
+    public int update(KeyValue[] updates, Where[] wheres) throws Exception {
+        SQLParams sqlParams = sqlInfo.getUpdate(updates, wheres);
         if (sqlParams == null) {
             return -1;
         } else {
@@ -328,43 +328,43 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
     }
 
     @Override
-    public T add(String[] columns, Object[] values) throws Exception {
-        T data = sqlInfo.createBean(columns, values);
+    public T add(String[] wheres, Object[] values) throws Exception {
+        T data = sqlInfo.createBean(wheres, values);
         return data == null ? null : this.add(data);
     }
 
     @Override
-    public int delete(String[] columns, Object[] values) throws Exception {
-        return this.delete(Sqls.getWheres(columns, values));
+    public int delete(String[] wheres, Object[] values) throws Exception {
+        return this.delete(Sqls.getWheres(wheres, values));
     }
 
     @Override
-    public T getBean(String[] columns, Object[] values) throws Exception {
-        return this.getBean(Sqls.getWheres(columns, values));
+    public T getBean(String[] wheres, Object[] values) throws Exception {
+        return this.getBean(Sqls.getWheres(wheres, values));
     }
 
     @Override
-    public boolean contains(String[] columns, Object[] values) throws Exception {
-        return this.getCount(Sqls.getWheres(columns, values)) > 0;
+    public boolean contains(String[] wheres, Object[] values) throws Exception {
+        return this.getCount(Sqls.getWheres(wheres, values)) > 0;
     }
 
     @Override
-    public int getCount(String[] columns, Object[] values) throws Exception {
-        return this.getCount(Sqls.getWheres(columns, values));
+    public int getCount(String[] wheres, Object[] values) throws Exception {
+        return this.getCount(Sqls.getWheres(wheres, values));
     }
 
     @Override
-    public T[] getList(String[] columns, Object[] values, KeyValue[] kvs) throws Exception {
-        return this.getList(Sqls.getWheres(columns, values), kvs);
+    public T[] getList(String[] wheres, Object[] values, KeyValue[] order) throws Exception {
+        return this.getList(Sqls.getWheres(wheres, values), order);
     }
 
     @Override
-    public T[] getPage(int var1, int pageSize, String[] columns, Object[] values, KeyValue[] kvs) throws Exception {
-        return this.getPage(var1, pageSize, Sqls.getWheres(columns, values), kvs);
+    public T[] getPage(int page, int pageSize, String[] columns, Object[] values, KeyValue[] kvs) throws Exception {
+        return this.getPage(page, pageSize, Sqls.getWheres(columns, values), kvs);
     }
 
     @Override
-    public int update(String[] keys, Object[] keyValues, String[] columns, Object[] values) throws Exception {
-        return this.update(Sqls.getUpdates(keys, keyValues), Sqls.getWheres(columns, values));
+    public int update(String[] updates, Object[] updateValues, String[] wheres, Object[] whereValues) throws Exception {
+        return this.update(Sqls.getUpdates(updates, updateValues), Sqls.getWheres(wheres, whereValues));
     }
 }

@@ -39,7 +39,13 @@ public final class DataInfo {
             this.version = x.version();
             this.selfClass = data;
             init();
-
+        }else{
+            this.doc="";
+            this.cache=false;
+            this.history=false;
+            this.table=data.getSimpleName();
+            this.version="1";
+            this.selfClass=data;
         }
     }
 

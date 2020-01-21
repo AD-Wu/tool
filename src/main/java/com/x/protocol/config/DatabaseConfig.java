@@ -14,7 +14,7 @@ public class DatabaseConfig implements Serializable {
 
     private String driverClass;
 
-    private String connString;
+    private String url;
 
     private String user;
 
@@ -63,12 +63,12 @@ public class DatabaseConfig implements Serializable {
         this.driverClass = driverClass;
     }
 
-    public String getConnString() {
-        return this.connString;
+    public String getURL() {
+        return this.url;
     }
 
-    public void setConnString(String connString) {
-        this.connString = connString;
+    public void setURL(String url) {
+        this.url = url;
     }
 
     public String getUser() {

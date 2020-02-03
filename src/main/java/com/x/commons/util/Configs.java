@@ -8,6 +8,7 @@ import com.x.commons.util.log.Logs;
 import com.x.commons.util.prop.Props;
 import com.x.commons.util.string.Strings;
 import com.x.commons.util.yml.Ymls;
+import com.x.commons.util.yml.test.Config;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -57,6 +58,10 @@ public final class Configs {
                 Logs.get(Configs.class).error(Strings.getExceptionTrace(e));
                 e.printStackTrace();
             }
+        } else {
+            Logs.get(Config.class)
+                    .error("There is no parser of {},you can implements IParser and add the annotation with AutoService&Parser" +
+                           ".", returnType);
         }
         return null;
     }
@@ -91,10 +96,10 @@ public final class Configs {
         LocalDateTime time = get("user.birthday", LocalDateTime.class);
         System.out.println(time);
         System.out.println(props);
-    
+        
         Date released = get("released", Date.class);
         System.out.println(released);
-    
+        
     }
     
 }

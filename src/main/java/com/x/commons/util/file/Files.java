@@ -77,7 +77,10 @@ public final class Files {
     }
     
     /**
-     * 获取项目的根路径，如：E:\DevKit\tool\target\classes
+     * 获取class文件所在根路径
+     * 如：E:\DevKit\tool\target\classes
+     * 测试类："/Users/sunday/Work/tool/target/test-classes/"
+     * 实际类："/Users/sunday/Work/tool/target/classes/"
      *
      * @return
      */
@@ -170,6 +173,18 @@ public final class Files {
         return endWithSP ? APP_PATH + SP : APP_PATH;
     }
     
+    /**
+     * 加上应用所在路径当前缀（getAppPath()+path）<br/>
+     * 如：<br/>
+     * appPath = /Users/sunday/Work/tool/ <br/>
+     * path = resources/upload <br/>
+     * 结果：/Users/sunday/Work/tool/resources/upload <br/>
+     *
+     * @param path      自定义的路径
+     * @param endWithSP 是否以文件分隔符结束
+     *
+     * @return
+     */
     public static String getLocalPath(String path, boolean endWithSP) {
         if (Strings.isNull(path)) {
             return getAppPath(endWithSP);

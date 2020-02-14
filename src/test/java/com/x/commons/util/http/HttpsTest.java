@@ -1,6 +1,7 @@
 package com.x.commons.util.http;
 
 import com.x.commons.enums.Charset;
+import com.x.commons.util.file.Files;
 import com.x.commons.util.http.data.HttpParam;
 import com.x.commons.util.http.data.HttpResult;
 import com.x.commons.util.http.data.Json;
@@ -102,9 +103,32 @@ class HttpsTest {
     @Test
     void download() throws Exception{
         String url = "http://localhost:8080/download";
-        File download = Https.download(url);
-        System.out.println(download.getName());
-        System.out.println(download.getPath());
+        HttpResult download = Https.download(url, null);
+        File file = Https.bytesToFile(download.getResult(), Files.getResourcesPath(), "img.jpg");
+        System.out.println(file.getName());
+        System.out.println(file.getPath());
+    }
+    
+    /**
+     * /Users/sunday/Work/tool/src/main/resources/
+     * /Users/sunday/Work/tool/target/classes/
+     * /Users/sunday/Work/tool/
+     * /Users/sunday/Work/tool/target/classes/com/x/commons/util/http/
+     * /Users/sunday/Work/tool/resources/upload
+     */
+    @Test
+    void path(){
+        String resourcesPath = Files.getResourcesPath();
+        String rootPath = Files.getRootPath();
+        String appPath = Files.getAppPath();
+        String[] jarsPath = Files.getJarsPath();
+        String currentClassPath = Files.getCurrentClassPath(Https.class);
+        String localPath = Files.getLocalPath("resources/upload", false);
+        System.out.println("resourcesPath=" + resourcesPath);
+        System.out.println("rootPath=" + rootPath);
+        System.out.println("appPath=" + appPath);
+        System.out.println("currentClassPath=" + currentClassPath);
+        System.out.println("localPath=" + localPath);
     }
 
 

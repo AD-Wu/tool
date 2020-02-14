@@ -37,6 +37,8 @@ public class PoolTest {
             conn = pool.getConnection();
             String status = pool.getStatus();
             System.out.println(status);
+            System.out.println(conn);
+            System.out.println(conn.getAutoCommit());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

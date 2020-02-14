@@ -5,12 +5,12 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!--<parent>-->
-    <!--<groupId>org.springframework.boot</groupId>-->
-    <!--<artifactId>spring-boot-starter-parent</artifactId>-->
-    <!--<version>2.2.1.RELEASE</version>-->
-    <!--<relativePath/>-->
-    <!--</parent>-->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.1.RELEASE</version>
+        <relativePath/>
+    </parent>
 
     <groupId>com.x</groupId>
     <artifactId>tool</artifactId>
@@ -23,6 +23,48 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- <dependency>-->
+        <!--    <groupId>com.alibaba</groupId>-->
+        <!--    <artifactId>druid-spring-boot-starter</artifactId>-->
+        <!--    <version>1.1.21</version>-->
+        <!-- </dependency>-->
+
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-devtools</artifactId>-->
+        <!--<scope>runtime</scope>-->
+        <!--<optional>true</optional>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-configuration-processor</artifactId>-->
+        <!--<optional>true</optional>-->
+        <!--</dependency>-->
+
+        <!-- 以下跟springboot无关-->
         <dependency>
             <groupId>com.google.auto.service</groupId>
             <artifactId>auto-service</artifactId>
@@ -62,19 +104,6 @@
             <version>3.2.0</version>
         </dependency>
 
-
-        <!-- <dependency>-->
-        <!--     <groupId>org.springframework.boot</groupId>-->
-        <!--     <artifactId>spring-boot-starter-data-jpa</artifactId>-->
-        <!-- </dependency>-->
-
-        <!-- <dependency>-->
-        <!--    <groupId>com.alibaba</groupId>-->
-        <!--    <artifactId>druid-spring-boot-starter</artifactId>-->
-        <!--    <version>1.1.21</version>-->
-        <!-- </dependency>-->
-
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
@@ -98,36 +127,6 @@
             <artifactId>httpclientutil</artifactId>
             <version>1.0.4</version>
         </dependency>
-
-        <!--<dependency>-->
-        <!--<groupId>org.springframework.boot</groupId>-->
-        <!--<artifactId>spring-boot-starter-web</artifactId>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-        <!--<groupId>org.springframework.boot</groupId>-->
-        <!--<artifactId>spring-boot-devtools</artifactId>-->
-        <!--<scope>runtime</scope>-->
-        <!--<optional>true</optional>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-        <!--<groupId>org.springframework.boot</groupId>-->
-        <!--<artifactId>spring-boot-configuration-processor</artifactId>-->
-        <!--<optional>true</optional>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-        <!--<groupId>org.springframework.boot</groupId>-->
-        <!--<artifactId>spring-boot-starter-test</artifactId>-->
-        <!--<scope>test</scope>-->
-        <!--<exclusions>-->
-        <!--<exclusion>-->
-        <!--<groupId>org.junit.vintage</groupId>-->
-        <!--<artifactId>junit-vintage-engine</artifactId>-->
-        <!--</exclusion>-->
-        <!--</exclusions>-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>io.netty</groupId>
@@ -205,10 +204,10 @@
 
     <build>
         <plugins>
-            <!--<plugin>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-maven-plugin</artifactId>-->
-            <!--</plugin>-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

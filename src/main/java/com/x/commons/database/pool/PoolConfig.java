@@ -16,6 +16,8 @@ import java.util.Properties;
 public class PoolConfig {
     
     // ---------------------- 成员变量 ----------------------
+    @Doc("是否使用Druid连接池，默认使用Hikari")
+    private boolean useDruid;
     
     @Doc("数据库URL")
     private String url;
@@ -351,6 +353,23 @@ public class PoolConfig {
     public void setExhaustedAction(boolean exhaustedAction) {
         this.exhaustedAction = exhaustedAction;
     }
+    /**
+     * 获取是否使用Druid连接池，默认使用Hikari
+     *
+     * @return boolean 是否使用Druid连接池，默认使用Hikari
+     */
+    public boolean isUseDruid() {
+        return this.useDruid;
+    }
+    
+    /**
+     * 设置是否使用Druid连接池，默认使用Hikari
+     *
+     * @param useDruid 是否使用Druid连接池，默认使用Hikari
+     */
+    public void setUseDruid(boolean useDruid) {
+        this.useDruid = useDruid;
+    }
     
     public Properties toProperties() throws Exception {
         Field[] fields = Fields.getFields(this.getClass());
@@ -375,10 +394,10 @@ public class PoolConfig {
         config.setPassword(this.getPassword());
         config.setDriverClassName(this.getDriver());
         
-        config.setMinimumIdle(this.getMinIdle());
-        config.setIdleTimeout(this.getMinEvictableIdleTimeMillis());
-        config.setConnectionTimeout(this.getMaxWait());
-        config.setMaximumPoolSize(this.getMaxActive());
+        // config.setMinimumIdle(this.getMinIdle());
+        // config.setIdleTimeout(this.getMinEvictableIdleTimeMillis());
+        // config.setConnectionTimeout(this.getMaxWait());
+        // config.setMaximumPoolSize(this.getMaxActive());
         
         return config;
     }
@@ -401,5 +420,7 @@ public class PoolConfig {
         }
         return name;
     }
+    
+   
     
 }

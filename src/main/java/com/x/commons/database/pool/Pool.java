@@ -1,13 +1,20 @@
 package com.x.commons.database.pool;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.x.commons.local.Locals;
+import com.x.commons.util.bean.New;
+import com.x.commons.util.bean.SB;
 import com.x.commons.util.string.Strings;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.HikariPoolMXBean;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * @Desc TODO
@@ -24,7 +31,9 @@ public class Pool {
     
     // private DruidDataSource pool;
     // 最快连接池，比druid快
-    private HikariDataSource pool;
+    private DataSource pool;
+    
+    private boolean isUseDruid;
     
     Pool(PoolConfig config) throws Exception {
         String type = config.getType();
@@ -72,12 +81,15 @@ public class Pool {
                         
                         this.poolName = poolName;
                         this.connectionURL = url;
+                        this.isUseDruid = config.isUseDruid();
                         // 创建数据源
-                        // Properties prop = config.toProperties();
-                        // this.pool = (DruidDataSource) DruidDataSourceFactory.createDataSource(prop);
-                        
-                        HikariConfig hikariConfig = config.toHikariConfig();
-                        this.pool = new HikariDataSource(hikariConfig);
+                        if (isUseDruid) {
+                            Properties prop = config.toProperties();
+                            this.pool = (DruidDataSource) DruidDataSourceFactory.createDataSource(prop);
+                        } else {
+                            HikariConfig hikariConfig = config.toHikariConfig();
+                            this.pool = new HikariDataSource(hikariConfig);
+                        }
                         if (this.type == DatabaseType.DERBY && url.indexOf("create=true") > 0) {
                             Connection conn = null;
                             
@@ -127,7 +139,13 @@ public class Pool {
     }
     
     void stop() throws Exception {
-        pool.close();
+        if (isUseDruid) {
+            DruidDataSource druidPool = (DruidDataSource) pool;
+            druidPool.close();
+        } else {
+            HikariDataSource hikariPool = (HikariDataSource) pool;
+            hikariPool.close();
+        }
         if (this.type == DatabaseType.DERBY) {
             try {
                 DriverManager.getConnection("jdbc:derby:;shutdown=true");
@@ -142,7 +160,25 @@ public class Pool {
     }
     
     public String getStatus() {
-        return pool.toString();
+        if(isUseDruid){
+            return pool.toString();
+        }else{
+            HikariDataSource hikariPool = (HikariDataSource) pool;
+            HikariPoolMXBean info = hikariPool.getHikariPoolMXBean();
+            int activeConn = info.getActiveConnections();
+            int idleConn = info.getIdleConnections();
+            int totalConn = info.getTotalConnections();
+            int threadsAwaitingConnection = info.getThreadsAwaitingConnection();
+            SB sb = New.sb();
+            sb.append(hikariPool.toString()).append("[").append("\n");
+            sb.append("\t").append("activeConnections:").append(activeConn).append("\n");
+            sb.append("\t").append("idleConnections:").append(idleConn).append("\n");
+            sb.append("\t").append("totalConnections:").append(totalConn).append("\n");
+            sb.append("\t").append("threadsAwaitingConnection:").append(threadsAwaitingConnection).append("\n").append("]");
+    
+            return sb.toString();
+        }
+        
     }
     
 }

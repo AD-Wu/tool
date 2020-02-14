@@ -28,6 +28,7 @@ public class PoolTest {
         config.setPassword(pwd);
         config.setType(type);
         config.setPoolName(poolName);
+        config.setUseDruid(false);
         
         Pool pool = Pools.start(config);
         Connection conn = null;

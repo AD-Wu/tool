@@ -1,14 +1,13 @@
 package com.x.commons.database.pool;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.x.commons.local.Locals;
 import com.x.commons.util.string.Strings;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 
 /**
  * @Desc TODO
@@ -23,7 +22,9 @@ public class Pool {
     
     private String connectionURL;
     
-    private DruidDataSource pool;
+    // private DruidDataSource pool;
+    // 最快连接池，比druid快
+    private HikariDataSource pool;
     
     Pool(PoolConfig config) throws Exception {
         String type = config.getType();
@@ -54,7 +55,7 @@ public class Pool {
                                 case "DERBY":
                                     this.type = DatabaseType.DERBY;
                                     driver = DB.DERBY.driver();
-
+                                    
                                     break;
                                 case "OTHERS":
                                     this.type = DatabaseType.OTHERS;
@@ -72,9 +73,11 @@ public class Pool {
                         this.poolName = poolName;
                         this.connectionURL = url;
                         // 创建数据源
-                        Properties prop = config.toProperties();
-                        this.pool = (DruidDataSource) DruidDataSourceFactory.createDataSource(prop);
+                        // Properties prop = config.toProperties();
+                        // this.pool = (DruidDataSource) DruidDataSourceFactory.createDataSource(prop);
                         
+                        HikariConfig hikariConfig = config.toHikariConfig();
+                        this.pool = new HikariDataSource(hikariConfig);
                         if (this.type == DatabaseType.DERBY && url.indexOf("create=true") > 0) {
                             Connection conn = null;
                             

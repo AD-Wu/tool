@@ -3,6 +3,7 @@ package com.x.commons.database.pool;
 import com.x.commons.util.reflact.Fields;
 import com.x.commons.util.string.Strings;
 import com.x.protocol.anno.core.Doc;
+import com.zaxxer.hikari.HikariConfig;
 
 import java.lang.reflect.Field;
 import java.util.Properties;
@@ -363,6 +364,23 @@ public class PoolConfig {
             }
         }
         return prop;
+    }
+    
+    public HikariConfig toHikariConfig() {
+        HikariConfig config = new HikariConfig();
+        
+        config.setPoolName(this.getPoolName());
+        config.setJdbcUrl(this.getUrl());
+        config.setUsername(this.getUser());
+        config.setPassword(this.getPassword());
+        config.setDriverClassName(this.getDriver());
+        
+        config.setMinimumIdle(this.getMinIdle());
+        config.setIdleTimeout(this.getMinEvictableIdleTimeMillis());
+        config.setConnectionTimeout(this.getMaxWait());
+        config.setMaximumPoolSize(this.getMaxActive());
+        
+        return config;
     }
     
     public Properties getProperties() throws Exception {

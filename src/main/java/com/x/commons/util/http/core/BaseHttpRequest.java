@@ -1,7 +1,7 @@
 package com.x.commons.util.http.core;
 
+import com.x.commons.util.http.data.HttpParam;
 import com.x.commons.util.http.data.HttpResult;
-import com.x.commons.util.http.data.Json;
 import com.x.commons.util.http.enums.HttpContentType;
 import com.x.commons.util.http.factory.HttpConfig;
 import org.apache.http.HttpEntity;
@@ -25,13 +25,10 @@ public abstract class BaseHttpRequest implements IHttpRequest {
     
     protected final String url;
     
-    protected final Json param;
-    
     // ------------------------ 构造方法 ------------------------
     
-    protected BaseHttpRequest(String url, Json param) {
+    protected BaseHttpRequest(String url) {
         this.url = url;
-        this.param = param;
     }
     
     // ------------------------ 方法定义 ------------------------
@@ -59,26 +56,6 @@ public abstract class BaseHttpRequest implements IHttpRequest {
     // ------------------------ 私有方法 ------------------------
     
     /**
-     * 对于不能set entity的请求，将参数拼接到URI后
-     *
-     * @param url
-     * @param param
-     *
-     * @return
-     */
-    protected String fixURL(String url, Json param) {
-        int end = url.indexOf("?");
-        String fixURL = url;
-        if (param != null) {
-            if (end > 0) {
-                fixURL = fixURL.substring(0, end);
-            }
-            fixURL = fixURL + "?" + param.toKeyValue();
-        }
-        return fixURL;
-    }
-    
-    /**
      * 获取Content-Type是application/json的entity
      *
      * @param config
@@ -86,7 +63,7 @@ public abstract class BaseHttpRequest implements IHttpRequest {
      *
      * @return
      */
-    protected HttpEntity getEntity(HttpConfig config, Json param) {
+    protected HttpEntity getEntity(HttpConfig config, HttpParam param) {
         ContentType type = ContentType.create(HttpContentType.JSON, config.getInEncoding());
         String reqParam = param == null ? "" : param.toJson();
         return new StringEntity(reqParam, type);

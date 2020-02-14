@@ -18,7 +18,7 @@ public class Json implements Iterable<Map.Entry<Object, Object>> {
     private Map<Object, Object> json;
 
     public Json() {
-        this.json = New.map();
+        this.json = New.linkedMap();
     }
 
     public Json(Map map) {

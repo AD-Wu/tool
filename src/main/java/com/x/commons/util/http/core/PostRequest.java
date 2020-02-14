@@ -1,44 +1,26 @@
 package com.x.commons.util.http.core;
 
-import com.x.commons.util.http.data.Json;
-import com.x.commons.util.http.enums.HttpContentType;
+import com.x.commons.util.http.data.HttpParam;
 import com.x.commons.util.http.factory.HttpConfig;
-import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 
 /**
- * @Desc
+ * @Desc Http post请求，post支持entity参数（put、patch也支持，其它不支持）
  * @Date 2020-01-05 15:11
  * @Author AD
  */
-public class PostRequest extends BaseHttpRequest {
+public class PostRequest extends BaseHttpParamRequest {
     
-    private final boolean isForm;
-    
-    public PostRequest(String url, Json param) {
-        this(url, param, false);
-    }
-    
-    public PostRequest(String url, Json param, boolean isForm) {
+    public PostRequest(String url, HttpParam param) {
         super(url, param);
-        this.isForm = isForm;
     }
     
     @Override
     protected HttpRequestBase getRequest(HttpConfig config) throws Exception {
         HttpPost post = new HttpPost(url);
-        post.setEntity(this.getEntity(config));
+        post.setEntity(super.getEntity(config));
         return post;
-    }
-    
-    private HttpEntity getEntity(HttpConfig config) {
-        String contentType = isForm ? HttpContentType.FORM : HttpContentType.JSON;
-        ContentType type = ContentType.create(contentType, config.getInEncoding());
-        String reqParam = param == null ? "" : (isForm ? param.toKeyValue() : param.toJson());
-        return new StringEntity(reqParam, type);
     }
     
 }

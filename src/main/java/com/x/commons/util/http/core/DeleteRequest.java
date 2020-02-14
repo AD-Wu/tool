@@ -1,6 +1,5 @@
 package com.x.commons.util.http.core;
 
-import com.x.commons.util.http.data.Json;
 import com.x.commons.util.http.factory.HttpConfig;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -12,16 +11,13 @@ import org.apache.http.client.methods.HttpRequestBase;
  */
 public class DeleteRequest extends BaseHttpRequest {
     
-    private final String fixURL;
-    
-    public DeleteRequest(String url, Json param) {
-        super(url, param);
-        this.fixURL = fixURL(url, param);
+    public DeleteRequest(String url) {
+        super(url);
     }
     
     @Override
     protected HttpRequestBase getRequest(HttpConfig config) throws Exception {
-        return new HttpDelete(fixURL);
+        return new HttpDelete(url);
     }
     
 }

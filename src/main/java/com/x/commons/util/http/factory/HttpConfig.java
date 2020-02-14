@@ -2,9 +2,12 @@ package com.x.commons.util.http.factory;
 
 import com.x.commons.enums.Charset;
 import com.x.commons.util.convert.Converts;
+import com.x.commons.util.http.enums.HttpContentType;
+import com.x.commons.util.string.Strings;
 import org.apache.http.Header;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.entity.ContentType;
 import org.apache.http.protocol.HttpContext;
 
 import java.util.concurrent.TimeUnit;
@@ -39,12 +42,33 @@ public final class HttpConfig {
     // 输出编码
     private final String outEncoding;
     
+    // 请求体编码方式
+    private final ContentType contentType;
+    
     // ------------------------ 构造方法 ------------------------
     
-    public static HttpConfig defaultConfig(boolean isHttps) {
-        return isHttps ?
-                new HttpConfig(new Builder(HttpClients.https())) :
-                new HttpConfig(new Builder(HttpClients.http()));
+    public static HttpConfig jsonConfig(String url) {
+        return defaultConfig(url, HttpContentType.JSON);
+    }
+    
+    public static HttpConfig formConfig(String url) {
+        return defaultConfig(url, HttpContentType.FORM);
+    }
+    
+    public static HttpConfig formDataConfig(String url) {
+        return defaultConfig(url, HttpContentType.FORM_DATA);
+    }
+    
+    public static HttpConfig defaultConfig(String url) {
+        return defaultConfig(url, HttpContentType.JSON);
+    }
+    
+    public static HttpConfig defaultConfig(String url, String contentType) {
+        boolean isHttps = isHttps(url);
+        Builder builder = isHttps ?
+                new Builder(HttpClients.https()).ContentType(contentType) :
+                new Builder(HttpClients.http()).ContentType(contentType);
+        return new HttpConfig(builder);
     }
     
     public HttpConfig(Builder builder) {
@@ -55,6 +79,7 @@ public final class HttpConfig {
         this.requestConfig = builder.requestConfig;
         this.inEncoding = builder.inEncoding;
         this.outEncoding = builder.outEncoding;
+        this.contentType = builder.contentType;
     }
     
     public static class Builder {
@@ -80,6 +105,9 @@ public final class HttpConfig {
         // 输出编码
         private String outEncoding;
         
+        // 请求体编码方式
+        private ContentType contentType;
+        
         public Builder(HttpClient client) {
             this.client = client;
             this.headers = HeaderBuilder.defaultBuild();
@@ -88,6 +116,7 @@ public final class HttpConfig {
             this.timeout(defaultTimeout);
             this.inEncoding = Charset.UTF8;
             this.outEncoding = Charset.UTF8;
+            this.contentType = ContentType.create(HttpContentType.JSON, this.inEncoding);
         }
         
         public HttpConfig build() {
@@ -111,6 +140,11 @@ public final class HttpConfig {
         
         public Builder outEncoding(String outEncoding) {
             this.outEncoding = outEncoding;
+            return this;
+        }
+        
+        public Builder ContentType(String contentType) {
+            this.contentType = ContentType.create(contentType, this.inEncoding);
             return this;
         }
         
@@ -174,6 +208,18 @@ public final class HttpConfig {
     
     public RequestConfig getRequestConfig() {
         return requestConfig;
+    }
+    
+    public ContentType getContentType() {return contentType;}
+    
+    private static boolean isHttps(String url) {
+        if (Strings.isNull(url)) {
+            return false;
+        }
+        if (url.toLowerCase().startsWith("https://")) {
+            return true;
+        }
+        return false;
     }
     
 }

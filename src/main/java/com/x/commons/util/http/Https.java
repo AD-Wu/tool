@@ -1,15 +1,10 @@
 package com.x.commons.util.http;
 
-import com.x.commons.util.bean.New;
-import com.x.commons.util.file.Files;
 import com.x.commons.util.http.core.*;
+import com.x.commons.util.http.data.HttpParam;
 import com.x.commons.util.http.data.HttpResult;
-import com.x.commons.util.http.data.Json;
+import com.x.commons.util.http.enums.HttpEntityMethod;
 import com.x.commons.util.http.factory.HttpConfig;
-import com.x.commons.util.string.Strings;
-
-import java.io.File;
-import java.util.Map;
 
 /**
  * @Desc http工具类
@@ -17,134 +12,89 @@ import java.util.Map;
  * @Author AD
  */
 public final class Https {
-
+    
     // ------------------------ 变量定义 ------------------------
-
+    
     // ------------------------ 构造方法 ------------------------
-
+    
     private Https() {}
-
+    
     // ------------------------ 方法定义 ------------------------
-
-    public static HttpResult get(String url, Json param) throws Exception {
-        HttpConfig config = HttpConfig.defaultConfig(isHttps(url));
-        return get(url, param, config);
+    
+    public static HttpResult get(String url) throws Exception {
+        return get(url, HttpConfig.defaultConfig(url));
     }
-
-    public static HttpResult get(String url, Json param, HttpConfig config) throws Exception {
-        return new GetRequest(url, param).send(config);
+    
+    public static HttpResult get(String url, HttpConfig config) throws Exception {
+        return new GetRequest(url).send(config);
     }
-
-    public static HttpResult post(String url, Json param) throws Exception {
-        return post(url, param, false);
+    
+    public static HttpResult post(String url, HttpParam param) throws Exception {
+        return post(url, param, HttpConfig.defaultConfig(url));
     }
-
-    public static HttpResult post(String url, Json param, boolean isForm) throws Exception {
-        HttpConfig config = HttpConfig.defaultConfig(isHttps(url));
-        return post(url, param, isForm, config);
+    
+    public static HttpResult post(String url, HttpParam param, HttpConfig config) throws Exception {
+        return new PostRequest(url, param).send(config);
     }
-
-    public static HttpResult post(String url, Json param, boolean isForm, HttpConfig config) throws Exception {
-        return new PostRequest(url, param, isForm).send(config);
+    
+    public static HttpResult put(String url, HttpParam param) throws Exception {
+        return put(url, param, HttpConfig.defaultConfig(url));
     }
-
-    public static HttpResult put(String url, Json param) throws Exception {
-        HttpConfig config = HttpConfig.defaultConfig(isHttps(url));
-        return put(url, param, config);
-    }
-
-    public static HttpResult put(String url, Json param, HttpConfig config) throws Exception {
+    
+    public static HttpResult put(String url, HttpParam param, HttpConfig config) throws Exception {
         return new PutRequest(url, param).send(config);
     }
-
-    public static HttpResult patch(String url, Json param) throws Exception {
-        HttpConfig config = HttpConfig.defaultConfig(isHttps(url));
-        return patch(url, param, config);
+    
+    public static HttpResult patch(String url, HttpParam param) throws Exception {
+        return patch(url, param, HttpConfig.defaultConfig(url));
     }
-
-    public static HttpResult patch(String url, Json param, HttpConfig config) throws Exception {
+    
+    public static HttpResult patch(String url, HttpParam param, HttpConfig config) throws Exception {
         return new PatchRequest(url, param).send(config);
     }
-
-    public static HttpResult delete(String url, Json param) throws Exception {
-        HttpConfig config = HttpConfig.defaultConfig(isHttps(url));
-        return delete(url, param, config);
+    
+    public static HttpResult delete(String url) throws Exception {
+        return delete(url, HttpConfig.defaultConfig(url));
     }
-
-    public static HttpResult delete(String url, Json param, HttpConfig config) throws Exception {
-        return new DeleteRequest(url, param).send(config);
+    
+    public static HttpResult delete(String url, HttpConfig config) throws Exception {
+        return new DeleteRequest(url).send(config);
     }
-
-    public static HttpResult head(String url, Json param) throws Exception {
-        HttpConfig config = HttpConfig.defaultConfig(isHttps(url));
-        return head(url, param, config);
+    
+    public static HttpResult head(String url) throws Exception {
+        return head(url, HttpConfig.defaultConfig(url));
     }
-
-    public static HttpResult head(String url, Json param, HttpConfig config) throws Exception {
-        return new HeadRequest(url, param).send(config);
+    
+    public static HttpResult head(String url, HttpConfig config) throws Exception {
+        return new HeadRequest(url).send(config);
     }
-
-    public static HttpResult trace(String url, Json param) throws Exception {
-        HttpConfig config = HttpConfig.defaultConfig(isHttps(url));
-        return trace(url, param, config);
+    
+    public static HttpResult trace(String url) throws Exception {
+        return trace(url, HttpConfig.defaultConfig(url));
     }
-
-    public static HttpResult trace(String url, Json param, HttpConfig config) throws Exception {
-        return new TraceRequest(url, param).send(config);
+    
+    public static HttpResult trace(String url, HttpConfig config) throws Exception {
+        return new TraceRequest(url).send(config);
     }
-
-    public static HttpResult options(String url, Json param) throws Exception {
-        HttpConfig config = HttpConfig.defaultConfig(isHttps(url));
-        return options(url, param, config);
+    
+    public static HttpResult options(String url) throws Exception {
+        return options(url, HttpConfig.defaultConfig(url));
     }
-
-    public static HttpResult options(String url, Json param, HttpConfig config) throws Exception {
-        return new OptionsRequest(url, param).send(config);
+    
+    public static HttpResult options(String url, HttpConfig config) throws Exception {
+        return new OptionsRequest(url).send(config);
     }
-
-    public static HttpResult upload(String url, String[] filePaths) throws Exception {
-        return upload(url, filePaths, null);
+    
+    public static HttpResult upload(String url, HttpParam param) throws Exception {
+        return upload(url, param, HttpEntityMethod.POST);
     }
-
-    public static HttpResult upload(String url,
-                                    String[] filePaths,
-                                    Json param) throws Exception {
-        Map<String, File> files = New.map();
-        for (String path : filePaths) {
-            File file = Files.getFile(path);
-            if (file != null) {
-                files.put(file.getName(), file);
-            }
-        }
-        return upload(url, files, param);
+    
+    public static HttpResult upload(String url, HttpParam param, HttpEntityMethod method) throws Exception {
+        return upload(url, param, method, HttpConfig.formDataConfig(url));
     }
-
-    public static HttpResult upload(String url,
-                                    Map<String, File> files,
-                                    Json otherParam) throws Exception {
-        HttpConfig config = HttpConfig.defaultConfig(isHttps(url));
-        return upload(url, files, otherParam, config);
+    
+    public static HttpResult upload(String url, HttpParam param, HttpEntityMethod method, HttpConfig config) throws Exception {
+        return new FileUploadRequest(url, param, method).send(config);
     }
-
-    public static HttpResult upload(String url,
-                                    Map<String, File> files,
-                                    Json otherParam,
-                                    HttpConfig config) throws Exception {
-        Json param = new Json(files).putAll(otherParam);
-        return new FileUploadRequest(url, param).send(config);
-    }
-
-
-    // ------------------------ 私有方法 ------------------------
-
-    private static boolean isHttps(String url) {
-        if (Strings.isNull(url)) {
-            return false;
-        }
-        if (url.toLowerCase().startsWith("https://")) {
-            return true;
-        }
-        return false;
-    }
-
+    
 }

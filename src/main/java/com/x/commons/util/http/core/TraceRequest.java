@@ -1,6 +1,5 @@
 package com.x.commons.util.http.core;
 
-import com.x.commons.util.http.data.Json;
 import com.x.commons.util.http.factory.HttpConfig;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpTrace;
@@ -12,16 +11,13 @@ import org.apache.http.client.methods.HttpTrace;
  */
 public class TraceRequest extends BaseHttpRequest {
     
-    private final String fixURL;
-    
-    public TraceRequest(String url, Json param) {
-        super(url, param);
-        this.fixURL = fixURL(url, param);
+    public TraceRequest(String url) {
+        super(url);
     }
     
     @Override
     protected HttpRequestBase getRequest(HttpConfig config) throws Exception {
-        return new HttpTrace(fixURL);
+        return new HttpTrace(url);
     }
     
 }

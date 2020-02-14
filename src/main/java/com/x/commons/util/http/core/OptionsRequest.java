@@ -1,6 +1,5 @@
 package com.x.commons.util.http.core;
 
-import com.x.commons.util.http.data.Json;
 import com.x.commons.util.http.factory.HttpConfig;
 import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -12,16 +11,13 @@ import org.apache.http.client.methods.HttpRequestBase;
  */
 public class OptionsRequest extends BaseHttpRequest {
     
-    private final String fixURL;
-    
-    public OptionsRequest(String url, Json param) {
-        super(url, param);
-        this.fixURL = fixURL(url, param);
+    public OptionsRequest(String url) {
+        super(url);
     }
     
     @Override
     protected HttpRequestBase getRequest(HttpConfig config) throws Exception {
-        return new HttpOptions(fixURL);
+        return new HttpOptions(url);
     }
     
 }

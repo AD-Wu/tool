@@ -1,10 +1,15 @@
 package com.x.commons.util.http;
 
 import com.x.commons.enums.Charset;
+import com.x.commons.util.http.data.HttpParam;
 import com.x.commons.util.http.data.HttpResult;
 import com.x.commons.util.http.data.Json;
+import com.x.commons.util.http.data.ValueType;
+import com.x.commons.util.http.factory.HttpConfig;
 import com.x.commons.util.string.Strings;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
 
 /**
  * @Desc TODO
@@ -16,8 +21,9 @@ class HttpsTest {
     @Test
     void get() throws Exception {
         String url = "http://localhost:8080/get";
-        Json json = new Json.Builder().of("user", "阳光").of("age", 12).build();
-        HttpResult resp = Https.get(url, json);
+        HttpParam param = new HttpParam();
+        param.add("user", "阳光").add("age", 12);
+        HttpResult resp = Https.get(url);
         byte[] result = resp.getResult();
         String s = new String(result, Charset.UTF8);
         System.out.println(resp);
@@ -27,8 +33,21 @@ class HttpsTest {
     @Test
     void post() throws Exception {
         String url = "http://localhost:8080/post/json";
-        Json json = new Json.Builder().of("user", "ad").of("pwd", "123").of("age", 12).build();
-        HttpResult resp = Https.post(url, json);
+        HttpParam param = new HttpParam();
+        param.add("user", "ad").add("pwd", "123").add("age", 12);
+        HttpResult resp = Https.post(url, param);
+        byte[] result = resp.getResult();
+        String s = new String(result, Charset.UTF8);
+        System.out.println(resp);
+        System.out.println(s);
+    }
+    
+    @Test
+    void postForm() throws Exception {
+        String url = "http://localhost:8080/post/form";
+        HttpParam param = new HttpParam();
+        param.add("name", "ad").add("age", 1).add("sex", true);
+        HttpResult resp = Https.post(url, param, HttpConfig.formConfig(url));
         byte[] result = resp.getResult();
         String s = new String(result, Charset.UTF8);
         System.out.println(resp);
@@ -38,8 +57,9 @@ class HttpsTest {
     @Test
     void put() throws Exception {
         String url = "http://localhost:8080/put";
-        Json json = new Json.Builder().of("user", "ad").of("pwd", "123").of("age", 12).build();
-        HttpResult resp = Https.put(url, json);
+        HttpParam param = new HttpParam();
+        param.add("user", "ad").add("pwd", "123").add("age", 12);
+        HttpResult resp = Https.put(url, param);
         byte[] result = resp.getResult();
         String s = new String(result, Charset.UTF8);
         System.out.println(resp);
@@ -49,8 +69,9 @@ class HttpsTest {
     @Test
     void delete() throws Exception {
         String url = "http://localhost:8080/delete";
-        Json json = new Json.Builder().of("user", "阳光").of("age", 12).build();
-        HttpResult resp = Https.delete(url, json);
+        HttpParam param = new HttpParam();
+        param.add("user", "阳光").add("age", 12);
+        HttpResult resp = Https.delete(url);
         byte[] result = resp.getResult();
         String s = new String(result, Charset.UTF8);
         System.out.println(resp);
@@ -60,20 +81,30 @@ class HttpsTest {
     @Test
     void upload() throws Exception {
         String url = "http://localhost:8080/upload";
-        String[] paths = {
-                "x-framework/parser.dtd",
-                "x-framework/x.yml",
-                "x-framework/parse.rar",
-                "x-framework/IDEA激活码.rar",
-                "x-framework/bg.jpg",
-                "x-framework/tool-1.0.jar"};
         Json put = new Json().put("a", "Sunday").put("b", 1);
-        HttpResult upload = Https.upload(url, paths,put);
+        HttpParam param = new HttpParam();
+        // param.add(ValueType.FILE_PATH, "parser.dtd", "x-framework/parser.dtd");
+        // param.add(ValueType.FILE_PATH, "x.yml", "x-framework/x.yml");
+        // param.add(ValueType.FILE_PATH, "parse.rar", "x-framework/parse.rar");
+        // param.add(ValueType.FILE_PATH, "IDEA激活码.rar", "x-framework/IDEA激活码.rar");
+        // param.add(ValueType.FILE_PATH, "bg.jpg", "x-framework/bg.jpg");
+        // param.add(ValueType.FILE_PATH, "tool-1.0.jar", "x-framework/tool-1.0.jar");
+        param.add(ValueType.FILE_PATH, "logback.xml","logback.xml");
+        param.add("a", "Sunday").add( "b", 1);
+        HttpResult upload = Https.upload(url, param);
         System.out.println(upload);
         String charset = upload.getCharset();
         charset = Strings.isNull(charset) ? Charset.UTF8 : charset;
         String s = new String(upload.getResult(), charset);
         System.out.println(s);
+    }
+    
+    @Test
+    void download() throws Exception{
+        String url = "http://localhost:8080/download";
+        File download = Https.download(url);
+        System.out.println(download.getName());
+        System.out.println(download.getPath());
     }
 
 

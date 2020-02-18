@@ -6,11 +6,9 @@ import com.x.commons.socket.server.ISocket;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-
-import static io.netty.channel.ChannelOption.SO_KEEPALIVE;
-import static java.lang.Boolean.TRUE;
 
 /**
  * @Desc TODO
@@ -34,9 +32,9 @@ public class SocketClient implements ISocket {
         connected = false;
         boot = new Bootstrap();
         boot.channel(NioSocketChannel.class);
-        boot.option(SO_KEEPALIVE, TRUE);
+        boot.option(ChannelOption.SO_KEEPALIVE, true);
         boot.handler(new ClientChannelInitializer(config));
-
+        
     }
 
     @Override
@@ -69,5 +67,13 @@ public class SocketClient implements ISocket {
             channel.close();
         }
     }
-
+    
+    @Override
+    public void send(Object msg) {
+        if(channel!=null){
+            ChannelFuture future = channel.writeAndFlush(msg);
+            System.out.println(future);
+        }
+    }
+    
 }

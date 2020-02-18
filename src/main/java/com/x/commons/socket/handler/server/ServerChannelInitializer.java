@@ -14,21 +14,26 @@ import java.util.concurrent.TimeUnit;
  * @Author AD
  */
 public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> {
-
+    
     private final ServerConfig config;
-
+    
     public ServerChannelInitializer(ServerConfig config) {
         this.config = config;
     }
-
+    
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline p = ch.pipeline();
-
-        p.addLast(new IdleStateHandler(config.getReadTimeout(), config.getWriteTimeout(), config.getIdleTimeout(),
-                                       TimeUnit.MINUTES));
-
+        p.addLast(
+                new IdleStateHandler(
+                        config.getReadTimeout(),
+                        config.getWriteTimeout(),
+                        config.getIdleTimeout(),
+                        TimeUnit.MINUTES
+                )
+        );
+        
         p.addLast(new ServerHandler());
     }
-
+    
 }

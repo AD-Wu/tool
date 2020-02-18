@@ -27,40 +27,45 @@ public enum SocketManager {
             server.start();
             return server;
         }
-
+        
         @Override
-        public void stop(int port) throws Exception{
+        public void stop(int port) throws Exception {
             // ifPresent只有在取得server时才会执行
             Optional.ofNullable(serverMap.get(port)).ifPresent(server -> server.stop());
         }
-
+        
     },
     CLIENT {
         @Override
         public ISocket start(int port, String... ip) throws Exception {
-            ISocket client = clientFactory.get(new ClientConfig(ip[0], port));
+            String localhost;
+            if (ip == null || ip.length < 1) {
+                localhost = "localhost";
+            } else {
+                localhost = ip[0];
+            }
+            
+            ISocket client = clientFactory.get(new ClientConfig(localhost, port));
             client.start();
             return client;
         }
-
+        
         @Override
         public void stop(int port) throws Exception {
         }
     };
-
+    
     private static Map<Integer, ISocket> serverMap = new ConcurrentHashMap<>();
-
+    
     private static IMapFactory<ISocket, ServerConfig> serverFactory = new SocketServerFactory();
-
+    
     private static IMapFactory<ISocket, ClientConfig> clientFactory = new SocketClientFactory();
-
+    
     public abstract ISocket start(int port, String... ip) throws Exception;
-
+    
     public abstract void stop(int port) throws Exception;
-
-
-
+    
     public static void main(String[] args) throws Exception {
     }
-
+    
 }

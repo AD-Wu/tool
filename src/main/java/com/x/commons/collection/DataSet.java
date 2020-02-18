@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  * @Date 2019-11-08 12:06
  * @Author AD
  */
-public final class DataSet {
+public class DataSet {
 
     private Map<String, Object> datas = New.map();
 

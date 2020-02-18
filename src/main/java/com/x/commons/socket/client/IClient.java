@@ -7,6 +7,7 @@ package com.x.commons.socket.client;
  */
 public interface IClient {
 
-    void connect() throws Exception;
-    void close() throws Exception;
+    void start() throws Exception;
+    void stop() throws Exception;
+    void send(Object msg);
 }

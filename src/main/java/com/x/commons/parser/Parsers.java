@@ -14,7 +14,6 @@ import java.util.ServiceLoader;
 
 /**
  * @Desc 解析类工具
- * @Desc 指定解析类：在resource/x-framework/parser.xml进行配置
  * @Date 2019-11-21 23:08
  * @Author AD
  */

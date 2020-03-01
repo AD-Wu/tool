@@ -25,7 +25,7 @@ import java.util.Map;
  * @Author：AD
  * @Date：2020/1/19 17:56
  */
-public class Daos implements IDaos {
+public class DaoManager implements IDaoManager {
     private final Map<Class, IDao> daosMap = New.map();
     private final Object daosLock = new Object();
     private final String name;
@@ -33,7 +33,7 @@ public class Daos implements IDaos {
     private boolean isStopped = false;
     private DatabaseType type;
 
-    public Daos(String name, DatabaseConfig config) throws Exception {
+    public DaoManager(String name, DatabaseConfig config) throws Exception {
         this.name = name;
         PoolConfig poolConfig = new PoolConfig();
         poolConfig.setPoolName(name);
@@ -115,7 +115,7 @@ public class Daos implements IDaos {
         if (tableInfoGetter == null) {
             tableInfoGetter = new ITableInfoGetter<T>() {
                 public TableInfo getTableInfo(Class<T> clazz) {
-                    DataInfo info = Daos.this.protocol.getDataConfig(clazz);
+                    DataInfo info = DaoManager.this.protocol.getDataConfig(clazz);
                     return info == null ? null : new TableInfo(info.getTable(), info.getPks(), info.isCache(), info.isHistory());
                 }
             };

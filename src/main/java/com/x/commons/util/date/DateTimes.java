@@ -16,28 +16,28 @@ import java.util.Date;
  * @Author AD
  */
 public final class DateTimes {
-
+    
     // ----------------------- 静态变量 -----------------------
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(
             "yyyy-MM-dd HH:mm:ss");
-
+    
     public static final DateTimeFormatter DEFAULT = DateTimeFormatter.ofPattern(
             "yyyy-MM-dd HH:mm:ss.SSS");
-
+    
     public static final DateTimeFormatter NO_MARK = DateTimeFormatter.ofPattern(
             "yyyyMMddHHmmssSSS");
-
+    
     public static final DateTimeFormatter NO_MARK_SECONDS = DateTimeFormatter.ofPattern(
             "yyyyMMddHHmmss");
-
+    
     private static final Logger LOG = Logs.get(DateTimes.class);
-
+    
     // ------------------------ 构造方法 ------------------------
-
+    
     private DateTimes() {}
-
+    
     // ----------------------- 静态方法 -----------------------
-
+    
     /**
      * 获取当前日期时间（带毫秒）
      *
@@ -46,7 +46,7 @@ public final class DateTimes {
     public static String now() {
         return now(DEFAULT);
     }
-
+    
     /**
      * 获取当前日期时间（带毫秒）
      *
@@ -55,17 +55,18 @@ public final class DateTimes {
     public static String now(DateTimeFormatter formatter) {
         return LocalDateTime.now().format(formatter);
     }
-
+    
     /**
      * 获取当前日期时间（不带毫秒）
      *
      * @param withMillSeconds 是否带毫秒
+     *
      * @return
      */
     public static String now(boolean withMillSeconds) {
         return withMillSeconds ? now() : LocalDateTime.now().format(FORMATTER);
     }
-
+    
     public static LocalDateTime autoParse(String dateTime) throws Exception {
         LocalDateTime parse = Formatter.autoParse(dateTime);
         if (parse == null) {
@@ -73,13 +74,13 @@ public final class DateTimes {
             if (parse == null) {
                 Logs.get(DateTimes.class)
                         .error("Can't parse the dateTime={}, you can extends BaseDateTimeParser, and add the annotation with " +
-                                       "\"@AutoService(BaseDateTimeParser.class)\"", dateTime);
+                               "\"@AutoService(BaseDateTimeParser.class)\"", dateTime);
                 return null;
             }
         }
         return parse;
     }
-
+    
     public static void main(String[] args) throws Exception {
         LocalDateTime time0 = autoParse("2011-12-13 14:15:16.777");
         LocalDateTime time1 = autoParse("2012-12-13 14:15:16");
@@ -96,7 +97,7 @@ public final class DateTimes {
         System.out.println(time5);
         System.out.println(time6);
     }
-
+    
     public static LocalDateTime parse(String dateTime, String pattern) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         Date date = sdf.parse(dateTime);
@@ -105,11 +106,12 @@ public final class DateTimes {
         LOG.debug("Date={}", date);
         return toLocalDateTime(date);
     }
-
+    
     /**
      * 将Date类转换成LocalDateTime类，不推荐使用Date
      *
      * @param date
+     *
      * @return
      */
     public static LocalDateTime toLocalDateTime(Date date) {
@@ -125,11 +127,12 @@ public final class DateTimes {
         LOG.debug("After fix localDateTime={}", result);
         return result;
     }
-
+    
     /**
      * 将LocalDateTime类转换成类Date，不推荐使用Date
      *
      * @param localDateTime
+     *
      * @return
      */
     public static Date toDate(LocalDateTime localDateTime) {
@@ -157,50 +160,78 @@ public final class DateTimes {
         // Date from = Date.from(instant);
         // return from;
     }
-
+    
     /**
      * 将毫秒数解析成字符串时间
      *
      * @param time 毫秒数
+     *
      * @return yyyy-MM-dd HH:mm:ss.SSS
      */
     public static String format(long time) {
-        return format(new Date(time));
+        return format(time, DEFAULT);
     }
-
+    
+    /**
+     * 将毫秒数解析成字符串时间
+     *
+     * @param time      毫秒数
+     * @param formatter 格式化样式
+     *
+     * @return
+     */
+    public static String format(long time, DateTimeFormatter formatter) {
+        return format(new Date(time), formatter);
+    }
+    
     /**
      * 将Date解析成字符串时间，推荐使用LocalDateTime
      *
      * @param date
+     *
      * @return yyyy-MM-dd HH:mm:ss.SSS
      */
     public static String format(Date date) {
-        LocalDateTime dateTime = toLocalDateTime(date);
-        return dateTime.format(DEFAULT);
+        return format(date, DEFAULT);
     }
-
+    
+    /**
+     * 将Date解析成字符串时间，推荐使用LocalDateTime
+     *
+     * @param date      日期
+     * @param formatter 格式化样式
+     *
+     * @return
+     */
+    public static String format(Date date, DateTimeFormatter formatter) {
+        LocalDateTime dateTime = toLocalDateTime(date);
+        return dateTime.format(formatter);
+    }
+    
     /**
      * 将LocalDateTime解析成字符串时间
      *
      * @param dateTime
+     *
      * @return
      */
     public static String format(LocalDateTime dateTime) {
         return format(dateTime, DEFAULT);
     }
-
+    
     /**
      * 将LocalDateTime解析成指定字符串时间
      *
      * @param dateTime
+     *
      * @return
      */
     public static String format(LocalDateTime dateTime, DateTimeFormatter formatter) {
         return dateTime.format(formatter);
     }
-
+    
     // ------------------------ 私有方法 ------------------------
-
+    
     private static LocalDateTime fixLocalDateTime(Date date, LocalDateTime local) {
         // 年
         int dateYear = date.getYear();
@@ -282,4 +313,5 @@ public final class DateTimes {
             return result;
         }
     }
+    
 }

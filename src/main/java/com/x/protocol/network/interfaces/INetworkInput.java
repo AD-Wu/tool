@@ -9,7 +9,7 @@ public interface INetworkInput {
     
     INetworkService getService();
     
-    INetworkConcent getConcent();
+    INetworkConsent getConsent();
     
     <T> T getProtocolReader();
     

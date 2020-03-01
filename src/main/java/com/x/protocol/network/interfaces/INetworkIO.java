@@ -6,4 +6,13 @@ package com.x.protocol.network.interfaces;
  * @Author AD
  */
 public interface INetworkIO {
+    
+    INetworkService getService();
+    
+    INetworkConsent getConsent();
+    
+    <T extends INetworkInput> T getInput();
+    
+    <T extends INetworkOutput> T getOutput();
+    
 }

@@ -32,7 +32,7 @@ public interface INetworkService {
     
     INetworkConsent getConsentByIndex(long index);
     
-    INetworkConsent connect(String address, DataSet data) throws Exception;
+    INetworkConsent connect(String name, DataSet data) throws Exception;
     
     boolean containConsent(long index);
     

@@ -71,6 +71,12 @@
             <version>1.0-rc6</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.13</version>
+        </dependency>
+
 
         <!-- xml解析包 -->
         <dependency>
@@ -91,7 +97,6 @@
             <artifactId>HikariCP</artifactId>
             <version>3.4.1</version>
         </dependency>
-
 
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -129,11 +134,11 @@
             <version>4.5.10</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.arronlong</groupId>
-            <artifactId>httpclientutil</artifactId>
-            <version>1.0.4</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.arronlong</groupId>-->
+            <!--<artifactId>httpclientutil</artifactId>-->
+            <!--<version>1.0.4</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>io.netty</groupId>

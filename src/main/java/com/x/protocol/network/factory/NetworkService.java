@@ -28,7 +28,7 @@ public abstract class NetworkService implements INetworkService {
     /**
      * 网络配置
      */
-    private NetworkConfig config = new NetworkConfig();
+    protected NetworkConfig config = new NetworkConfig();
     
     /**
      * 网络通知器

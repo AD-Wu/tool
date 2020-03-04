@@ -199,6 +199,21 @@ public final class Strings {
      */
     public static boolean isNull(String check, String... nulls) {
         
+        return isNull(check, false, nulls);
+    }
+    
+    /**
+     * 判断字符串是否为null、""、" "、或者被认为是null的字符串
+     *
+     * @param check 需检查的字符串
+     * @param nulls 被认为是null的字符串(如：{},"null")
+     *
+     * @return boolean
+     */
+    public static boolean isNull(String check, boolean ignoreCase, String... nulls) {
+        if (ignoreCase) {
+            return isNull(check) || Stream.of(nulls).anyMatch(n -> check.equalsIgnoreCase(n));
+        }
         return isNull(check) || Stream.of(nulls).anyMatch(n -> check.equals(n));
     }
     

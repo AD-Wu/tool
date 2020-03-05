@@ -4,7 +4,7 @@ import com.x.commons.collection.DataSet;
 import com.x.protocol.network.core.NetworkConfig;
 
 /**
- * @Desc TODO
+ * @Desc 网络服务
  * @Date 2020-02-19 00:04
  * @Author AD
  */
@@ -26,15 +26,15 @@ public interface INetworkService {
     
     <T> T getInformation(String s);
     
-    int getConcentSize();
+    int getConsentSize();
     
-    INetworkConcent[] getConcents();
+    INetworkConsent[] getConsents();
     
-    INetworkConcent getConcentByIndex(long index);
+    INetworkConsent getConsentByIndex(long index);
     
-    INetworkConcent connect(String address, DataSet data) throws Exception;
+    INetworkConsent connect(String name, DataSet data) throws Exception;
     
-    boolean containConcent(long index);
+    boolean containConsent(long index);
     
     boolean runSchedule(Runnable runnable);
     

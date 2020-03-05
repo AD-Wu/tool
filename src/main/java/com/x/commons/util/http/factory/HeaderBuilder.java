@@ -2,7 +2,7 @@ package com.x.commons.util.http.factory;
 
 import com.x.commons.enums.Charset;
 import com.x.commons.util.bean.New;
-import com.x.commons.util.http.enums.HttpKey;
+import com.x.commons.util.http.enums.HttpHeaderKey;
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
 
@@ -64,7 +64,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder accept(String accept) {
-        map.put(HttpKey.ACCEPT, accept);
+        map.put(HttpHeaderKey.ACCEPT, accept);
         return this;
     }
     
@@ -77,7 +77,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder acceptCharset(String acceptCharset) {
-        map.put(HttpKey.ACCEPT_CHARSET, acceptCharset);
+        map.put(HttpHeaderKey.ACCEPT_CHARSET, acceptCharset);
         return this;
     }
     
@@ -90,7 +90,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder acceptEncoding(String acceptEncoding) {
-        map.put(HttpKey.ACCEPT_ENCODING, acceptEncoding);
+        map.put(HttpHeaderKey.ACCEPT_ENCODING, acceptEncoding);
         return this;
     }
     
@@ -103,7 +103,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder acceptLanguage(String acceptLanguage) {
-        map.put(HttpKey.ACCEPT_LANGUAGE, acceptLanguage);
+        map.put(HttpHeaderKey.ACCEPT_LANGUAGE, acceptLanguage);
         return this;
     }
     
@@ -116,7 +116,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder acceptRanges(String acceptRanges) {
-        map.put(HttpKey.ACCEPT_RANGES, acceptRanges);
+        map.put(HttpHeaderKey.ACCEPT_RANGES, acceptRanges);
         return this;
     }
     
@@ -129,7 +129,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder authorization(String authorization) {
-        map.put(HttpKey.AUTHORIZATION, authorization);
+        map.put(HttpHeaderKey.AUTHORIZATION, authorization);
         return this;
     }
     
@@ -142,7 +142,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder cacheControl(String cacheControl) {
-        map.put(HttpKey.CACHE_CONTROL, cacheControl);
+        map.put(HttpHeaderKey.CACHE_CONTROL, cacheControl);
         return this;
     }
     
@@ -155,7 +155,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder connection(String connection) {
-        map.put(HttpKey.CONNECTION, connection);
+        map.put(HttpHeaderKey.CONNECTION, connection);
         return this;
     }
     
@@ -168,7 +168,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder cookie(String cookie) {
-        map.put(HttpKey.COOKIE, cookie);
+        map.put(HttpHeaderKey.COOKIE, cookie);
         return this;
     }
     
@@ -181,7 +181,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder contentLength(String contentLength) {
-        map.put(HttpKey.CONTENT_LENGTH, contentLength);
+        map.put(HttpHeaderKey.CONTENT_LENGTH, contentLength);
         return this;
     }
     
@@ -194,7 +194,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder contentType(String contentType) {
-        map.put(HttpKey.CONTENT_TYPE, contentType);
+        map.put(HttpHeaderKey.CONTENT_TYPE, contentType);
         return this;
     }
     
@@ -207,7 +207,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder date(String date) {
-        map.put(HttpKey.DATE, date);
+        map.put(HttpHeaderKey.DATE, date);
         return this;
     }
     
@@ -220,7 +220,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder expect(String expect) {
-        map.put(HttpKey.EXPECT, expect);
+        map.put(HttpHeaderKey.EXPECT, expect);
         return this;
     }
     
@@ -233,7 +233,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder from(String email) {
-        map.put(HttpKey.FROM, email);
+        map.put(HttpHeaderKey.FROM, email);
         return this;
     }
     
@@ -246,7 +246,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder host(String host) {
-        map.put(HttpKey.HOST, host);
+        map.put(HttpHeaderKey.HOST, host);
         return this;
     }
     
@@ -259,7 +259,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder ifMatch(String ifMatch) {
-        map.put(HttpKey.IF_MATCH, ifMatch);
+        map.put(HttpHeaderKey.IF_MATCH, ifMatch);
         return this;
     }
     
@@ -272,7 +272,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder ifModifiedSince(String ifModifiedSince) {
-        map.put(HttpKey.IF_MODIFIED_SINCE, ifModifiedSince);
+        map.put(HttpHeaderKey.IF_MODIFIED_SINCE, ifModifiedSince);
         return this;
     }
     
@@ -285,7 +285,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder ifNoneMatch(String ifNoneMatch) {
-        map.put(HttpKey.IF_NONE_MATCH, ifNoneMatch);
+        map.put(HttpHeaderKey.IF_NONE_MATCH, ifNoneMatch);
         return this;
     }
     
@@ -298,7 +298,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder ifRange(String ifRange) {
-        map.put(HttpKey.IF_RANGE, ifRange);
+        map.put(HttpHeaderKey.IF_RANGE, ifRange);
         return this;
     }
     
@@ -311,7 +311,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder ifUnmodifiedSince(String ifUnmodifiedSince) {
-        map.put(HttpKey.IF_UNMODIFIED_SINCE, ifUnmodifiedSince);
+        map.put(HttpHeaderKey.IF_UNMODIFIED_SINCE, ifUnmodifiedSince);
         return this;
     }
     
@@ -324,7 +324,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder maxForwards(String maxForwards) {
-        map.put(HttpKey.MAX_FORWARDS, maxForwards);
+        map.put(HttpHeaderKey.MAX_FORWARDS, maxForwards);
         return this;
     }
     
@@ -337,7 +337,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder pragma(String pragma) {
-        map.put(HttpKey.PRAGMA, pragma);
+        map.put(HttpHeaderKey.PRAGMA, pragma);
         return this;
     }
     
@@ -350,7 +350,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder proxyAuthorization(String proxyAuthorization) {
-        map.put(HttpKey.PROXY_AUTHORIZATION, proxyAuthorization);
+        map.put(HttpHeaderKey.PROXY_AUTHORIZATION, proxyAuthorization);
         return this;
     }
     
@@ -363,7 +363,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder range(String range) {
-        map.put(HttpKey.RANGE, range);
+        map.put(HttpHeaderKey.RANGE, range);
         return this;
     }
     
@@ -376,7 +376,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder referer(String referer) {
-        map.put(HttpKey.REFERER, referer);
+        map.put(HttpHeaderKey.REFERER, referer);
         return this;
     }
     
@@ -389,7 +389,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder te(String te) {
-        map.put(HttpKey.TE, te);
+        map.put(HttpHeaderKey.TE, te);
         return this;
     }
     
@@ -402,7 +402,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder upgrade(String upgrade) {
-        map.put(HttpKey.UPGRADE, upgrade);
+        map.put(HttpHeaderKey.UPGRADE, upgrade);
         return this;
     }
     
@@ -414,7 +414,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder userAgent(String userAgent) {
-        map.put(HttpKey.USER_AGENT, userAgent);
+        map.put(HttpHeaderKey.USER_AGENT, userAgent);
         return this;
     }
     
@@ -427,7 +427,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder warning(String warning) {
-        map.put(HttpKey.WARNING, warning);
+        map.put(HttpHeaderKey.WARNING, warning);
         return this;
     }
     
@@ -440,7 +440,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder via(String via) {
-        map.put(HttpKey.VIA, via);
+        map.put(HttpHeaderKey.VIA, via);
         return this;
     }
     
@@ -453,7 +453,7 @@ public class HeaderBuilder {
      * @return 返回当前对象
      */
     public HeaderBuilder keepAlive(String keepAlive) {
-        map.put(HttpKey.KEEP_ALIVE, keepAlive);
+        map.put(HttpHeaderKey.KEEP_ALIVE, keepAlive);
         return this;
     }
     

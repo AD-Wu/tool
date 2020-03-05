@@ -1,7 +1,7 @@
 package com.x.commons.util.http.data;
 
 import com.x.commons.util.bean.New;
-import com.x.commons.util.http.enums.HttpKey;
+import com.x.commons.util.http.enums.HttpHeaderKey;
 import com.x.commons.util.string.Strings;
 import lombok.NonNull;
 import org.apache.http.*;
@@ -61,7 +61,7 @@ public final class HttpResult implements Serializable {
         Stream.of(resp.getAllHeaders()).forEach(h -> {
             respHeaders.put(h.getName(), h.getValue());
         });
-        String type = respHeaders.get(HttpKey.CONTENT_TYPE);
+        String type = respHeaders.get(HttpHeaderKey.CONTENT_TYPE);
         String[] split = type.split(";");
         if (split.length > 0) {
             this.contentType = split[0];

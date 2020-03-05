@@ -1,13 +1,13 @@
 package com.x.protocol.network.interfaces;
 
-import com.x.protocol.network.core.NetworkConcentType;
+import com.x.protocol.network.core.NetworkConsentType;
 
 /**
- * @Desc TODO
+ * @Desc 网络应答对象
  * @Date 2020-02-19 00:13
  * @Author AD
  */
-public interface INetworkConcent {
+public interface INetworkConsent {
     
     String getName();
     
@@ -19,7 +19,7 @@ public interface INetworkConcent {
     
     String getConnectionInfo();
     
-    long getConcentIndex();
+    long getConsentIndex();
     
     <T> T getInformation(String s);
     
@@ -27,7 +27,7 @@ public interface INetworkConcent {
     
     INetworkIO getNetworkIO();
     
-    NetworkConcentType getType();
+    NetworkConsentType getType();
     
     String getLangKey();
     

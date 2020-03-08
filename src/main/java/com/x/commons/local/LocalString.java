@@ -15,11 +15,11 @@ import static com.x.commons.enums.Charset.UTF8;
  * @Date 2019-11-02 22:38
  * @Author AD
  */
-final class LocalString {
+public final class LocalString {
 
     private Properties props;
 
-    LocalString() {
+    public LocalString() {
         this.props = new Properties();
     }
 
@@ -29,7 +29,7 @@ final class LocalString {
      * @param path 配置文件路径，如：com/x/commons/local/zh_CN.properties
      * @return 是否加载成功
      */
-    boolean load(String path) {
+    public boolean load(String path) {
         try (InputStream in = Loader.getStream(path) ;) {
             if (in == null) return false;
             try (InputStreamReader reader = Files.getUnicodeReader(in, UTF8);
@@ -51,7 +51,7 @@ final class LocalString {
      * @param params
      * @return
      */
-    String text(String localKey, Object... params) {
+    public String text(String localKey, Object... params) {
         return Strings.replace(props.getProperty(localKey), params);
     }
 

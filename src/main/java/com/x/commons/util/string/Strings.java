@@ -162,6 +162,18 @@ public final class Strings {
     }
     
     /**
+     * 判断字符串是否不为null,"","  "
+     *
+     * @param check 需检查的字符串,默认去除前后空白条
+     *
+     * @return boolean
+     */
+    public static boolean isNotNull(String check) {
+        
+        return !isNull(check, true);
+    }
+    
+    /**
      * 判断字符串是否为null,"","  "
      *
      * @param check 需检查的字符串,默认去除前后空白条
@@ -430,6 +442,17 @@ public final class Strings {
             }
             return sb.sub(len - totalLength);
         }
+    }
+    
+    /**
+     * 将null转为""
+     *
+     * @param fixed 需修正的字符串
+     *
+     * @return
+     */
+    public static String fixNull(String fixed) {
+        return fixed == null ? "" : fixed;
     }
     
     /**

@@ -67,6 +67,10 @@ public final class DateTimes {
         return withMillSeconds ? now() : LocalDateTime.now().format(FORMATTER);
     }
     
+    public static LocalDateTime of(long timeMillSeconds){
+        return toLocalDateTime(new Date(timeMillSeconds));
+    }
+    
     public static LocalDateTime autoParse(String dateTime) throws Exception {
         LocalDateTime parse = Formatter.autoParse(dateTime);
         if (parse == null) {

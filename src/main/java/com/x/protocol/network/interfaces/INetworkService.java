@@ -32,10 +32,14 @@ public interface INetworkService {
     
     INetworkConsent getConsentByIndex(long index);
     
-    INetworkConsent connect(String name, DataSet data) throws Exception;
-    
     boolean containConsent(long index);
     
     boolean runSchedule(Runnable runnable);
+    
+    INetworkConsent connect(String name, DataSet data) throws Exception;
+    
+    boolean start(NetworkConfig config);
+    
+    void stop();
     
 }

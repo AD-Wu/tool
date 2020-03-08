@@ -17,11 +17,11 @@ public abstract class NetworkOutput implements INetworkOutput {
     /**
      * 网络应答对象
      */
-    protected final NetworkConsent concent;
+    protected final NetworkConsent consent;
     
-    public NetworkOutput(NetworkService service, NetworkConsent concent) {
+    public NetworkOutput(NetworkService service, NetworkConsent consent) {
         this.service = service;
-        this.concent = concent;
+        this.consent = consent;
     }
     
     /**
@@ -39,7 +39,7 @@ public abstract class NetworkOutput implements INetworkOutput {
      * @return NetworkConsent 网络应答对象
      */
     public NetworkConsent getConsent() {
-        return this.concent;
+        return this.consent;
     }
     
 }

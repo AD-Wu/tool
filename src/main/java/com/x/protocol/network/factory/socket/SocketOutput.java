@@ -38,8 +38,8 @@ public final class SocketOutput extends NetworkOutput implements ISocketOutput {
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
-                super.service.notifyError(super.concent, Locals.text("protocol.socket.send.byte", e.getMessage()));
-                super.concent.close();
+                super.service.notifyError(super.consent, Locals.text("protocol.socket.send.byte", e.getMessage()));
+                super.consent.close();
                 return false;
             }
             
@@ -58,8 +58,8 @@ public final class SocketOutput extends NetworkOutput implements ISocketOutput {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            super.service.notifyError(super.concent, Locals.text("protocol.socket.flush", e.getMessage()));
-            super.concent.close();
+            super.service.notifyError(super.consent, Locals.text("protocol.socket.flush", e.getMessage()));
+            super.consent.close();
         }
     }
     

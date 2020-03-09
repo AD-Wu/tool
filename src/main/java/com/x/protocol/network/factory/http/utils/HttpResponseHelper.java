@@ -1,4 +1,4 @@
-package com.x.protocol.network.factory.http;
+package com.x.protocol.network.factory.http.utils;
 
 import com.x.commons.util.string.Strings;
 import org.apache.http.StatusLine;

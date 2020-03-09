@@ -65,16 +65,47 @@
         <!--</dependency>-->
 
         <!-- 以下跟springboot无关-->
+
         <dependency>
             <groupId>com.google.auto.service</groupId>
             <artifactId>auto-service</artifactId>
             <version>1.0-rc6</version>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>org.apache.camel</groupId>-->
+            <!--<artifactId>camel-websocket-jsr356</artifactId>-->
+            <!--<version>3.1.0</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+            <!--<groupId>org.java-websocket</groupId>-->
+            <!--<artifactId>Java-WebSocket</artifactId>-->
+            <!--<version>1.4.0</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-catalina</artifactId>
+            <version>7.0.99</version>
+        </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>org.apache.tomcat</groupId>-->
+            <!--<artifactId>tomcat-catalina</artifactId>-->
+            <!--<version>9.0.31</version>-->
+        <!--</dependency>-->
+
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
             <version>4.4.13</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpasyncclient</artifactId>
+            <version>4.1.4</version>
         </dependency>
 
 
@@ -135,9 +166,9 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>com.arronlong</groupId>-->
-            <!--<artifactId>httpclientutil</artifactId>-->
-            <!--<version>1.0.4</version>-->
+        <!--<groupId>com.arronlong</groupId>-->
+        <!--<artifactId>httpclientutil</artifactId>-->
+        <!--<version>1.0.4</version>-->
         <!--</dependency>-->
 
         <dependency>

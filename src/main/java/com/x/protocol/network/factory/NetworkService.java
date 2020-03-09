@@ -77,7 +77,7 @@ public abstract class NetworkService implements INetworkService {
     /**
      * 网络应答对象已改变
      */
-    private boolean consentChanged = true;
+    private volatile boolean consentChanged = true;
     
     /**
      * 状态计数
@@ -87,7 +87,7 @@ public abstract class NetworkService implements INetworkService {
     /**
      * 没有应答对象
      */
-    private boolean noConsents = true;
+    private volatile boolean noConsents = true;
     
     // ------------------------ 构造方法 ------------------------
     
@@ -191,7 +191,8 @@ public abstract class NetworkService implements INetworkService {
         }
     }
     
-    public synchronized void start(NetworkConfig config) {
+    @Override
+    public synchronized boolean start(NetworkConfig config) {
         if (config != null && this.stopped) {
             this.stopped = false;
             this.config = config;
@@ -234,10 +235,15 @@ public abstract class NetworkService implements INetworkService {
                     }
                 }
             };
+            svcThread.start();
+            return true;
+        }else{
+            return false;
         }
         
     }
     
+    @Override
     public synchronized void stop() {
         if (!this.stopped) {
             this.stopped = true;

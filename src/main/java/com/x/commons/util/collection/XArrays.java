@@ -4,6 +4,7 @@ import com.x.commons.decoder.core.Primitive;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.reflact.Clazzs;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Set;
@@ -50,6 +51,11 @@ public final class XArrays {
      * 空 String[] 数组
      */
     public static final String[] EMPTY_STRING = new String[0];
+    
+    /**
+     * 空 File[] 数组
+     */
+    public static final File[] EMPTY_FILE = new File[0];
     
     /**
      * 空 Object[] 数组

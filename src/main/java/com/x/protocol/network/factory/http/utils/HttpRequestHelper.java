@@ -1,4 +1,4 @@
-package com.x.protocol.network.factory.http;
+package com.x.protocol.network.factory.http.utils;
 
 import com.x.commons.util.http.enums.HttpHeaderKey;
 import com.x.commons.util.string.Strings;
@@ -35,11 +35,11 @@ public final class HttpRequestHelper {
     
     // ------------------------ 方法定义 ------------------------
     
-    public static void setHttpClientHeader(AbstractHttpMessage msg, String contentType, String charset, String referer) {
-        msg.setHeader(HttpHeaderKey.CONTENT_TYPE, contentType + ";charset=" + charset);
-        msg.setHeader(HttpHeaderKey.CHARSET, charset);
+    public static void setHttpClientHeader(AbstractHttpMessage request, String contentType, String charset, String referer) {
+        request.setHeader(HttpHeaderKey.CONTENT_TYPE, contentType + ";charset=" + charset);
+        request.setHeader(HttpHeaderKey.CHARSET, charset);
         if (!Strings.isNull(referer)) {
-            msg.setHeader(HttpHeaderKey.REFERER, referer);
+            request.setHeader(HttpHeaderKey.REFERER, referer);
         }
     }
     
@@ -84,6 +84,13 @@ public final class HttpRequestHelper {
         return req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getRequestURI();
     }
     
+    /**
+     * 获取远端发送http的本地host，即获取代理host
+     *
+     * @param req http servlet request
+     *
+     * @return
+     */
     public static String getRemoteLocalHost(HttpServletRequest req) {
         String proxy = req.getHeader("x-forwarded-for");
         if (Strings.isNull(proxy, true, "unknown")) {

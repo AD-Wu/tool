@@ -72,7 +72,7 @@ class SocketServer implements ISocket {
     }
     
     @Override
-    public void send(Object msg) {
+    public void send(byte[] msg) {
         channel.writeAndFlush(msg);
     }
     

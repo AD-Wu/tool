@@ -17,9 +17,9 @@ public class NetworkInput implements INetworkInput {
     
     private Object protocolReader;
     
-    public NetworkInput(NetworkService service, NetworkConsent Consent) {
+    public NetworkInput(NetworkService service, NetworkConsent consent) {
         this.service = service;
-        this.consent = Consent;
+        this.consent = consent;
     }
     
     @Override

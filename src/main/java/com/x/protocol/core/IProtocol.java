@@ -8,4 +8,6 @@ public interface IProtocol {
     String getName();
     Logger getLogger();
     DataInfo getDataConfig(Class<?> clazz);
+    boolean isStopped();
+    IProtocolInitializer getInitializer();
 }

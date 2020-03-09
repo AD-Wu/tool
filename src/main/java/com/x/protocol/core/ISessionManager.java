@@ -21,7 +21,7 @@ public interface ISessionManager {
     
     boolean isLogin(String key);
     
-    boolean isLoginCommand(String key, String s);
+    boolean isLoginCommand(String cmd, String ctrl);
     
     ISession getSession(ChannelInfo info);
     
@@ -35,10 +35,10 @@ public interface ISessionManager {
     
     boolean isChannelLogin(ChannelInfo info);
     
-    void ChannelLogout(ChannelInfo info, boolean a, boolean b);
+    void ChannelLogout(ChannelInfo info, boolean closeChannel, boolean removeSession);
     
     void endSession(String key);
     
-    void endSession(String key, String s);
+    void endSession(String key, String msg);
     
 }

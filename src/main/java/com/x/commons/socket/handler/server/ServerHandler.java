@@ -31,7 +31,7 @@ public class ServerHandler extends SimpleChannelInboundHandler {
         ByteBuf buffer = alloc.buffer();
         System.out.println("server="+Arrays.toString("哈哈".getBytes()));
         buffer.writeCharSequence("哈哈", Charsets.UTF8);
-        //ctx.writeAndFlush(buffer);
+        ctx.writeAndFlush(buffer);
     }
 
     @Override
@@ -44,11 +44,12 @@ public class ServerHandler extends SimpleChannelInboundHandler {
     
     
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, Object msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         if(msg instanceof ByteBuf){
             ByteBuf buf = (ByteBuf) msg;
             byte[] data = new byte[buf.readableBytes()];
             buf.readBytes(data);
+            System.out.println("==="+Arrays.toString(data));
         }
     }
     

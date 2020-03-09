@@ -1,6 +1,6 @@
 package com.x.commons.socket;
 
-import java.util.Scanner;
+import com.x.commons.socket.server.SocketManager;
 
 /**
  * @Desc TODO
@@ -10,15 +10,7 @@ import java.util.Scanner;
 public class Test {
     
     public static void main(String[] args) throws Exception {
-        Scanner scanner = new Scanner(System.in);
-        while (true) {
-            System.out.println("cmd:");
-            String s = scanner.nextLine();
-            System.out.println("---------------");
-            System.out.println("cmd="+s+",receive=");
-            System.out.println("content");
-            System.out.println("---------------");
-        }
+        SocketManager.SERVER.start(1111);
     }
     
 }

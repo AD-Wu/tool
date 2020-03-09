@@ -34,10 +34,10 @@ public class SessionChannelInfo {
     }
     
     // ------------------------ 方法定义 ------------------------
-    public synchronized int checkAccess(long accessCount, long oldTime) {
+    public synchronized int checkAccess(long minuteLimit, long limitTime) {
         long now = System.currentTimeMillis();
-        if (countTimes.size() > accessCount) {
-            if (now - oldTime <= checkTime && now >= checkTime - 60000L) {
+        if (countTimes.size() > minuteLimit) {
+            if (now - limitTime <= checkTime && now >= checkTime - 60000L) {
                 return 2;
             } else {
                 countTimes.clear();
@@ -55,7 +55,7 @@ public class SessionChannelInfo {
             }
             countTimes.add(now);
             checkTime = now;
-            return countTimes.size() > accessCount ? 1 : 0;
+            return countTimes.size() > minuteLimit ? 1 : 0;
         }
     }
     

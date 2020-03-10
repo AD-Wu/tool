@@ -4,12 +4,13 @@ import com.x.protocol.layers.Protocol;
 
 /**
  * @Desc TODO
- * @Date 2020-03-10 00:37
+ * @Date 2020-03-11 00:07
  * @Author AD
  */
-public class Transport extends TransportResponser{
+public class TransportResponser extends TransportService {
     
-    public Transport(Protocol protocol){
+    public TransportResponser(Protocol protocol) {
         super(protocol);
     }
+    
 }

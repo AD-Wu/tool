@@ -1,6 +1,7 @@
 package com.x.protocol.layers.transport.channel.core;
 
 import com.x.commons.collection.NameValue;
+import com.x.commons.local.Locals;
 import com.x.commons.util.log.Logs;
 import com.x.protocol.core.ChannelData;
 import com.x.protocol.core.ChannelInfo;
@@ -12,6 +13,7 @@ import com.x.protocol.layers.transport.config.ChannelConfig;
 import com.x.protocol.layers.transport.config.ClientConfig;
 import com.x.protocol.layers.transport.config.ProtocolConfig;
 import com.x.protocol.layers.transport.config.ServerConfig;
+import com.x.protocol.network.NetworkManager;
 import com.x.protocol.network.core.NetworkConfig;
 import com.x.protocol.network.interfaces.INetworkConsent;
 import com.x.protocol.network.interfaces.INetworkIO;
@@ -26,7 +28,7 @@ import java.util.List;
  * @Date 2020-03-10 00:31
  * @Author AD
  */
-public class ChannelService implements IChannel, INetworkNotification {
+public abstract class ChannelService implements IChannel, INetworkNotification {
     
     // ------------------------ 变量定义 ------------------------
     private static final Object countLock = new Object();
@@ -76,7 +78,7 @@ public class ChannelService implements IChannel, INetworkNotification {
     private ISerializer serializer;
     
     // ------------------------ 构造方法 ------------------------
-    public ChannelService(Transport transport,Protocol protocol) {
+    public ChannelService(Transport transport, Protocol protocol) {
         this.transport = transport;
         this.protocol = protocol;
         this.logger = Logs.get(protocol.getName());
@@ -85,28 +87,28 @@ public class ChannelService implements IChannel, INetworkNotification {
     
     @Override
     public synchronized boolean start(ChannelConfig channel) throws Exception {
-        if(stopped&&channel!=null&&channel.isEnabled()){
+        if (stopped && channel != null && channel.isEnabled()) {
             this.stopped = false;
             // 服务器配置
             boolean serviceMode = false;
             ServerConfig server = channel.getServer();
-            if(server!=null){
-                serviceMode =true;
+            if (server != null) {
+                serviceMode = true;
                 this.maxConnection = server.getMaxConnection();
             }
             this.name = channel.getName();
             this.sendTimeout = channel.getSendTimeout();
-            if(sendTimeout<30000L){
-                sendTimeout=30000L;
+            if (sendTimeout < 30000L) {
+                sendTimeout = 30000L;
             }
             // 协议配置
-            ProtocolConfig protocol = channel.getProtocol();
-            this.maxMappingIndex= protocol.getMaxMappingIndex();
-            if(maxMappingIndex<0){
-                maxMappingIndex=0;
+            ProtocolConfig prtcConfig = channel.getProtocol();
+            this.maxMappingIndex = prtcConfig.getMaxMappingIndex();
+            if (maxMappingIndex < 0) {
+                maxMappingIndex = 0;
             }
-            this.senderClass = Class.forName(protocol.getSendClass());
-            this.readerClass = Class.forName(protocol.getReaderClass());
+            this.senderClass = Class.forName(prtcConfig.getSendClass());
+            this.readerClass = Class.forName(prtcConfig.getReaderClass());
             // 网络配置
             NetworkConfig network = new NetworkConfig();
             network.setName(this.name);
@@ -117,27 +119,43 @@ public class ChannelService implements IChannel, INetworkNotification {
             network.setQueue(channel.getQueue());
             network.setReadTimeout(channel.getReadTimeout());
             // 服务器模式
-            if(serviceMode){
+            if (serviceMode) {
                 List<NameValue> params = server.getParameters();
-                if(params!=null){
-                    params.forEach(param->{
+                if (params != null) {
+                    params.forEach(param -> {
                         network.add(param.getName(), param.getValue());
                     });
                 }
             }
-            
+            if (!this.protocol.onChannelPrepare(this, network)) {
+                return false;
+            } else {
+                ++totalService;
+                // this.transport.addServiceCount();
+                this.service = NetworkManager.start(network, this);
+                if (service != null) {
+                    return true;
+                } else {
+                    protocol.onError("", name, Locals.text("protocol.layer.channel.start", name));
+                    return false;
+                }
+            }
         }
         return false;
     }
     
     @Override
     public void stop() {
-    
+        if (!stopped && service != null) {
+            stopped = true;
+            service.stop();
+            service = null;
+        }
     }
     
     @Override
     public boolean isStopped() {
-        return false;
+        return this.stopped;
     }
     
     @Override
@@ -147,22 +165,22 @@ public class ChannelService implements IChannel, INetworkNotification {
     
     @Override
     public INetworkService getService() {
-        return null;
+        return this.service;
     }
     
     @Override
     public ISerializer getSerializer() {
-        return null;
+        return this.serializer;
     }
     
     @Override
     public void setSerializer(ISerializer serializer) {
-    
+        this.serializer = serializer;
     }
     
     @Override
     public String getName() {
-        return null;
+        return this.name;
     }
     
     @Override
@@ -177,22 +195,29 @@ public class ChannelService implements IChannel, INetworkNotification {
     
     @Override
     public int getRemoteCount() {
-        return 0;
+        return this.remoteCount;
     }
     
     @Override
     public int getClientCount() {
-        return 0;
+        return this.clientCount;
     }
     
     @Override
     public long getSendTimeout() {
-        return 0;
+        return this.sendTimeout;
     }
     
     @Override
-    public int getNextMappingIndex() {
-        return 0;
+    public synchronized int getNextMappingIndex() {
+        if(maxMappingIndex==0){
+            return 0;
+        }else{
+            if(currentMappingIndex>=maxMappingIndex){
+                currentMappingIndex=0;
+            }
+            return ++currentMappingIndex;
+        }
     }
     
     @Override
@@ -202,11 +227,12 @@ public class ChannelService implements IChannel, INetworkNotification {
     
     @Override
     public boolean runSchedule(Runnable runnable) {
-        return false;
+        return service==null?false:service.runSchedule(runnable);
     }
     
     @Override
     public boolean onConsentData(INetworkIO networkIO) throws Exception {
+        ChannelInfo info = getChannelInfo(null, networkIO);
         return false;
     }
     
@@ -240,4 +266,5 @@ public class ChannelService implements IChannel, INetworkNotification {
     
     }
     
+    protected abstract ChannelInfo getChannelInfo(INetworkConsent consent,INetworkIO io);
 }

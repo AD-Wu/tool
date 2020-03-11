@@ -63,4 +63,10 @@ public class ServerHandler extends SimpleChannelInboundHandler {
         }
     }
     
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        super.exceptionCaught(ctx, cause);
+    }
+    
+    
 }

@@ -1,4 +1,4 @@
-package com.x.protocol.core;
+package com.x.protocol.enums;
 
 /**
  * @Desc TODO

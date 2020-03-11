@@ -12,6 +12,6 @@ public interface ITransportResponse {
     
     void onField(ChannelInfo info, ChannelData data);
     
-    void onResponse(ChannelInfo info, ChannelData send, ChannelData data);
+    void onResponse(ChannelInfo info, ChannelData recv, ChannelData send);
     
 }

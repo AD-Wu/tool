@@ -155,10 +155,10 @@ public abstract class TransportService {
         return channels.size();
     }
     
-    protected void checkClientConnections(long index) {
+    protected void checkClientConnections(long now) {
         if (!XArrays.isEmpty(channelArray)) {
             Arrays.stream(channelArray).forEach(channel -> {
-                channel.checkClientConnections(index);
+                channel.checkClientConnections(now);
                 if (protocol.isStopped()) {
                     return;
                 }
@@ -166,6 +166,5 @@ public abstract class TransportService {
         }
     }
     
-    // ------------------------ 私有方法 ------------------------
-    
+
 }

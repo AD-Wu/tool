@@ -63,7 +63,9 @@ public class ChannelInfo {
         }
         return this.info;
     }
-    
+    public void resetNetworkIO(){
+        this.networkIO=null;
+    }
     public IChannel getChannel() {
         return channel;
     }

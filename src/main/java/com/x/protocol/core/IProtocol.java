@@ -4,6 +4,7 @@ import com.x.commons.collection.DataSet;
 import com.x.commons.events.Dispatcher;
 import com.x.commons.events.Event;
 import com.x.protocol.config.ServiceConfig;
+import com.x.protocol.enums.ResponseMode;
 import com.x.protocol.layers.transport.config.ClientConfig;
 import org.slf4j.Logger;
 

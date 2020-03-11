@@ -8,6 +8,7 @@ import com.x.commons.util.bean.New;
 import com.x.commons.util.log.Logs;
 import com.x.protocol.config.ServiceConfig;
 import com.x.protocol.core.*;
+import com.x.protocol.enums.ResponseMode;
 import com.x.protocol.layers.application.Application;
 import com.x.protocol.layers.presentation.Presentation;
 import com.x.protocol.layers.session.SessionManager;

@@ -11,15 +11,15 @@ import java.util.List;
  */
 public interface IStatusNotification {
     
-    void onError(String s, String ss, String sss);
+    void onError(String protocolName, String name, String error);
     
     void onStart();
     
-    void onStart(String msg);
+    void onStart(String protocolName);
     
     void onStop();
     
-    void onStop(String msg);
+    void onStop(String protocolName);
     
     void onLoadConfig(List<ServerConfig> configs);
     

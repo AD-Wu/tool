@@ -19,7 +19,7 @@ public class ChannelInfo {
     
     private final INetworkConsent consent;
     
-    private final INetworkIO networkIO;
+    private INetworkIO networkIO;
     
     private String localHost;
     
@@ -63,9 +63,11 @@ public class ChannelInfo {
         }
         return this.info;
     }
-    public void resetNetworkIO(){
-        this.networkIO=null;
+    
+    public void resetNetworkIO() {
+        this.networkIO = null;
     }
+    
     public IChannel getChannel() {
         return channel;
     }

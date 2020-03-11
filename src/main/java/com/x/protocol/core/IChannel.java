@@ -29,7 +29,7 @@ public interface IChannel {
     
     boolean addClient(ClientConfig config);
     
-    void removeClient(String key);
+    void removeClient(String name);
     
     int getRemoteCount();
     

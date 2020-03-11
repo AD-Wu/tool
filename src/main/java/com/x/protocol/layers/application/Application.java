@@ -43,6 +43,21 @@ public class Application {
     }
     // ------------------------ 方法定义 ------------------------
     
+    public boolean hasFromRemoteControlKey(String key) {
+        return false;
+    }
+    
+    public boolean hasToRemoteControlKey(String key) {
+        return false;
+    }
+    
+    public DataConfig getDataConfig(Class<?> clazz) {
+        return null;
+    }
+    
+    public String getActorCommand(Class<?> clazz) {
+        return null;
+    }
     // ------------------------ 私有方法 ------------------------
     
 }

@@ -36,15 +36,15 @@ public interface IProtocol {
     
     ISessionManager getSessionManager();
     
-    boolean addClient(String key, ClientConfig client);
+    boolean addClient(String name, ClientConfig client);
     
-    void removeClient(String key, String msg);
+    void removeClient(String name, String key);
     
     ChannelInfo getClient(String key);
     
     ChannelInfo[] getClients();
     
-    IChannel getChannel(String key);
+    IChannel getChannel(String name);
     
     Dispatcher getDispatcher();
     
@@ -66,6 +66,6 @@ public interface IProtocol {
     
     void changeTimeout(ChannelInfo info, ChannelData data, int change);
     
-    boolean cancelTimeout(ChannelInfo info, ChannelData data, boolean cancel);
+    boolean cancelTimeout(ChannelInfo info, ChannelData data, boolean callbackError);
     
 }

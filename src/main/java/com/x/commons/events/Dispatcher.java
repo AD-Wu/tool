@@ -87,11 +87,11 @@ public class Dispatcher {
         }
     }
 
-    public int dispatch(Event var1) {
-        if (var1 == null) {
+    public int dispatch(Event event) {
+        if (event == null) {
             return 0;
         } else {
-            Listeners var2 = map.get(var1.getType());
+            Listeners var2 = map.get(event.getType());
             if (var2 == null) {
                 return 0;
             } else {
@@ -102,18 +102,18 @@ public class Dispatcher {
 
                 for(int var7 = 0; var7 < var6; ++var7) {
                     ListenerInfo var8 = var5[var7];
-                    if (var1.isStopped()) {
+                    if (event.isStopped()) {
                         break;
                     }
 
-                    var1.setParams(var8.getParams());
+                    event.setParams(var8.getParams());
 
                     try {
-                        var8.getListener().onEvent(var1);
+                        var8.getListener().onEvent(event);
                         ++var4;
                     } catch (Exception var10) {
                         var10.printStackTrace();
-                        var1.setException(var10);
+                        event.setException(var10);
                     }
                 }
 

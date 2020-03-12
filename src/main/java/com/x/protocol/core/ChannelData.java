@@ -2,7 +2,7 @@ package com.x.protocol.core;
 
 import com.x.commons.collection.DataSet;
 import com.x.commons.util.string.Strings;
-import com.x.protocol.layers.transport.enums.Status;
+import com.x.protocol.enums.ProtocolStatus;
 
 import java.io.Serializable;
 
@@ -165,7 +165,7 @@ public class ChannelData {
     }
 
     public boolean isSucceed() {
-        return this.status == Status.SUCCEED;
+        return this.status == ProtocolStatus.OK;
     }
 
     public String getCommand() {

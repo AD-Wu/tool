@@ -1,4 +1,4 @@
-package com.x.commons.parser.string.annotation;
+package com.x.commons.parser.core;
 
 import java.lang.annotation.*;
 

@@ -1,8 +1,8 @@
 package com.x.commons.parser.collection;
 
 import com.x.commons.util.string.Strings;
-import com.x.commons.parser.string.annotation.Parser;
-import com.x.commons.parser.string.core.IStringParser;
+import com.x.commons.parser.core.Parser;
+import com.x.commons.parser.core.IStringParser;
 
 /**
  * @Desc

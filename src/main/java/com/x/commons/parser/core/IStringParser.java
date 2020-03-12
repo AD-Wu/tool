@@ -1,6 +1,4 @@
-package com.x.commons.parser.string.core;
-
-import com.x.commons.parser.core.IParser;
+package com.x.commons.parser.core;
 
 /**
  * @Desc TODO

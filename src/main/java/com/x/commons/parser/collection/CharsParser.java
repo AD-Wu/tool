@@ -1,10 +1,7 @@
 package com.x.commons.parser.collection;
 
 import com.x.commons.parser.core.IParser;
-import com.x.commons.parser.string.annotation.Parser;
-import com.x.commons.util.string.Strings;
-
-import java.util.Arrays;
+import com.x.commons.parser.core.Parser;
 
 /**
  * @Desc TODO

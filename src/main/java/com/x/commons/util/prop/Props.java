@@ -2,7 +2,7 @@ package com.x.commons.util.prop;
 
 import com.x.commons.database.pool.PoolConfig;
 import com.x.commons.parser.Parsers;
-import com.x.commons.parser.string.core.IStringParser;
+import com.x.commons.parser.core.IStringParser;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.bean.SB;
 import com.x.commons.util.collection.Maps;

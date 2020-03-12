@@ -1,7 +1,7 @@
 package com.x.commons.parser;
 
 import com.x.commons.parser.core.IParser;
-import com.x.commons.parser.string.annotation.Parser;
+import com.x.commons.parser.core.Parser;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.log.Logs;
 import com.x.commons.util.reflact.Clazzs;

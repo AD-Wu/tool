@@ -1,10 +1,9 @@
 package com.x.commons.parser.collection;
 
 import com.x.commons.parser.core.IParser;
-import com.x.commons.parser.string.annotation.Parser;
+import com.x.commons.parser.core.Parser;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Desc TODO

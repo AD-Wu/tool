@@ -351,7 +351,9 @@ public final class Converts {
         return "TRUE".equals(t) || "Y".equals(t) || "YES".equals(t) || ("1".equals(t)) || defaultValue;
     }
     
-    public static boolean toBoolean(@NonNull byte[] bs)             { return bs[0] == 0 ? false : true;}
+    public static boolean toBoolean(@NonNull byte[] bs) {
+        return bs[0] == 0 ? false : true;
+    }
     
     public static boolean toBoolean(@NonNull byte[] bs, int expect) { return expect == toInt(bs);}
     
@@ -382,6 +384,8 @@ public final class Converts {
     public static double toDouble(@NonNull byte[] bs) {
         return Digit.FloatConverter.DOUBLE.toDouble(bs);
     }
+    
+    public static byte[] toBytes(byte value)  { return Digit.BYTE.toBytes(value); }
     
     public static byte[] toBytes(short value) { return Digit.SHORT.toBytes(value); }
     

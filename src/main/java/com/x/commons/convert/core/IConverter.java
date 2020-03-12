@@ -7,6 +7,8 @@ package com.x.commons.convert.core;
  */
 public interface IConverter<T, E> {
     
-    T convert(E e);
+    T convert(E e) throws Exception;
+    
+    E reverse(T t) throws Exception;
     
 }

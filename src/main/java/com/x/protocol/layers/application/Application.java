@@ -63,6 +63,15 @@ public class Application {
     public DataInfo getToRemoteResponseConfig(ChannelData data) {
         return null;
    }
+    public DataInfo getToRemoteRequestConfig(ChannelData reqData) {
+        return null;
+    }
+    public DataInfo getFromRemoteRequestConfig(ChannelData data) {
+        return null;
+    }
+    public DataInfo getFromRemoteResponseConfig(ChannelData data) {
+        return null;
+    }
     // ------------------------ 私有方法 ------------------------
     
 }

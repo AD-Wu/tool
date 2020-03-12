@@ -12,7 +12,8 @@ import java.io.Serializable;
 
 public interface IProtocol {
     
-    boolean start(ServiceConfig service, IProtocolInitializer init, DataSet serviceParams, IStatusNotification status) throws Exception;
+    boolean start(ServiceConfig service, IProtocolInitializer init, DataSet serviceParams, IStatusNotification status)
+            throws Exception;
     
     void stop();
     
@@ -23,8 +24,8 @@ public interface IProtocol {
     ResponseResult response(ChannelInfo info, ChannelData data, Serializable dataSerialized, DataSet dataSet, int status,
             String msg);
     
-    ResponseResult responseTry(ChannelInfo info, ChannelData data, Serializable dataSerialized, DataSet dataSet, int status,
-            String msg);
+    ResponseResult responseTry(ChannelInfo[] info, ChannelData data, Serializable dataSerialized,
+            DataSet dataSet, int status, String msg);
     
     String getName();
     

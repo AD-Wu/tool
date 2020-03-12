@@ -8,9 +8,4 @@ import com.x.commons.serialize.anno.XField;
  * @Author AD
  */
 public class Serializers {
-    @XField
-    private String name;
-    
-    public static void main(String[] args) {
-    }
 }

@@ -1,7 +1,7 @@
 package com.x.protocol.test.bean;
 
-import com.x.protocol.anno.core.XData;
-import com.x.protocol.anno.core.XField;
+import com.x.protocol.anno.coreold.XData;
+import com.x.protocol.anno.coreold.XField;
 import lombok.Data;
 
 import java.io.Serializable;

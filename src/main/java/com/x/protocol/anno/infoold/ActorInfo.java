@@ -1,10 +1,10 @@
-package com.x.protocol.anno.info;
+package com.x.protocol.anno.infoold;
 
 import com.x.commons.util.bean.New;
 import com.x.commons.util.reflact.Methods;
-import com.x.protocol.anno.core.Actor;
-import com.x.protocol.anno.core.Recv;
-import com.x.protocol.anno.core.Send;
+import com.x.protocol.anno.coreold.Actor;
+import com.x.protocol.anno.coreold.Recv;
+import com.x.protocol.anno.coreold.Send;
 import lombok.Data;
 import lombok.NonNull;
 

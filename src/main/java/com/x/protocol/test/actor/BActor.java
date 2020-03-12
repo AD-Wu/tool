@@ -1,7 +1,7 @@
 package com.x.protocol.test.actor;
 
-import com.x.protocol.anno.core.Actor;
-import com.x.protocol.anno.core.Recv;
+import com.x.protocol.anno.coreold.Actor;
+import com.x.protocol.anno.coreold.Recv;
 import com.x.protocol.test.bean.BData;
 
 /**

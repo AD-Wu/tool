@@ -1,4 +1,4 @@
-package com.x.protocol.anno.core;
+package com.x.protocol.anno.coreold;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Inherited;

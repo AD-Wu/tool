@@ -2,7 +2,7 @@ package com.x.commons.database.pool;
 
 import com.x.commons.util.reflact.Fields;
 import com.x.commons.util.string.Strings;
-import com.x.protocol.anno.core.Doc;
+import com.x.protocol.anno.coreold.Doc;
 import com.zaxxer.hikari.HikariConfig;
 
 import java.lang.reflect.Field;

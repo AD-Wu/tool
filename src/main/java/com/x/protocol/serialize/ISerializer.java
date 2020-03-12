@@ -1,6 +1,6 @@
 package com.x.protocol.serialize;
 
-import com.x.protocol.anno.info.DataInfo;
+import com.x.protocol.anno.infoold.DataInfo;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;

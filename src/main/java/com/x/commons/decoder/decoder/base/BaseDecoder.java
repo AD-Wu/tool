@@ -1,7 +1,7 @@
 package com.x.commons.decoder.decoder.base;
 
 import com.x.commons.decoder.core.IDecoder;
-import com.x.protocol.anno.info.FieldInfo;
+import com.x.protocol.anno.infoold.FieldInfo;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;

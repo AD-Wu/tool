@@ -1,4 +1,4 @@
-package com.x.protocol.anno.core;
+package com.x.protocol.anno.coreold;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Inherited;
@@ -9,14 +9,14 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * @Date 2018-12-23 15:49
+ * @Date 2018-12-23 15:48
  * @Author AD
  */
 @Inherited
 @Documented
 @Target(METHOD)
 @Retention(RUNTIME)
-public @interface Recv {
+public @interface Send {
 
     String ctrl();
 
@@ -26,13 +26,10 @@ public @interface Recv {
 
     Class<?> rep();
 
-    boolean skipLogin() default false;
-
     boolean debugInfo() default true;
 
     short moduleID() default 0;
 
     short licenseID() default 0;
-
 
 }

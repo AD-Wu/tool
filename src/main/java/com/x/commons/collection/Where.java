@@ -1,6 +1,6 @@
 package com.x.commons.collection;
 
-import com.x.protocol.anno.core.XField;
+import com.x.protocol.anno.coreold.XField;
 
 import java.io.Serializable;
 

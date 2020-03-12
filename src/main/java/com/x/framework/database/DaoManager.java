@@ -14,7 +14,7 @@ import com.x.framework.caching.datas.CacheManager;
 import com.x.framework.database.core.ITableInfoGetter;
 import com.x.framework.database.core.SQLInfo;
 import com.x.framework.database.core.TableInfo;
-import com.x.protocol.anno.info.DataInfo;
+import com.x.protocol.anno.infoold.DataInfo;
 import com.x.protocol.config.DatabaseConfig;
 import com.x.protocol.core.IProtocol;
 

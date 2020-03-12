@@ -2,8 +2,8 @@ package com.x.protocol.serialize;
 
 import com.x.commons.decoder.Decoders;
 import com.x.commons.decoder.core.Primitive;
-import com.x.protocol.anno.info.DataInfo;
-import com.x.protocol.anno.info.FieldInfo;
+import com.x.protocol.anno.infoold.DataInfo;
+import com.x.protocol.anno.infoold.FieldInfo;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 

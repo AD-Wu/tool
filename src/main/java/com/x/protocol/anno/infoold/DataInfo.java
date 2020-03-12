@@ -1,9 +1,9 @@
-package com.x.protocol.anno.info;
+package com.x.protocol.anno.infoold;
 
 import com.x.commons.util.bean.New;
 import com.x.commons.util.reflact.Fields;
-import com.x.protocol.anno.core.XData;
-import com.x.protocol.anno.core.XField;
+import com.x.protocol.anno.coreold.XData;
+import com.x.protocol.anno.coreold.XField;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.SneakyThrows;

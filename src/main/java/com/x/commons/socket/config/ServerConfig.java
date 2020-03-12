@@ -1,6 +1,6 @@
 package com.x.commons.socket.config;
 
-import com.x.protocol.anno.core.Doc;
+import com.x.protocol.anno.coreold.Doc;
 import lombok.ToString;
 
 /**

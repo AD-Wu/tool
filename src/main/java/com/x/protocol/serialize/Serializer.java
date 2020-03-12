@@ -60,7 +60,7 @@ public class Serializer implements ISerializer {
 
     // ------------------------------- 私有辅助方法 -------------------------------
     private byte[] getBytes(ByteBuffer buf, int length) {
-        length = length <= 0 ? 0 : length;
+        length = Math.max(length, 0);
         byte[] bs = new byte[length];
         if (buf.remaining() >= length) {
             buf.get(bs);

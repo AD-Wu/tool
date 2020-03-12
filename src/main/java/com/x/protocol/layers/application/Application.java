@@ -1,6 +1,7 @@
 package com.x.protocol.layers.application;
 
 import com.x.commons.util.bean.New;
+import com.x.protocol.core.ChannelData;
 import com.x.protocol.core.DataConfig;
 import com.x.protocol.core.DataInfo;
 import com.x.protocol.core.IProtocol;
@@ -46,7 +47,7 @@ public class Application {
     public boolean hasFromRemoteControlKey(String key) {
         return false;
     }
-    
+
     public boolean hasToRemoteControlKey(String key) {
         return false;
     }
@@ -58,6 +59,10 @@ public class Application {
     public String getActorCommand(Class<?> clazz) {
         return null;
     }
+
+    public DataInfo getToRemoteResponseConfig(ChannelData data) {
+        return null;
+   }
     // ------------------------ 私有方法 ------------------------
     
 }

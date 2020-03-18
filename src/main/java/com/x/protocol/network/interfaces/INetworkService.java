@@ -22,7 +22,7 @@ public interface INetworkService {
     
     boolean isStarted();
     
-    boolean isStop();
+    boolean isStopped();
     
     <T> T getInformation(String s);
     

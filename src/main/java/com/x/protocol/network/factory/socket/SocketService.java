@@ -37,7 +37,7 @@ public class SocketService extends NetworkService {
     
     @Override
     public INetworkConsent connect(String name, DataSet data) throws Exception {
-        if (name != null && !super.isStop()) {
+        if (name != null && !super.isStopped()) {
             String host = data.getString("host");
             if (!Strings.isNull(host)) {
                 int port = data.getInt("port");
@@ -103,11 +103,11 @@ public class SocketService extends NetworkService {
                 }
                 super.notifyServiceStart();
                 
-                while (!super.isStop() && serverSocket != null) {
+                while (!super.isStopped() && serverSocket != null) {
                     SocketConsent consent = null;
                     try {
                         Socket socket = serverSocket.accept();
-                        if (super.isStop()) {
+                        if (super.isStopped()) {
                             if (socket != null) {
                                 socket.close();
                             }

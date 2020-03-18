@@ -1,8 +1,8 @@
-package com.x.protocol.anno.infoold;
+package com.x.protocol.annotations.infoold;
 
 import com.x.commons.decoder.enums.Format;
 import com.x.commons.decoder.core.Primitive;
-import com.x.protocol.anno.coreold.XField;
+import com.x.protocol.annotations.coreold.XField;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 
 import static com.x.commons.decoder.enums.Format.HEX;
 import static com.x.commons.decoder.enums.Format.NULL;
-import static com.x.protocol.anno.infoold.FieldInfo.FieldType.*;
+import static com.x.protocol.annotations.infoold.FieldInfo.FieldType.*;
 
 /**
  * @Date 2018-12-30 23:06

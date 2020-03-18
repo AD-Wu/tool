@@ -2,7 +2,7 @@ package com.x.commons.decoder.decoder.StringDecoder;
 
 import com.x.commons.decoder.core.IDecoder;
 import com.x.commons.util.string.Strings;
-import com.x.protocol.anno.infoold.FieldInfo;
+import com.x.protocol.annotations.infoold.FieldInfo;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;

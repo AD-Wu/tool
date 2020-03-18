@@ -1,6 +1,6 @@
 package com.x.commons.decoder.core;
 
-import com.x.protocol.anno.infoold.FieldInfo;
+import com.x.protocol.annotations.infoold.FieldInfo;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;

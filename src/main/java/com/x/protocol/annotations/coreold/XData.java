@@ -1,4 +1,4 @@
-package com.x.protocol.anno;
+package com.x.protocol.annotations.coreold;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Inherited;
@@ -8,14 +8,23 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+/**
+ * @Date 2018-12-23 15:47
+ * @Author AD
+ */
 @Inherited
 @Documented
 @Target(TYPE)
 @Retention(RUNTIME)
-public @interface XActor {
-    String cmd();
+public @interface XData {
 
     String doc();
 
-    short systemID() default 0;
+    boolean cache();
+
+    boolean history() default false;
+
+    String table() default "";
+
+    String version() default "1";
 }

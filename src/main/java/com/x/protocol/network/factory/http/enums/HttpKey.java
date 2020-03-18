@@ -18,11 +18,11 @@ public final class HttpKey {
     public static final String PARAM_S_PORT = "port";
     public static final String PARAM_S_PROXY_HOST = "proxyHost";
     public static final String PARAM_S_PROXY_PORT = "proxyPort";
-    public static final String PARAM_S_URL_ENCODING = "URLEncoding";
+    public static final String PARAM_S_URL_ENCODING = "urlEncoding";
     public static final String PARAM_S_CONTENT_ENCODING = "contentEncoding";
     public static final String PARAM_S_SKIP_IP_VERIFY = "skipIPVerify";
     public static final String PARAM_C_TYPE = "type";
-    public static final String PARAM_C_URL = "URL";
+    public static final String PARAM_C_URL = "url";
     public static final String PARAM_C_DOWNLOAD_URL = "downloadURL";
     public static final String PARAM_C_UPLOAD_URL = "uploadURL";
     public static final String PARAM_C_METHOD = "method";

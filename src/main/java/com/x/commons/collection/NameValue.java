@@ -1,7 +1,7 @@
 package com.x.commons.collection;
 
 import com.x.commons.util.string.Strings;
-import com.x.protocol.anno.coreold.Doc;
+import com.x.protocol.annotations.coreold.Doc;
 
 import java.io.Serializable;
 

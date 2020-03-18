@@ -1,6 +1,6 @@
 package com.x.protocol.test.other;
 
-import com.x.protocol.anno.coreold.Actor;
+import com.x.protocol.annotations.coreold.Actor;
 import lombok.SneakyThrows;
 
 import java.net.URL;

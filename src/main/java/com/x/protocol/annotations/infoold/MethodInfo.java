@@ -1,8 +1,8 @@
-package com.x.protocol.anno.infoold;
+package com.x.protocol.annotations.infoold;
 
-import com.x.protocol.anno.coreold.Actor;
-import com.x.protocol.anno.coreold.Recv;
-import com.x.protocol.anno.coreold.Send;
+import com.x.protocol.annotations.coreold.Actor;
+import com.x.protocol.annotations.coreold.Recv;
+import com.x.protocol.annotations.coreold.Send;
 import lombok.Data;
 import lombok.NonNull;
 

@@ -124,7 +124,7 @@ public abstract class NetworkService implements INetworkService {
     }
     
     @Override
-    public boolean isStop() {
+    public boolean isStopped() {
         return stopped;
     }
     

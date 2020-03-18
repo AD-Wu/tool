@@ -1,4 +1,4 @@
-package com.x.protocol.anno;
+package com.x.protocol.annotations;
 /**
  * @Desc：
  * @Author：AD

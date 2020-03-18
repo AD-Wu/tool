@@ -1,6 +1,6 @@
 package com.x.commons.socket.config;
 
-import com.x.protocol.anno.coreold.Doc;
+import com.x.protocol.annotations.coreold.Doc;
 
 /**
  * @Desc TODO

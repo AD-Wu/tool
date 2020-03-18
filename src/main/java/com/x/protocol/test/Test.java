@@ -1,9 +1,9 @@
 package com.x.protocol.test;
 
 import com.x.commons.util.bean.New;
-import com.x.protocol.anno.infoold.ActorInfo;
-import com.x.protocol.anno.infoold.DataInfo;
-import com.x.protocol.anno.infoold.MethodInfo;
+import com.x.protocol.annotations.infoold.ActorInfo;
+import com.x.protocol.annotations.infoold.DataInfo;
+import com.x.protocol.annotations.infoold.MethodInfo;
 import com.x.protocol.serialize.Serializer;
 import com.x.protocol.test.actor.BActor;
 import lombok.SneakyThrows;

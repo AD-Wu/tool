@@ -14,8 +14,8 @@ import com.x.framework.caching.datas.CacheManager;
 import com.x.framework.database.core.ITableInfoGetter;
 import com.x.framework.database.core.SQLInfo;
 import com.x.framework.database.core.TableInfo;
-import com.x.protocol.anno.infoold.DataInfo;
 import com.x.protocol.config.DatabaseConfig;
+import com.x.protocol.core.DataConfig;
 import com.x.protocol.core.IProtocol;
 
 import java.util.Map;
@@ -115,7 +115,7 @@ public class DaoManager implements IDaoManager {
         if (tableInfoGetter == null) {
             tableInfoGetter = new ITableInfoGetter<T>() {
                 public TableInfo getTableInfo(Class<T> clazz) {
-                    DataInfo info = DaoManager.this.protocol.getDataConfig(clazz);
+                    DataConfig info = DaoManager.this.protocol.getDataConfig(clazz);
                     return info == null ? null : new TableInfo(info.getTable(), info.getPks(), info.isCache(), info.isHistory());
                 }
             };

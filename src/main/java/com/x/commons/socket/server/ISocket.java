@@ -7,5 +7,5 @@ package com.x.commons.socket.server;
 public interface ISocket {
     void start();
     void stop();
-    void send(byte[] msg);
+    void send(Object msg);
 }

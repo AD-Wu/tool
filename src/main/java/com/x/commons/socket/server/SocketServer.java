@@ -70,8 +70,13 @@ class SocketServer implements ISocket {
             channel.close();
         }
     }
-    
+
     @Override
+    public void send(Object msg) {
+
+    }
+
+    // @Override
     public void send(byte[] msg) {
         channel.writeAndFlush(msg);
     }

@@ -1,6 +1,5 @@
 package com.x.commons.socket.config;
 
-import com.x.protocol.annotations.coreold.Doc;
 import lombok.ToString;
 
 /**
@@ -14,22 +13,22 @@ public class ServerConfig {
 
     // ------------------------- 成员变量 -------------------------
 
-    @Doc("端口")
+    // 端口"
     private final int port;
 
-    @Doc("是否保持连接存活，即心跳机制")
+    // 是否保持连接存活，即心跳机制
     private final boolean keepalive;
 
-    @Doc("资源占满时允许保留的3次握手客户端数量，0表示默认50个")
+    // 资源占满时允许保留的3次握手客户端数量，0表示默认50个
     private final int clientCount;
 
-    @Doc("多长时间没有读取数据则断开连接，默认0:不开启，单位：分钟")
+    // 多长时间没有读取数据则断开连接，默认0:不开启，单位：分钟
     private final int readTimeout;
 
-    @Doc("多长时间没有写数据则断开连接，默认0:不开启，单位：分钟")
+    // 多长时间没有写数据则断开连接，默认0:不开启，单位：分钟
     private final int writeTimeout;
 
-    @Doc("连接空闲时间，默认3分钟")
+    // 连接空闲时间，默认3分钟
     private final int idleTimeout;
 
     // ------------------------- 构造方法 -------------------------

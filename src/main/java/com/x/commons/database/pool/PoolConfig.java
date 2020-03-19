@@ -2,7 +2,6 @@ package com.x.commons.database.pool;
 
 import com.x.commons.util.reflact.Fields;
 import com.x.commons.util.string.Strings;
-import com.x.protocol.annotations.coreold.Doc;
 import com.zaxxer.hikari.HikariConfig;
 
 import java.lang.reflect.Field;
@@ -16,64 +15,64 @@ import java.util.Properties;
 public class PoolConfig {
     
     // ---------------------- 成员变量 ----------------------
-    @Doc("是否使用Druid连接池，默认使用Hikari")
+    // 是否使用Druid连接池，默认使用Hikari
     private boolean useDruid;
     
-    @Doc("数据库URL")
+    // 数据库URL
     private String url;
     
-    @Doc("数据库用户名")
+    // 数据库用户名
     private String user;
     
-    @Doc("数据库密码")
+    // 数据库密码
     private String password;
     
-    @Doc("驱动类名")
+    // 驱动类名
     private String driver;
     
-    @Doc("连接类型,如：Mysql")
+    // 连接类型,如：Mysql
     private String type;
     
-    @Doc("连接池名称")
+    // 连接池名称
     private String poolName;
     
-    @Doc("初始化连接数")
+    // 初始化连接数
     private int initialSize = 0;
     
-    @Doc("最大允许的连接数")
+    // 最大允许的连接数
     private int maxActive = 20;
     
-    @Doc("最小空闲连接数")
+    // 最小空闲连接数
     private int minIdle = 1;
     
-    @Doc("连接等待超时时间")
+    // 连接等待超时时间
     private long maxWait = 60000L;
     
-    @Doc("是否保持连接活动")
+    // 是否保持连接活动
     private boolean keepActive = false;
     
-    @Doc("连接最小生存时间")
+    // 连接最小生存时间
     private long minEvictableIdleTimeMillis = 1800000L;
     
-    @Doc("检测需要关闭的空闲连接的间隔时间")
+    // 检测需要关闭的空闲连接的间隔时间
     private long timeBetweenEvictionRunsMillis = 60000L;
     
-    @Doc("检测连接是否可用的sql语句")
+    // 检测连接是否可用的sql语句
     private String validationQuery = "SELECT 1";
     
-    @Doc("空闲时是否检测连接可用性")
+    // 空闲时是否检测连接可用性
     private boolean testWhileIdle = true;
     
-    @Doc("获取连接时是否检测连接可用性")
+    // 获取连接时是否检测连接可用性
     private boolean testOnBorrow = false;
     
-    @Doc("归还连接时检测连接是否有效")
+    // 归还连接时检测连接是否有效
     private boolean testOnReturn = false;
     
-    @Doc("当发现池中的可用实例已经用光时，需要做的动作")
+    // 当发现池中的可用实例已经用光时，需要做的动作
     private boolean exhaustedAction = true;
     
-    @Doc("是否缓存preparedStatement(PSCache)。对支持游标的数据库性能提升巨大，如:oracle。mysql下建议关闭")
+    // 是否缓存preparedStatement(PSCache)。对支持游标的数据库性能提升巨大，如:oracle。mysql下建议关闭
     private boolean poolPreparedStatements = false;
     
     private Properties properties;

@@ -1,7 +1,5 @@
 package com.x.commons.socket.config;
 
-import com.x.protocol.annotations.coreold.Doc;
-
 /**
  * @Desc TODO
  * @Date 2019-11-01 23:17
@@ -11,19 +9,19 @@ public class ClientConfig {
 
     // --------------------------- 成员变量 ---------------------------
 
-    @Doc("服务器IP")
+    // 服务器IP
     private final String ip;
 
-    @Doc("服务器端口")
+    // 服务器端口
     private final int port;
 
-    @Doc("读超时时间")
+    // 读超时时间
     private int readTimeout;
 
-    @Doc("写超时时间")
+    // 写超时时间
     private int writeTimeout;
 
-    @Doc("空闲超时时间")
+    // 空闲超时时间
     private int idleTimeout;
 
     // --------------------------- 构造方法 ---------------------------

@@ -1,7 +1,6 @@
 package com.x.commons.collection;
 
 import com.x.commons.util.string.Strings;
-import com.x.protocol.annotations.coreold.Doc;
 
 import java.io.Serializable;
 
@@ -14,10 +13,10 @@ public final class NameValue implements Serializable {
 
     // ---------------------- 成员变量 ----------------------
 
-    @Doc("数据名称")
+    // 数据名称
     private final String name;
 
-    @Doc("数据值")
+    // 数据值
     private final String value;
 
     // ---------------------- 构造方法 ----------------------

@@ -1,4 +1,4 @@
-package com.x.protocol.network.factory.seria;
+package com.x.protocol.network.factory.serial;
 
 import com.x.protocol.network.interfaces.INetworkInput;
 

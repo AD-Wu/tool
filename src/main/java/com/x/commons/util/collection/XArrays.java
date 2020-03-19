@@ -1,6 +1,6 @@
 package com.x.commons.util.collection;
 
-import com.x.commons.decoder.core.Primitive;
+import com.x.commons.util.convert.Primitive;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.reflact.Clazzs;
 

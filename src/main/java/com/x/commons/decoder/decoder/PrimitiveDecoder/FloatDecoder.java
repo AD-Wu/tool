@@ -14,7 +14,7 @@ public class FloatDecoder extends BaseDecoder<Float> {
 
     @Override
     public Float decode(final byte[] bs) {
-        return new Float(Converts.toFloat(bs));
+        return Converts.toFloat(bs);
     }
 
 

@@ -14,7 +14,7 @@ public class IntegerDecoder extends BaseDecoder<Integer> {
 
     @Override
     public Integer decode(final byte[] bs) {
-        return new Integer(Converts.toInt(bs));
+        return Converts.toInt(bs);
     }
 
 

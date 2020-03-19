@@ -14,7 +14,7 @@ public class DoubleDecoder extends BaseDecoder<Double> {
 
     @Override
     public Double decode(final byte[] bs) {
-        return new Double(Converts.toDouble(bs));
+        return Converts.toDouble(bs);
     }
 
 

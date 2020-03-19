@@ -1,7 +1,7 @@
 package com.x.protocol.annotations.infoold;
 
 import com.x.commons.decoder.enums.Format;
-import com.x.commons.decoder.core.Primitive;
+import com.x.commons.util.convert.Primitive;
 import com.x.protocol.annotations.coreold.XField;
 import lombok.Data;
 import lombok.NonNull;

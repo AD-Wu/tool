@@ -14,7 +14,7 @@ public class LongDecoder extends BaseDecoder<Long> {
 
     @Override
     public Long decode(final byte[] bs) {
-        return new Long(Converts.toLong(bs));
+        return Converts.toLong(bs);
     }
 
 

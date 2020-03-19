@@ -16,25 +16,25 @@ public class Dispatcher {
     private final Map<String, Listeners> map = New.concurrentMap();
 
     public void addListener(String token, IListener listener) {
-        if (listener != null) {
+        if (Strings.isNotNull(token) && listener != null) {
             this.addListener(token, new ListenerInfo(listener));
         }
     }
 
     public void addListener(String token, IListener listener, int priority, Object... params) {
-        if (listener != null) {
+        if (Strings.isNotNull(token) && listener != null) {
             this.addListener(token, new ListenerInfo(priority, listener, params));
         }
     }
 
-    public void addListener(String token, Class<? extends IListener> listenerClass) {
-        if (listenerClass != null) {
+    public void addListener(String token, Class<?> listenerClass) {
+        if (Strings.isNotNull(token) && listenerClass != null) {
             this.addListener(token, new ListenerInfo(listenerClass));
         }
     }
 
-    public void addListener(String token, Class<? extends IListener> listenerClass, int priority, Object... params) {
-        if (listenerClass != null) {
+    public void addListener(String token, Class<?> listenerClass, int priority, Object... params) {
+        if (Strings.isNotNull(token) && listenerClass != null) {
             this.addListener(token, new ListenerInfo(priority, listenerClass, params));
         }
     }
@@ -82,7 +82,7 @@ public class Dispatcher {
     }
 
     public void removeAllListeners() {
-        synchronized(this.lock) {
+        synchronized (this.lock) {
             map.clear();
         }
     }
@@ -95,12 +95,13 @@ public class Dispatcher {
             if (var2 == null) {
                 return 0;
             } else {
-                ListenerInfo[] var3 = var2.getListeners();;
+                ListenerInfo[] var3 = var2.getListeners();
+                ;
                 int var4 = 0;
                 ListenerInfo[] var5 = var3;
                 int var6 = var3.length;
 
-                for(int var7 = 0; var7 < var6; ++var7) {
+                for (int var7 = 0; var7 < var6; ++var7) {
                     ListenerInfo var8 = var5[var7];
                     if (event.isStopped()) {
                         break;

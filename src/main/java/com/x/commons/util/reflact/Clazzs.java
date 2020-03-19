@@ -32,7 +32,7 @@ public final class Clazzs {
         
         @Override
         public boolean accept(File file) {
-            return file.isFile() ? file.getName().endsWith(".class") : true;
+            return !file.isFile() || file.getName().endsWith(".class");
         }
     };
     

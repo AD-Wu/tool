@@ -21,7 +21,7 @@ final class ListenerInfo {
     /**
      * 监听器类
      */
-    private final Class<? extends IListener> listenerClass;
+    private final Class<?> listenerClass;
 
     /**
      * 监听器参数
@@ -39,11 +39,11 @@ final class ListenerInfo {
         this.params = params;
     }
 
-    ListenerInfo(Class<? extends IListener> listenerClass) {
+    ListenerInfo(Class<?> listenerClass) {
         this(0, listenerClass, null);
     }
 
-    ListenerInfo(int priority, Class<? extends IListener> listenerClass, Object[] params) {
+    ListenerInfo(int priority, Class<?> listenerClass, Object[] params) {
         this.priority = 0;
         this.listenerClass = listenerClass;
         this.params = params;
@@ -62,7 +62,7 @@ final class ListenerInfo {
         this.listener = listener;
     }
 
-    public Class<? extends IListener> getListenerClass() {
+    public Class<?> getListenerClass() {
         return listenerClass;
     }
 

@@ -1,5 +1,7 @@
 package com.x.protocol.core;
 
+import com.x.commons.util.string.Strings;
+
 import java.lang.reflect.Method;
 
 /**
@@ -9,25 +11,54 @@ import java.lang.reflect.Method;
  */
 public class DataInfo {
     private String command;
+
     private String control;
+
     private String version;
+
     private String doc;
+
     private boolean skipLogin;
+
     private boolean debugInfo;
+
     private short systemID;
+
     private short moduleID;
+
     private short licenseID;
+
     private Method method;
+
     private Class<?>[] actors;
+
     private Class<?> dataClass;
+
     private DataConfig dataConfig;
+
+    /**
+     * 数据信息对象
+     *
+     * @param skipLogin 是否跳过登录
+     * @param debugInfo 是否调试
+     * @param systemID  系统ID
+     * @param moduleID  模块ID
+     * @param licenseID 许可ID
+     */
+    public DataInfo(boolean skipLogin, boolean debugInfo, short systemID, short moduleID, short licenseID) {
+        this.skipLogin = skipLogin;
+        this.debugInfo = debugInfo;
+        this.systemID = systemID;
+        this.moduleID = moduleID;
+        this.licenseID = licenseID;
+    }
 
     public String getCommand() {
         return command;
     }
 
     public void setCommand(String command) {
-        this.command = command;
+        this.command = Strings.fixNull(command, true);
     }
 
     public String getControl() {
@@ -35,7 +66,7 @@ public class DataInfo {
     }
 
     public void setControl(String control) {
-        this.control = control;
+        this.control = Strings.fixNull(control, true);
     }
 
     public String getVersion() {
@@ -43,7 +74,7 @@ public class DataInfo {
     }
 
     public void setVersion(String version) {
-        this.version = version;
+        this.version = Strings.fixNull(version, true);
     }
 
     public String getDoc() {

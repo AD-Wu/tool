@@ -36,7 +36,7 @@ public final class Strings {
         // System.getOutputStream.println(autoParse);
         // String abcd = fix("", 12, "");
         // System.out.println(abcd);
-        boolean notEquals = isNotEquals("127.0.0.2", "localhost","127.0.0.1");
+        boolean notEquals = isNotEquals("127.0.0.2", "localhost", "127.0.0.1");
         System.out.println(notEquals);
     }
 
@@ -450,10 +450,33 @@ public final class Strings {
      * 将null转为""
      *
      * @param fixed 需修正的字符串
-     * @return
      */
     public static String fixNull(String fixed) {
-        return fixed == null ? "" : fixed;
+        return fixNull(fixed, false);
+    }
+
+
+    /**
+     * 将null转为"",去除前后空格
+     *
+     * @param fixed 需修正的字符串
+     * @param trim  是否去除前后空格
+     * @return String 去除前后空格后的字符串
+     */
+    public static String fixNull(String fixed, boolean trim) {
+        return fixed == null ? "" : trim ? fixed.trim() : fixed;
+    }
+
+
+    /**
+     * fixed去除前后空格,为null或""时，返回defaultValue
+     *
+     * @param fixed        需修正的字符串
+     * @param defaultValue 默认值
+     * @return
+     */
+    public static String fixNull(String fixed, String defaultValue) {
+        return isNull(fixed) ? defaultValue : fixed;
     }
 
     /**

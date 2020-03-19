@@ -1,5 +1,7 @@
 package com.x.protocol.annotations;
 
+import com.x.protocol.core.IFormat;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -25,7 +27,7 @@ public @interface XField {
 
     String lengthProp() default "";
 
-    String format() default "";
+    Class<? extends IFormat> format() default IFormat.class;
 
     boolean pk() default false;
 }

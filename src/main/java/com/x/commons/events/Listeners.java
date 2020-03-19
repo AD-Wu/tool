@@ -44,12 +44,12 @@ class Listeners {
         if (info == null) {return false;}
         IListener listener = info.getListener();
         if (listener == null) {
-            Class<? extends IListener> listenerClass = info.getListenerClass();
+            Class<?> listenerClass = info.getListenerClass();
             if (listenerClass == null) {
                 return false;
             }
             try {
-                listener = Clazzs.newInstance(listenerClass);
+                listener = (IListener)Clazzs.newInstance(listenerClass);
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;

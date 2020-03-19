@@ -14,9 +14,9 @@ import com.x.framework.caching.datas.CacheManager;
 import com.x.framework.database.core.ITableInfoGetter;
 import com.x.framework.database.core.SQLInfo;
 import com.x.framework.database.core.TableInfo;
-import com.x.protocol.config.DatabaseConfig;
 import com.x.protocol.core.DataConfig;
 import com.x.protocol.core.IProtocol;
+import com.x.protocol.layers.application.config.DatabaseConfig;
 
 import java.util.Map;
 
@@ -38,7 +38,7 @@ public class DaoManager implements IDaoManager {
         PoolConfig poolConfig = new PoolConfig();
         poolConfig.setPoolName(name);
         poolConfig.setType(config.getType());
-        poolConfig.setUrl(config.getURL());
+        poolConfig.setUrl(config.getUrl());
         poolConfig.setDriver(config.getDriverClass());
         poolConfig.setUser(config.getUser());
         poolConfig.setPassword(config.getPassword());

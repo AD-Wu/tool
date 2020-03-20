@@ -7,43 +7,39 @@ import com.x.protocol.annotations.XField;
 import java.io.Serializable;
 
 /**
- * @Desc
- * @Date 2019-12-08 13:09
- * @Author AD
+ * @Desc：
+ * @Author：AD
+ * @Date：2020/3/20 14:09
  */
-@XData(doc = "键值对数据", cache = false)
-public class KeyValue implements Serializable {
-
+@XData(cache = false, doc = "数值对数据")
+public class ShortValue implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @XField(doc = "数据键")
-    private String k;
+    private short k;
 
     @XField(doc = "数据值")
     private Object v;
 
-    public KeyValue() {
+    public ShortValue(short k, Object v) {
+        this.k = k;
+        this.v = v;
     }
 
-    public KeyValue(String key, Object value) {
-        this.k = key;
-        this.v = value;
+    public short getK() {
+        return k;
     }
 
-    public String getK() {
-        return this.k;
-    }
-
-    public void setK(String key) {
-        this.k = key;
+    public void setK(short k) {
+        this.k = k;
     }
 
     public Object getV() {
-        return this.v;
+        return v;
     }
 
-    public void setV(Object value) {
-        this.v = value;
+    public void setV(Object v) {
+        this.v = v;
     }
 
     @Override

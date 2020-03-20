@@ -14,7 +14,7 @@ class ClientParameter {
     
     private String name;
     
-    private DataSet dataSet;
+    private DataSet parameters;
     
     private boolean loggedError;
     
@@ -30,12 +30,12 @@ class ClientParameter {
         this.name = name;
     }
     
-    public DataSet getDataSet() {
-        return dataSet;
+    public DataSet getParameters() {
+        return parameters;
     }
     
-    public void setDataSet(DataSet dataSet) {
-        this.dataSet = dataSet;
+    public void setParameters(DataSet parameters) {
+        this.parameters = parameters;
     }
     
     public boolean isLoggedError() {

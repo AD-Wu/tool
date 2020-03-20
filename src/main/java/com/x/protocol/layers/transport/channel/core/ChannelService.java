@@ -2,29 +2,25 @@ package com.x.protocol.layers.transport.channel.core;
 
 import com.x.commons.collection.NameValue;
 import com.x.commons.local.Locals;
+import com.x.commons.timming.Timer;
+import com.x.commons.util.Systems;
 import com.x.commons.util.log.Logs;
-import com.x.protocol.core.ChannelData;
-import com.x.protocol.core.ChannelInfo;
-import com.x.protocol.core.IChannel;
-import com.x.protocol.core.ISerializer;
+import com.x.protocol.core.*;
 import com.x.protocol.layers.Protocol;
 import com.x.protocol.layers.transport.Transport;
 import com.x.protocol.layers.transport.config.ChannelConfig;
-import com.x.protocol.layers.transport.config.ClientConfig;
 import com.x.protocol.layers.transport.config.ProtocolConfig;
 import com.x.protocol.layers.transport.config.ServerConfig;
 import com.x.protocol.network.NetworkManager;
 import com.x.protocol.network.core.NetworkConfig;
-import com.x.protocol.network.interfaces.INetworkConsent;
-import com.x.protocol.network.interfaces.INetworkIO;
-import com.x.protocol.network.interfaces.INetworkNotification;
-import com.x.protocol.network.interfaces.INetworkService;
+import com.x.protocol.network.core.NetworkConsentType;
+import com.x.protocol.network.interfaces.*;
 import org.slf4j.Logger;
 
 import java.util.List;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2020-03-10 00:31
  * @Author AD
  */
@@ -159,11 +155,6 @@ public abstract class ChannelService implements IChannel, INetworkNotification {
     }
     
     @Override
-    public boolean send(ChannelInfo info, ChannelData data) {
-        return false;
-    }
-    
-    @Override
     public INetworkService getService() {
         return this.service;
     }
@@ -184,16 +175,6 @@ public abstract class ChannelService implements IChannel, INetworkNotification {
     }
     
     @Override
-    public boolean addClient(ClientConfig config) {
-        return false;
-    }
-    
-    @Override
-    public void removeClient(String key) {
-    
-    }
-    
-    @Override
     public int getRemoteCount() {
         return this.remoteCount;
     }
@@ -210,24 +191,19 @@ public abstract class ChannelService implements IChannel, INetworkNotification {
     
     @Override
     public synchronized int getNextMappingIndex() {
-        if(maxMappingIndex==0){
+        if (maxMappingIndex == 0) {
             return 0;
-        }else{
-            if(currentMappingIndex>=maxMappingIndex){
-                currentMappingIndex=0;
+        } else {
+            if (currentMappingIndex >= maxMappingIndex) {
+                currentMappingIndex = 0;
             }
             return ++currentMappingIndex;
         }
     }
     
     @Override
-    public void checkClientConnections(long index) {
-    
-    }
-    
-    @Override
     public boolean runSchedule(Runnable runnable) {
-        return service==null?false:service.runSchedule(runnable);
+        return service == null ? false : service.runSchedule(runnable);
     }
     
     @Override
@@ -237,34 +213,183 @@ public abstract class ChannelService implements IChannel, INetworkNotification {
     }
     
     @Override
-    public boolean onConsentStart(INetworkConsent Consent) throws Exception {
-        return false;
+    public boolean onConsentStart(INetworkConsent consent) throws Exception {
+        ChannelInfo info = this.getChannelInfo(consent, null);
+        if (protocol.onConnected(info)) {
+            if (consent.getType() == NetworkConsentType.REMOTE_TO_LOCAL) {
+                if (maxConnection > 0 && remoteCount >= maxConnection) {
+                    logger.warn(Locals.text("protocol.layer.consent.limit", remoteCount, maxConnection, info));
+                    return false;
+                } else if (protocol.notifyRemoteConnected(info)) {
+                    this.changeRemoteCount(1);
+                    logger.info(Locals.text("protocol.layer.remote.connect", info, remoteCount));
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if (protocol.notifyClientConnected(info)) {
+                this.changeClientCount(1);
+                logger.info(Locals.text("protocol.layer.client.connected", consent.getName(), info, clientCount));
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
     
     @Override
-    public void onConsentStop(INetworkConsent Consent) throws Exception {
-    
+    public void onConsentStop(INetworkConsent consent) throws Exception {
+        if (consent.isAccepted()) {
+            ChannelInfo info = this.getChannelInfo(consent, null);
+            if (consent.getType() == NetworkConsentType.REMOTE_TO_LOCAL) {
+                changeRemoteCount(-1);
+                logger.info(Locals.text("protocol.layer.remote.disconnect", info, remoteCount));
+                protocol.notifyRemoteDisconnected(info);
+            } else {
+                changeClientCount(-1);
+                logger.info(Locals.text("protocol.layer.client.disconnect", consent.getName(), info, clientCount));
+                protocol.notifyClientDisconnected(info);
+            }
+        }
     }
     
     @Override
-    public void onError(INetworkService service, INetworkConsent Consent, String errorMsg) throws Exception {
-    
+    public void onError(INetworkService service, INetworkConsent consent, String errorMsg) throws Exception {
+        if (consent == null) {
+            logger.error(Locals.text("protocol.layer.channel.err", this.name, errorMsg));
+            protocol.onError("", this.name, errorMsg);
+        } else {
+            ChannelInfo info = getChannelInfo(consent, null);
+            if (consent.getType() == NetworkConsentType.REMOTE_TO_LOCAL) {
+                logger.error(Locals.text("protocol.layer.remote.err", info, errorMsg));
+            } else {
+                logger.error(Locals.text("protocol.layer.client.err", consent.getName(), info, errorMsg));
+            }
+        }
     }
     
     @Override
-    public void onMessage(INetworkService service, INetworkConsent Consent, String msg) throws Exception {
-    
+    public void onMessage(INetworkService service, INetworkConsent consent, String msg) throws Exception {
+        if (consent == null) {
+            logger.warn(Locals.text("protocol.layer.channel.msg", service.getName(), msg));
+        } else {
+            ChannelInfo info = getChannelInfo(consent, null);
+            if (consent.getType() == NetworkConsentType.REMOTE_TO_LOCAL) {
+                logger.debug(Locals.text("protocol.layer.remote.msg", info, msg));
+            } else {
+                logger.debug(Locals.text("protocol.layer.client.msg", consent.getName(), info, msg));
+            }
+        }
     }
     
     @Override
     public void onServiceStart(INetworkService service) throws Exception {
-    
+        logger.info(Locals.text("protocol.layer.channel.started", service.getName(), service.getServiceInfo()));
+        protocol.onChannelStart(this);
+        synchronized (countLock) {
+            ++totalSucceed;
+            this.transport.addSucceedCount();
+            if (totalSucceed == 1) {
+                this.isFirstService = true;
+            }
+            if (transport.checkStarted()) {
+                logger.info(Locals.text("protocol.layer.service.started", protocol.getName()));
+                Timer.get().add(() -> {
+                    ChannelService.this.protocol.onServiceStart();
+                }, 10);
+                if (!this.stopped && totalSucceed == totalService) {
+                    Timer.get().add(() -> {
+                        synchronized (ChannelService.countLock) {
+                            if (!ChannelService.this.stopped && !ChannelService.hasStarted &&
+                                ChannelService.totalSucceed == ChannelService.totalService) {
+                                ChannelService.hasStarted = true;
+                                logger.info(Locals.text("protocol.layer.service.allsatarted"));
+                                ChannelService.this.protocol.onStart();
+                            }
+                        }
+                    }, 1000);
+                }
+            }
+        }
     }
     
     @Override
     public void onServiceStop(INetworkService service) throws Exception {
-    
+        logger.info(Locals.text("protocol.layer.channel.stopped", service.getName()));
+        protocol.onChannelStop(this);
+        synchronized (countLock) {
+            ++totalStop;
+            transport.addStopCount();
+            if (transport.checkStopped()) {
+                logger.info(Locals.text("protocol.layer.service.stopped", protocol.getName()));
+                Timer.get().add(() -> {
+                    ChannelService.this.protocol.onServiceStop();
+                });
+            }
+            if (!hasStopped && totalStop == totalService) {
+                hasStopped = true;
+                Timer.get().add(() -> {
+                    logger.info(Systems.runtimeInfo());
+                    logger.info(Locals.text("protocol.layer.service.allstopped"));
+                    ChannelService.this.protocol.onStop();
+                }, 500);
+            }
+        }
     }
     
-    protected abstract ChannelInfo getChannelInfo(INetworkConsent consent,INetworkIO io);
+    protected IProtocolReader getReader(INetworkIO io) {
+        INetworkInput in = io.getInput();
+        if (in == null) {
+            return null;
+        } else {
+            IProtocolReader reader = in.getProtocolReader();
+            if (reader != null) {
+                return reader;
+            } else {
+                synchronized (readerLock) {
+                    reader = in.getProtocolReader();
+                    if (reader != null) {
+                        return reader;
+                    } else {
+                        try {
+                            reader = (IProtocolReader) readerClass.newInstance();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        in.setProtocolReader(reader);
+                        return reader;
+                    }
+                }
+            }
+        }
+    }
+    
+    protected IProtocolSender getSender() {
+        try {
+            return (IProtocolSender) senderClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    protected void notifyDataReady(ChannelInfo info, ChannelData data) throws Exception {
+        if (data.isRequest()) {
+            protocol.onDataRequest(info, data);
+        }
+        transport.callbackResponse(info, data);
+    }
+    
+    private synchronized void changeRemoteCount(int value) {
+        this.remoteCount += value;
+    }
+    
+    private synchronized void changeClientCount(int value) {
+        this.clientCount += value;
+    }
+    
+    protected abstract ChannelInfo getChannelInfo(INetworkConsent consent, INetworkIO io);
+    
 }

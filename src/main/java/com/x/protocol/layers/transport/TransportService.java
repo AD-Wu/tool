@@ -146,6 +146,16 @@ public abstract class TransportService {
         }
     }
     
+    public boolean checkStarted() {
+        if (this.starting) {
+            return false;
+        } else {
+            synchronized (this.countLock) {
+                return this.serviceCount == this.succeedCount;
+            }
+        }
+    }
+    
     public boolean checkStopped() {
         synchronized (countLock) {
             return stopCount == succeedCount;
@@ -167,5 +177,4 @@ public abstract class TransportService {
         }
     }
     
-
 }

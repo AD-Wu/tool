@@ -9,13 +9,13 @@ public interface INetworkNotification {
     
     boolean onConsentData(INetworkIO networkIO) throws Exception;
     
-    boolean onConsentStart(INetworkConsent Consent) throws Exception;
+    boolean onConsentStart(INetworkConsent consent) throws Exception;
     
-    void onConsentStop(INetworkConsent Consent) throws Exception;
+    void onConsentStop(INetworkConsent consent) throws Exception;
     
-    void onError(INetworkService service, INetworkConsent Consent, String errorMsg) throws Exception;
+    void onError(INetworkService service, INetworkConsent consent, String errorMsg) throws Exception;
     
-    void onMessage(INetworkService service, INetworkConsent Consent, String msg) throws Exception;
+    void onMessage(INetworkService service, INetworkConsent consent, String msg) throws Exception;
     
     void onServiceStart(INetworkService service) throws Exception;
     

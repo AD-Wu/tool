@@ -10,6 +10,7 @@ import com.x.protocol.layers.Protocol;
 import com.x.protocol.layers.transport.channel.HttpChannel;
 import com.x.protocol.layers.transport.channel.SocketChannel;
 import com.x.protocol.layers.transport.config.ChannelConfig;
+import com.x.protocol.network.core.NetworkServiceType;
 import org.slf4j.Logger;
 
 import java.util.Arrays;
@@ -65,9 +66,9 @@ public abstract class TransportService {
                     String name = config.getName();
                     String type = config.getType();
                     Object chn = null;
-                    if ("socket".equals(type)) {
+                    if (NetworkServiceType.SOCKET.equals(type)) {
                         chn = new SocketChannel(protocol, transport);
-                    } else if ("http".equals(type)) {
+                    } else if (NetworkServiceType.HTTP.equals(type)) {
                         chn = new HttpChannel(protocol, transport);
                     }
                     if (chn == null) {

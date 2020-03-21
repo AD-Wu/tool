@@ -22,16 +22,15 @@ public final class Task<T> {
     
     /**
      * poll(time)若不能立即取出，则可以等 time 参数规定的时间,取不到时返回 null
-     * take：取对头，移除，若Queue为空，阻塞
-     * peek: 取对头，但不移除
+     * take：取队列头，移除，若Queue为空，阻塞
+     * peek: 取队列头，但不移除
      *
      * @return
      */
     public T get() {
         try {
-            T task = tasks.take();
-            return task;
-        } catch (InterruptedException e) {
+            return tasks.take();
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -43,14 +42,13 @@ public final class Task<T> {
      * offer：加到BlockingQueue里，如果可以容纳，则返回 true，否则返回 false
      * put：加到BlockingQueue里，如果没有空间，则线程被阻塞，直到Queue有空间再继续
      *
-     * @param req
+     * @param task
      */
-    public void put(T req) {
+    public void put(T task) {
         try {
-            tasks.put(req);
-        } catch (InterruptedException e) {
+            tasks.put(task);
+        } catch (Exception e) {
             e.printStackTrace();
-            notifyAll();
         }
     }
     

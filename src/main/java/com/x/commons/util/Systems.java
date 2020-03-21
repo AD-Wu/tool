@@ -3,18 +3,15 @@ package com.x.commons.util;
 import com.x.commons.local.Locals;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.bean.SB;
-import com.x.commons.util.file.Files;
 import com.x.commons.util.string.Strings;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Locale;
-import java.util.Properties;
-import java.util.Set;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2019-11-02 12:59
  * @Author AD
  */
@@ -190,25 +187,4 @@ public final class Systems {
         String lang = locale.getLanguage() + "_" + locale.getCountry();
         return lang;
     }
-    
-    public static void main(String[] args) {
-
-        Properties prop = System.getProperties();
-        Set<String> names = prop.stringPropertyNames();
-        int i = 0;
-        SB sb = New.sb();
-        for (String name : names) {
-            String property = System.getProperty(name);
-            // if (property.length() > 50) {
-            //     continue;
-            // }
-            sb.append(++i + ":" + name + " = " + property).append("\n");
-        }
-        
-        String srcPath = Files.getResourcesPath();
-        System.out.println(srcPath);
-        Files.createFile(srcPath, "application.properties", sb.toString());
-        System.out.println(getSystem());
-    }
-    
 }

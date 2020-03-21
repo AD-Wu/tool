@@ -91,7 +91,7 @@ public final class Jsons {
         return new Gson();
     }
     
-    private static Gson gson(String dateTimeFormatter) {
+    public static Gson gson(String dateTimeFormatter) {
         if (Strings.isNull(dateTimeFormatter)) {
             return gson();
         } else {

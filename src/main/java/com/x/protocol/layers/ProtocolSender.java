@@ -202,7 +202,7 @@ public abstract class ProtocolSender extends ProtocolSerializer {
     private void callbackDataReady(IDataResponse resp, ChannelInfo info, ChannelData data) {
         if (resp != null) {
             try {
-                resp.onDataResponse(this, info, data);
+                resp.onDataReady(this, info, data);
             } catch (Exception e) {
                 e.printStackTrace();
                 String cmdKey = "";

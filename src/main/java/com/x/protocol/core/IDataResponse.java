@@ -7,10 +7,10 @@ package com.x.protocol.core;
  */
 public interface IDataResponse {
     
-    void onDataResponse(IProtocol prtc, ChannelInfo info, ChannelData data);
+    void onDataReady(IProtocol protocol, ChannelInfo info, ChannelData req);
     
-    void onFailed(IProtocol prtc, ChannelInfo info, ChannelData data);
+    void onFailed(IProtocol protocol, ChannelInfo info, ChannelData req);
     
-    void onResponse(IProtocol prtc, ChannelInfo info, ChannelData send, ChannelData recv);
+    void onResponse(IProtocol protocol, ChannelInfo info, ChannelData req, ChannelData resp);
     
 }

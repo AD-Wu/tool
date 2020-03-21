@@ -51,27 +51,27 @@ public final class Annotations {
         getAnnotationInfo(className, pack, false);
     }
 
-    public static AnnotationInfo getAnnotationInfo(String baseActor, String packageName, boolean disableDoc) throws Exception {
-        if (packageName == null) packageName = "";
-        Class<?> clazz = !Strings.isNull(baseActor) ? Class.forName(baseActor) : null;
+    public static AnnotationInfo getAnnotationInfo(String base, String pkgName, boolean checkDoc) throws Exception {
+        if (pkgName == null) pkgName = "";
+        Class<?> baseClass = !Strings.isNull(base) ? Class.forName(base) : null;
         List<Class<?>> actors = New.list();
         List<Class<?>> interfaces = New.list();
         List<Class<?>> datas = New.list();
         List<Class<?>> readyActors = New.list();
 
         ClassLoader loader = Loader.get();
-        String packagePath = packageName.replaceAll("\\.", "/");
-        Enumeration<URL> urlEnums = loader.getResources(packagePath);
+        String pkgPath = pkgName.replaceAll("\\.", "/");
+        Enumeration<URL> urlEnums = loader.getResources(pkgPath);
         if (urlEnums == null) {
             URL[] urls = ((URLClassLoader) loader).getURLs();
             for (URL url : urls) {
                 String path = url.getPath();
                 if (!path.endsWith("classes/")) {
-                    String fullPath = path + "!/" + packagePath;
+                    String fullPath = path + "!/" + pkgPath;
                     String[] jarPaths = fullPath.split("!");
                     String jarPath = jarPaths[0].substring(jarPaths[0].indexOf("/"));
-                    try (JarFile jarFile = new JarFile(jarPath);) {
-                        handleJarEntity(jarFile, packagePath, clazz, actors, datas, readyActors,
+                    try (JarFile jar = new JarFile(jarPath);) {
+                        handleJarEntity(jar, pkgPath, baseClass, actors, datas, readyActors,
                                         interfaces);
                     } catch (Exception e) {
                         throw e;
@@ -88,13 +88,13 @@ public final class Annotations {
                 } while (url == null);
                 String protocol = url.getProtocol();
                 if ("file".equals(protocol)) {
-                    getPackageClass(packageName, filterClassFiles(url.getPath()),
-                                    clazz, actors, datas, readyActors, interfaces);
+                    getPackageClass(pkgName, filterClassFiles(url.getPath()),
+                                    baseClass, actors, datas, readyActors, interfaces);
                 } else if ("jar".equals(protocol)) {
                     JarURLConnection urlConn = (JarURLConnection) url.openConnection();
 
                     try (JarFile jarFile = urlConn.getJarFile();) {
-                        handleJarEntity(jarFile, packagePath, clazz, actors, datas, readyActors,
+                        handleJarEntity(jarFile, pkgPath, baseClass, actors, datas, readyActors,
                                         interfaces);
                     } catch (Exception e) {
                         throw e;
@@ -104,40 +104,40 @@ public final class Annotations {
         }
         addDefaultAnnotation(datas);
         Map<Class<?>, DataConfig> dataConfigMap = New.map();
-        analyzeDatas(datas, dataConfigMap, disableDoc);
+        analyzeDatas(datas, dataConfigMap, checkDoc);
         unionDatas(dataConfigMap);
         return new AnnotationInfo(actors, dataConfigMap, readyActors, interfaces);
     }
 
-    public static void checkError(Class<?> dataClazz, Object xAnnotation, String docString,
-                                  String docValue, boolean disableDoc)
+    public static void checkError(Class<?> dataClazz, Object xAnnotation, String fieldName,
+                                  String fieldValue, boolean needCheck)
             throws Exception {
-        if (disableDoc) {
-            if (Strings.isNull(docValue)) {
+        if (needCheck) {
+            if (Strings.isNull(fieldValue)) {
                 throw new Exception(
-                        Locals.text("protocol.layer.annotation.err", docString,
+                        Locals.text("protocol.layer.annotation.err", fieldName,
                                     dataClazz.getName(),
                                     xAnnotation.toString()));
             }
         }
     }
 
-    private static void handleJarEntity(JarFile jarFile, String packagePath, Class<?> clazz, List<Class<?>> actors,
+    private static void handleJarEntity(JarFile jarFile, String pkgPath, Class<?> clazz, List<Class<?>> actors,
                                         List<Class<?>> datas, List<Class<?>> readyActors, List<Class<?>> interfaces) {
         Enumeration<JarEntry> jarEntries = jarFile.entries();
 
         while (jarEntries.hasMoreElements()) {
             JarEntry jarEntry = jarEntries.nextElement();
             if (!jarEntry.isDirectory()) {
-                String jarName = jarEntry.getName();
-                if (jarName != null && jarName.length() >= 8) {
-                    if (jarName.charAt(0) == '/') {
-                        jarName = jarName.substring(1);
+                String jarInfo = jarEntry.getName();
+                if (jarInfo != null && jarInfo.length() >= 8) {
+                    if (jarInfo.charAt(0) == '/') {
+                        jarInfo = jarInfo.substring(1);
                     }
-                    if (jarName.startsWith(packagePath) && jarName.endsWith(".class")) {
-                        jarName = jarName.replaceAll("/", ".");
-                        jarName = jarName.substring(0, jarName.length() - 6);
-                        analyzeClass(jarName, clazz, actors, datas, readyActors, interfaces);
+                    if (jarInfo.startsWith(pkgPath) && jarInfo.endsWith(".class")) {
+                        jarInfo = jarInfo.replaceAll("/", ".");
+                        jarInfo = jarInfo.substring(0, jarInfo.length() - 6);
+                        analyzeClass(jarInfo, clazz, actors, datas, readyActors, interfaces);
                     }
                 }
             }
@@ -175,29 +175,29 @@ public final class Annotations {
         }
     }
 
-    private static void analyzeDatas(List<Class<?>> datas, Map<Class<?>, DataConfig> dataConfigMap, boolean disableDoc)
+    private static void analyzeDatas(List<Class<?>> datas, Map<Class<?>, DataConfig> dataConfigMap, boolean checkDoc)
             throws Exception {
         Iterator<Class<?>> it = datas.iterator();
 
         while (it.hasNext()) {
             Class<?> clazz = it.next();
             XData xdata = clazz.getAnnotation(XData.class);
-            checkError(clazz, xdata, "doc", xdata.doc(), disableDoc);
+            checkError(clazz, xdata, "doc", xdata.doc(), checkDoc);
             String version = Strings.fixNull(xdata.version(), "1");
 
-            DataConfig dataConfig = new DataConfig();
-            dataConfig.setDataClass(clazz);
-            dataConfig.setDoc(xdata.doc());
-            dataConfig.setVersion(version);
-            dataConfig.setCache(xdata.cache());
-            dataConfig.setHistory(xdata.history());
-            dataConfig.setTable(xdata.table().trim());
+            DataConfig dc = new DataConfig();
+            dc.setDataClass(clazz);
+            dc.setDoc(xdata.doc());
+            dc.setVersion(version);
+            dc.setCache(xdata.cache());
+            dc.setHistory(xdata.history());
+            dc.setTable(xdata.table().trim());
             List<String> pks = New.list();
             List<Property> props = New.list();
-            analyzeProperties(clazz, props, pks, disableDoc);
-            dataConfig.setPks(pks.toArray(new String[0]));
-            dataConfig.setProperties(props);
-            dataConfigMap.put(clazz, dataConfig);
+            analyzeProperties(clazz, props, pks, checkDoc);
+            dc.setPks(pks.toArray(new String[0]));
+            dc.setProperties(props);
+            dataConfigMap.put(clazz, dc);
         }
 
     }
@@ -257,65 +257,65 @@ public final class Annotations {
 
     }
 
-    public static Class<?> getActualType(Class<?> actorClass, Class<?> readyClass, Class<?> paramOrReturnType, Type type) {
-        if (paramOrReturnType.isPrimitive()) {
-            return paramOrReturnType;
+    public static Class<?> getActualType(Class<?> annotationClass, Class<?> clazz, Class<?> type, Type genericType) {
+        if (type.isPrimitive()) {
+            return type;
         } else {
-            Class<?> genericType;
-            if (paramOrReturnType.equals(Serializable.class)) {
-                genericType = getGenericType(type);
-                if (genericType != null) {
-                    return genericType;
+            Class<?> at;
+            if (type.equals(Serializable.class)) {
+                at = getGenericType(genericType);
+                if (at != null) {
+                    return at;
                 }
 
-                if (actorClass.isInterface()) {
-                    Type[] interfaceTypes = actorClass.getGenericInterfaces();
-                    if (interfaceTypes != null && interfaceTypes.length > 0) {
-                        genericType = getGenericType(interfaceTypes[0]);
-                        if (genericType != null) {
-                            return genericType;
+                if (annotationClass.isInterface()) {
+                    Type[] gtypes = annotationClass.getGenericInterfaces();
+                    if (gtypes != null && gtypes.length > 0) {
+                        at = getGenericType(gtypes[0]);
+                        if (at != null) {
+                            return at;
                         }
                     }
                 }
 
-                genericType = getGenericType(readyClass.getGenericSuperclass());
-                if (genericType != null) {
-                    return genericType;
+                at = getGenericType(clazz.getGenericSuperclass());
+                if (at != null) {
+                    return at;
                 }
-            } else if (paramOrReturnType.isArray()) {
-                genericType = paramOrReturnType.getComponentType();
-                if (genericType.equals(Serializable.class)) {
-                    Class var10 = getGenericType(type);
-                    if (var10 != null) {
-                        return var10;
+            } else if (type.isArray()) {
+                at = type.getComponentType();
+                if (at.equals(Serializable.class)) {
+                    Class gtype = getGenericType(genericType);
+                    if (gtype != null) {
+                        return gtype;
                     }
 
-                    if (actorClass.isInterface()) {
-                        Type[] var6 = actorClass.getGenericInterfaces();
-                        if (var6 != null && var6.length > 0) {
-                            var10 = getGenericType(var6[0]);
-                            if (var10 != null) {
+                    if (annotationClass.isInterface()) {
+                        Type[] e = annotationClass.getGenericInterfaces();
+                        if (e != null && e.length > 0) {
+                            gtype = getGenericType(e[0]);
+                            if (gtype != null) {
                                 try {
-                                    return Class.forName("[L" + var10.getName() + ";");
-                                } catch (Exception var9) {
-                                    var9.printStackTrace();
+                                    return Class.forName("[L" + gtype.getName() + ";");
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
                                 }
                             }
                         }
                     }
 
-                    var10 = getGenericType(readyClass.getGenericSuperclass());
-                    if (var10 != null) {
+                    gtype = getGenericType(clazz.getGenericSuperclass());
+                    if (gtype != null) {
                         try {
-                            return Class.forName("[L" + var10.getName() + ";");
-                        } catch (Exception var8) {
-                            var8.printStackTrace();
+                            return Class.forName("[L" + gtype.getName() + ";");
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 }
             }
 
-            return paramOrReturnType;
+            return type;
         }
     }
 
@@ -386,16 +386,16 @@ public final class Annotations {
         return Strings.isNull(path) ? null : (new File(path)).listFiles(Clazzs.FILTER);
     }
 
-    private static String getClassName(String packageName, String className) {
+    private static String getClassName(String pkgName, String className) {
         if (className == null) {
             return null;
         } else {
             int last = className.lastIndexOf(".");
-            return last <= 0 ? null : packageName + "." + className.substring(0, last);
+            return last <= 0 ? null : pkgName + "." + className.substring(0, last);
         }
     }
 
-    private static void analyzeClass(String className, Class<?> actorClass, List<Class<?>> actors,
+    private static void analyzeClass(String className, Class<?> baseClass, List<Class<?>> actors,
                                      List<Class<?>> datas, List<Class<?>> readyActors, List<Class<?>> interfaces) {
         if (!Strings.isNull(className)) {
             Class<?> clazz = null;
@@ -413,14 +413,14 @@ public final class Annotations {
                     if (clazz.isAnnotationPresent(XActor.class)) {
                         if (clazz.isInterface()) {
                             interfaces.add(clazz);
-                        } else if (actorClass == null) {
+                        } else if (baseClass == null) {
                             actors.add(clazz);
-                        } else if (!actorClass.equals(clazz) && actorClass.isAssignableFrom(clazz)) {
+                        } else if (!baseClass.equals(clazz) && baseClass.isAssignableFrom(clazz)) {
                             actors.add(clazz);
                         }
                     }
 
-                    if (actorClass == null) {
+                    if (baseClass == null) {
                         try {
                             if (clazz.getInterfaces().length == 0) {
                                 return;
@@ -434,7 +434,7 @@ public final class Annotations {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    } else if (!actorClass.equals(clazz) && actorClass.isAssignableFrom(clazz)) {
+                    } else if (!baseClass.equals(clazz) && baseClass.isAssignableFrom(clazz)) {
                         try {
                             if (clazz.getConstructors().length == 0) {
                                 return;
@@ -451,7 +451,7 @@ public final class Annotations {
         }
     }
 
-    private static void getPackageClass(String packageName, File[] files, Class<?> actorClass, List<Class<?>> actors,
+    private static void getPackageClass(String pkgName, File[] files, Class<?> actorClass, List<Class<?>> actors,
                                         List<Class<?>> datas, List<Class<?>> readyActors, List<Class<?>> interfaces) {
         if (!XArrays.isEmpty(files)) {
 
@@ -459,10 +459,10 @@ public final class Annotations {
                 File file = files[i];
                 String className = file.getName();
                 if (file.isFile()) {
-                    analyzeClass(getClassName(packageName, className), actorClass, actors, datas,
+                    analyzeClass(getClassName(pkgName, className), actorClass, actors, datas,
                                  readyActors, interfaces);
                 } else {
-                    String var12 = packageName.length() > 0 ? packageName + "." + className : className;
+                    String var12 = pkgName.length() > 0 ? pkgName + "." + className : className;
                     getPackageClass(var12, filterClassFiles(file.getPath()), actorClass, actors,
                                     datas, readyActors, interfaces);
                 }

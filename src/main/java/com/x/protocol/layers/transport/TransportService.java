@@ -7,7 +7,9 @@ import com.x.commons.util.log.Logs;
 import com.x.commons.util.string.Strings;
 import com.x.protocol.core.IChannel;
 import com.x.protocol.layers.Protocol;
+import com.x.protocol.layers.transport.channel.CustomChannel;
 import com.x.protocol.layers.transport.channel.HttpChannel;
+import com.x.protocol.layers.transport.channel.SerialChannel;
 import com.x.protocol.layers.transport.channel.SocketChannel;
 import com.x.protocol.layers.transport.config.ChannelConfig;
 import com.x.protocol.network.core.NetworkServiceType;
@@ -67,9 +69,13 @@ public abstract class TransportService {
                     String type = config.getType();
                     Object chn = null;
                     if (NetworkServiceType.SOCKET.equals(type)) {
-                        chn = new SocketChannel(protocol, transport);
+                        chn = new SocketChannel(transport, protocol);
                     } else if (NetworkServiceType.HTTP.equals(type)) {
-                        chn = new HttpChannel(protocol, transport);
+                        chn = new HttpChannel(transport, protocol);
+                    } else if(NetworkServiceType.SERIAL.equals(type)){
+                        chn = new SerialChannel(transport, protocol);
+                    }else if(NetworkServiceType.CUSTOM.equals(type)){
+                        chn = new CustomChannel(transport, protocol);
                     }
                     if (chn == null) {
                         logger.warn(Locals.text("protocol.layer.channel.start", name));

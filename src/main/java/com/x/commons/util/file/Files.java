@@ -1,6 +1,6 @@
 package com.x.commons.util.file;
 
-import com.x.commons.encrypt.MD5;
+import com.x.commons.encrypt.md5.MD5;
 import com.x.commons.enums.Charsets;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.bean.SB;

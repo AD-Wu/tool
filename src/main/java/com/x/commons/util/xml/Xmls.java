@@ -7,11 +7,6 @@ import com.x.commons.util.file.Files;
 import com.x.commons.util.string.Strings;
 import com.x.commons.util.xml.data.ClassInfo;
 import com.x.commons.util.xml.enums.XStreamMode;
-import com.x.commons.util.xml.test.Parser;
-import com.x.commons.util.xml.test.Result;
-import com.x.commons.util.xml.test.XMLTest;
-
-import java.util.List;
 
 /**
  * @Desc TODO
@@ -37,26 +32,26 @@ public final class Xmls {
         return getXMLHeader(Charset.UTF8);
     }
     
-    public static String getXMLHeader(String encoding) {
-        return "<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\r\n";
+    public static String getXMLHeader(String charset) {
+        return "<?xml version=\"1.0\" encoding=\"" + charset + "\"?>\r\n";
     }
     
-    public static String getDTDString(String root, String dtdName) {
-        return "<!DOCTYPE " + root + " " + dtdName + ">\r\n";
+    public static String getDTDString(String rootName, String dtdMark) {
+        return "<!DOCTYPE " + rootName + " " + dtdMark + ">\r\n";
     }
     
-    public static boolean saveXML(String savePath, String dtdRoot, String dtdName, String var3) {
-        return saveXML(savePath, dtdRoot, dtdName, var3, Charset.UTF8);
+    public static boolean saveXML(String xmlFileName, String rootName, String dtdMark, String var3) {
+        return saveXML(xmlFileName, rootName, dtdMark, var3, Charset.UTF8);
     }
     
-    public static boolean saveXML(String savePath, String dtdRoot, String dtdName, String content, String encoding) {
-        String xml = getXMLHeader(encoding) + getDTDString(dtdRoot, dtdName) + content;
-        return Files.createFile(savePath, xml, encoding);
+    public static boolean saveXML(String xmlFileName, String rootName, String dtdMark, String xml, String charset) {
+        String xmls = getXMLHeader(charset) + getDTDString(rootName, dtdMark) + xml;
+        return Files.createFile(xmlFileName, xmls, charset);
     }
     
-    public static String loadXML(String path) throws Exception {
+    public static String loadXML(String xmlFileName) throws Exception {
         try {
-            return Files.readTxt(path);
+            return Files.readTxt(xmlFileName);
         } catch (Exception e) {
             throw e;
         }
@@ -66,32 +61,31 @@ public final class Xmls {
         return toXML(t, classInfos, fieldInfos, "");
     }
     
-    public static <T> String toXML(T t, ClassInfo[] classInfos, ClassInfo[] fieldInfos, String defaultDateFormat) {
-        if (t == null) {
+    public static <T> String toXML(T bean, ClassInfo[] dataClasses, ClassInfo[] attributes, String dateFormat) {
+        if (bean == null) {
             return null;
         } else {
-            XStream xs = getXStream(classInfos, fieldInfos);
-            if (!Strings.isNull(defaultDateFormat)) {
-                xs.registerConverter(new DateConverter(defaultDateFormat, ACCEPTABLE_FORMATS));
+            XStream xs = getXStream(dataClasses, attributes);
+            if (!Strings.isNull(dateFormat)) {
+                xs.registerConverter(new DateConverter(dateFormat, ACCEPTABLE_FORMATS));
             }
             
-            return xs.toXML(t);
+            return xs.toXML(bean);
         }
     }
     
-    public static <T> T fromXML(String xmlPath, ClassInfo[] classInfos, ClassInfo[] fieldInfos) {
-        return fromXML(xmlPath, classInfos, fieldInfos, "");
+    public static <T> T fromXML(String xmlPath, ClassInfo[] dataClasses, ClassInfo[] attributes) {
+        return fromXML(xmlPath, dataClasses, attributes, "");
     }
     
-    public static <T> T fromXML(String xmlPath, ClassInfo[] classInfos, ClassInfo[] fieldInfos, String defaultDateFormat) {
+    public static <T> T fromXML(String xmlPath, ClassInfo[] dataClasses, ClassInfo[] attributes, String dateFormat) {
         if (Strings.isNull(xmlPath)) {
-            XStream xs = getXStream(classInfos, fieldInfos);
-            if (!Strings.isNull(defaultDateFormat)) {
-                xs.registerConverter(new DateConverter(defaultDateFormat, ACCEPTABLE_FORMATS));
+            XStream xs = getXStream(dataClasses, attributes);
+            if (!Strings.isNull(dateFormat)) {
+                xs.registerConverter(new DateConverter(dateFormat, ACCEPTABLE_FORMATS));
             }
             try {
-                Object o = xs.fromXML(xmlPath);
-                return (T) o;
+                return (T) xs.fromXML(xmlPath);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -113,42 +107,16 @@ public final class Xmls {
     
     // ------------------------ 私有方法 ------------------------
     
-    private static void from() throws Exception {
-        XStream xs = getXStream();
-        // 设置好结构
-        xs.alias("parsers", List.class);
-        xs.alias("parser", Parser.class);
-        xs.useAttributeFor(Parser.class, "clazz");
-        xs.alias("result", Result.class);
-        xs.useAttributeFor(Result.class, "clazz");
-        // 获取源
-        String s = loadXML("x-framework/parser/parser.xml");
-        // 解析
-        Object o = xs.fromXML(s);
-        System.out.println(s);
-        System.out.println(o);
-        
-    }
-    
-    private static void toXML() {
-        XStream xs = getXStream();
-        
-        xs.alias("Test", XMLTest.class);
-        XMLTest test = new XMLTest("AD", 28, "123");
-        String s = xs.toXML(test);
-        System.out.println(s);
-    }
-    
-    private static XStream getXStream(ClassInfo[] classInfos, ClassInfo[] fieldInfos) {
+    private static XStream getXStream(ClassInfo[] dataClasses, ClassInfo[] attributes) {
         XStream xs = new XStream();
         xs.setMode(XStream.NO_REFERENCES);
         ClassInfo[] infos;
         int length;
         int i;
         ClassInfo info;
-        if (classInfos != null && classInfos.length > 0) {
-            infos = classInfos;
-            length = classInfos.length;
+        if (dataClasses != null && dataClasses.length > 0) {
+            infos = dataClasses;
+            length = dataClasses.length;
             
             for (i = 0; i < length; ++i) {
                 info = infos[i];
@@ -156,9 +124,9 @@ public final class Xmls {
             }
         }
         
-        if (fieldInfos != null && fieldInfos.length > 0) {
-            infos = fieldInfos;
-            length = fieldInfos.length;
+        if (attributes != null && attributes.length > 0) {
+            infos = attributes;
+            length = attributes.length;
             
             for (i = 0; i < length; ++i) {
                 info = infos[i];

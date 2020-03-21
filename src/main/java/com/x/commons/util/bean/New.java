@@ -1,6 +1,6 @@
 package com.x.commons.util.bean;
 
-import com.x.commons.encrypt.MD5;
+import com.x.commons.encrypt.md5.MD5;
 import lombok.NonNull;
 
 import java.nio.ByteBuffer;

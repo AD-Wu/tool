@@ -1,7 +1,5 @@
 package com.x.commons.ui.icons;
 
-import com.ax.commons.ui.icons.IconManager;
-
 import javax.swing.*;
 
 public final class Icons {
@@ -9,22 +7,22 @@ public final class Icons {
     private Icons(){}
 
     public static ImageIcon getAlarmIcon() {
-        return new ImageIcon(Icons.class.getResource("/com/x/commons/ui/icons/res/alarm.png"));
+        return new ImageIcon(Icons.class.getResource("/com/x/commons/ui/res/alarm.png"));
     }
 
     public static ImageIcon getErrorIcon() {
-        return new ImageIcon(Icons.class.getResource("/com/x/commons/ui/icons/src/error.png"));
+        return new ImageIcon(Icons.class.getResource("/com/x/commons/ui/icons/res/error.png"));
     }
 
     public static ImageIcon getInfoIcon() {
-        return new ImageIcon(Icons.class.getResource("/com/x/commons/ui/icons/src/info.png"));
+        return new ImageIcon(Icons.class.getResource("/com/x/commons/ui/icons/res/info.png"));
     }
 
     public static ImageIcon getOkIcon() {
-        return new ImageIcon(Icons.class.getResource("/com/x/commons/ui/icons/src/ok.png"));
+        return new ImageIcon(Icons.class.getResource("/com/x/commons/ui/icons/res/ok.png"));
     }
 
     public static ImageIcon getQuestionIcon() {
-        return new ImageIcon(Icons.class.getResource("/com/x/commons/ui/icons/src/question.png"));
+        return new ImageIcon(Icons.class.getResource("/com/x/commons/ui/icons/res/question.png"));
     }
 }

@@ -122,10 +122,9 @@ public class SQLInfo<T> {
         // 属性容器，即表字段容器
         List<String> PROPs = New.list();
         // 初始化属性容器，用于以下主键和非主键语句的生成
-        for (int i = 0, L = gets.length; i < L; ++i) {
-            MethodInfo info = gets[i];
+        for (MethodInfo get : gets) {
             // 方法信息的key，即属性，在封装时都转为大写了
-            PROPs.add(info.getKey());
+            PROPs.add(get.getKey());
         }
         // 生成插入语句
         this.createSQL = "INSERT INTO " + tableName + " (" + Converts.toString(PROPs) + ") VALUES (" +
@@ -154,7 +153,7 @@ public class SQLInfo<T> {
         }
         // 有主键
         if (this.PKList.size() > 0) {
-            this.primaryKeys = PKList.toArray(new String[PKList.size()]);
+            this.primaryKeys = PKList.toArray(XArrays.EMPTY_STRING);
             String pkSQL = sb.toString();
             // 根据主键查找的语句
             this.retrievePK = "SELECT * FROM " + tableName + " WHERE " + pkSQL;
@@ -239,7 +238,8 @@ public class SQLInfo<T> {
     
     public SQLParams getCount(Where[] wheres) {
         SQLParams whereParam = this.getWhere(wheres);
-        return whereParam == null ? null : new SQLParams(this.countSQL + whereParam.getSql(), whereParam.getParams(), whereParam.getTypes());
+        return whereParam == null ? null : new SQLParams(
+                this.countSQL + whereParam.getSql(), whereParam.getParams(), whereParam.getTypes());
     }
     
     public SQLParams getCountByPrimary(T data) throws Exception {
@@ -287,6 +287,7 @@ public class SQLInfo<T> {
             return new SQLParams(this.deleteSQL + whereSQL, whereParam.getParams(), whereParam.getTypes());
         }
     }
+    
     public DatabaseType getType() {
         return this.dbType;
     }
@@ -326,4 +327,5 @@ public class SQLInfo<T> {
     public DaoPageReader<T> getPageReader(int pageSize) {
         return new DaoPageReader(this.dataClass, methodData.getMethodsSetMap(), pageSize);
     }
+    
 }

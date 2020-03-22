@@ -1,15 +1,17 @@
 package com.x.commons.util.date;
 
-import com.x.commons.enums.Formatter;
+import com.x.commons.util.bean.New;
 import com.x.commons.util.log.Logs;
+import com.x.commons.util.string.Strings;
 import org.slf4j.Logger;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ServiceLoader;
 
 /**
  * @Date 2018-12-19 23:32
@@ -32,6 +34,7 @@ public final class DateTimes {
     
     private static final Logger LOG = Logs.get(DateTimes.class);
     
+    private static final List<String> formatters = New.list();
     // ------------------------ 构造方法 ------------------------
     
     private DateTimes() {}
@@ -67,57 +70,49 @@ public final class DateTimes {
         return withMillSeconds ? now() : LocalDateTime.now().format(FORMATTER);
     }
     
-    public static LocalDateTime of(long timeMillSeconds){
+    public static LocalDateTime toLocalDataTime(long timeMillSeconds) {
         return toLocalDateTime(new Date(timeMillSeconds));
     }
     
-    public static LocalDateTime autoParse(String dateTime) throws Exception {
-        LocalDateTime parse = Formatter.autoParse(dateTime);
+    public static LocalDate toLocalDate(String date) throws Exception {
+        LocalDateTime localDateTime = toLocalDateTime(date);
+        return localDateTime.toLocalDate();
+    }
+    
+    public static LocalTime toLocalTime(String time) throws Exception {
+        LocalDateTime localDateTime = toLocalDateTime(time);
+        return localDateTime.toLocalTime();
+    }
+    
+    public static LocalDateTime toLocalDateTime(String dateTime) throws Exception {
+        LocalDateTime parse = autoParse(dateTime, 0, formatters.size());
         if (parse == null) {
-            parse = DateTimeParsers.autoParse(dateTime);
-            if (parse == null) {
-                Logs.get(DateTimes.class)
-                        .error("Can't parse the dateTime={}, you can extends BaseDateTimeParser, and add the annotation with " +
-                               "\"@AutoService(BaseDateTimeParser.class)\"", dateTime);
-                return null;
-            }
+            String patter = "Can not parse the dateTime={0},implements {1} and add the annotation:@AutoService({2})";
+            String name = IFormatter.class.getName();
+            String msg = Strings.replace(patter, dateTime, name, name);
+            Logs.get(DateTimes.class).error(msg);
         }
         return parse;
     }
     
-    public static void main(String[] args) throws Exception {
-        LocalDateTime time0 = autoParse("2011-12-13 14:15:16.777");
-        LocalDateTime time1 = autoParse("2012-12-13 14:15:16");
-        LocalDateTime time2 = autoParse("2013/12/13 14:15:16.777");
-        LocalDateTime time3 = autoParse("2014/12/13 14:15:16");
-        LocalDateTime time4 = autoParse("20151213141516777");
-        LocalDateTime time5 = autoParse("20161213141516");
-        LocalDateTime time6 = autoParse("2017|12|13|14|15|16|777");
-        System.out.println(time0);
-        System.out.println(time1);
-        System.out.println(time2);
-        System.out.println(time3);
-        System.out.println(time4);
-        System.out.println(time5);
-        System.out.println(time6);
+    private static LocalDateTime autoParse(String dateTime, int index, int patternSize) {
+        if (index < patternSize) {
+            String pattern = formatters.get(index);
+            try {
+                return parse(dateTime, pattern);
+            } catch (Exception e) {
+                return autoParse(dateTime, ++index, patternSize);
+            }
+        }
+        return null;
     }
     
     public static LocalDateTime parse(String dateTime, String pattern) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         Date date = sdf.parse(dateTime);
-        LOG.debug("source={}", dateTime);
-        LOG.debug("pattern={}", pattern);
-        LOG.debug("Date={}", date);
         return toLocalDateTime(date);
     }
     
-    /**
-     * 将Date类转换成LocalDateTime类，不推荐使用Date
-     *
-     * @param date
-     *
-     * @return
-     */
     public static LocalDateTime toLocalDateTime(Date date) {
         ZoneId zoneId = ZoneId.systemDefault();
         LocalDateTime before = date.toInstant().atZone(zoneId).toLocalDateTime();
@@ -127,9 +122,23 @@ public final class DateTimes {
          * date=1100-3-2 1:2:3.234 => localDateTime=1100-03-09T01:07:46.234
          */
         LocalDateTime result = fixLocalDateTime(date, before);
-        LOG.debug("LocalDateTime={}", before);
-        LOG.debug("After fix localDateTime={}", result);
         return result;
+    }
+    
+    /**
+     * 是否闰年
+     *
+     * @param year
+     */
+    public static boolean isLeapYear(int year) {
+        if (year % 100 != 0) {
+            if (year % 4 == 0) {
+                return true;
+            }
+        } else if (year % 400 == 0) {
+            return true;
+        }
+        return false;
     }
     
     /**
@@ -159,8 +168,8 @@ public final class DateTimes {
          * Date = Fri Feb 24 00:56:20 CST 1100
          */
         // String zoneID = TimeZone.getDefault().getID();// 时区偏移
-        // ZonedDateTime of = ZonedDateTime.of(localDateTime, ZoneId.of(zoneID));
-        // Instant instant = of.toInstant();
+        // ZonedDateTime toLocalDataTime = ZonedDateTime.toLocalDataTime(localDateTime, ZoneId.toLocalDataTime(zoneID));
+        // Instant instant = toLocalDataTime.toInstant();
         // Date from = Date.from(instant);
         // return from;
     }
@@ -315,6 +324,62 @@ public final class DateTimes {
                     .withSecond(dateSeconds)
                     .withNano(local.getNano());
             return result;
+        }
+    }
+    
+    static {
+        for (Formatter formatter : Formatter.values()) {
+            formatters.add(formatter.pattern);
+        }
+        ServiceLoader<IFormatter> load = ServiceLoader.load(IFormatter.class);
+        Iterator<IFormatter> it = load.iterator();
+        while (it.hasNext()) {
+            String formatter = it.next().get();
+            formatters.add(formatter);
+        }
+    }
+    
+    // ------------------------ 内部类 ------------------------
+    public interface IFormatter {
+        
+        String get();
+        
+    }
+    
+    public static enum Formatter {
+        DATE_TIME("yyyy-MM-dd HH:mm:ss.SSS"),
+        DATE_TIME_NO_MILL_SECONDS("yyyy-MM-dd HH:mm:ss"),
+        
+        DATE_TIME_NO_MARK("yyyyMMddHHmmssSSS"),
+        DATE_TIME_NO_MARK_MILL_SECONDS("yyyyMMddHHmmss"),
+        
+        DATE_TIME_SLASH("yyyy/MM/dd HH:mm:ss.SSS"),
+        DATE_TIME_SLASH_NO_MILL_SECONDS("yyyy/MM/dd HH:mm:ss"),
+        
+        DATE_TIME_CHINESE("yyyy年MM月dd日 HH时mm分ss秒SSS毫秒"),
+        DATE_TIME_CHINESE_NO_MILL_SECONDS("yyyy年MM月dd日 HH时mm分ss秒"),
+        
+        DATE_TIME_CHINESE_NO_SPACE("yyyy年MM月dd日HH时mm分ss秒SSS毫秒"),
+        DATE_TIME_CHINESE_NO_SPACE_MILL_SECONDS("yyyy年MM月dd日HH时mm分ss秒"),
+        
+        TIME("HH:mm:ss.SSS"),
+        TIME_NO_MILL_SECONDS("HH:mm:ss"),
+        
+        TIME_NO_MARK("HHmmssSSS"),
+        TIME_NO_MARK_MILL_SECONDS("HHmmss"),
+        
+        TIME_CHINESE("HH时mm分ss秒SSS毫秒"),
+        TIME_CHINESE_NO_MILL_SECONDS("HH时mm分ss秒"),
+        
+        DATE("yyyy-MM-dd"),
+        DATE_SLASH("yyyy/MM/dd"),
+        DATE_CHINESE("yyyy年MM月dd日"),
+        DATE_NO_MARK("yyyyMMdd");
+        
+        private final String pattern;
+        
+        private Formatter(String pattern) {
+            this.pattern = pattern;
         }
     }
     

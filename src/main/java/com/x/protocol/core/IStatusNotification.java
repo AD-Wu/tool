@@ -1,6 +1,6 @@
 package com.x.protocol.core;
 
-import com.x.commons.socket.config.ServerConfig;
+import com.x.protocol.config.ServiceConfig;
 
 import java.util.List;
 
@@ -21,6 +21,6 @@ public interface IStatusNotification {
     
     void onStop(String protocolName);
     
-    void onLoadConfig(List<ServerConfig> configs);
+    void onLoadConfig(List<ServiceConfig> configs);
     
 }

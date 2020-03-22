@@ -290,7 +290,7 @@ public final class Converts {
             return (Date) date;
         } else if (!(date instanceof Long) && !(date instanceof Integer)) {
             try {
-                LocalDateTime parse = DateTimes.autoParse(String.valueOf(date));
+                LocalDateTime parse = DateTimes.toLocalDateTime(String.valueOf(date));
                 return parse == null ? defaultDate : DateTimes.toDate(parse);
             } catch (Exception e) {
                 return defaultDate;

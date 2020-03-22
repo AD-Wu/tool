@@ -181,7 +181,7 @@ public final class WebServlet extends HttpServlet {
                 }
             }
             if (Strings.isNull(langKey)) {
-                langKey = Locals.getLanguage();
+                langKey = Locals.getDefaultLangKey();
             }
         }
         LocalString local = Locals.getLocal(langKey);

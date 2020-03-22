@@ -32,8 +32,8 @@ public final class Strings {
     // ======================== 变量 ========================
     
     public static void main(String[] args) throws Exception {
-        // Integer autoParse = autoParse("5", Integer.class);
-        // System.getOutputStream.println(autoParse);
+        // Integer toLocalDateTime = toLocalDateTime("5", Integer.class);
+        // System.getOutputStream.println(toLocalDateTime);
         // String abcd = fix("", 12, "");
         // System.out.println(abcd);
         boolean notEquals = isNotEquals("127.0.0.2", "localhost", "127.0.0.1");
@@ -415,14 +415,14 @@ public final class Strings {
     /**
      * 用参数内容替换占位符
      *
-     * @param pattern 如：{0}是中国人,来自{1},{2}岁
+     * @param template 如：{0}是中国人,来自{1},{2}岁
      * @param params
      *
      * @return
      */
-    public static String replace(String pattern, Object... params) {
-        if (isNull(pattern)) return "";
-        return MessageFormat.format(pattern, toStrings(params));
+    public static String replace(String template, Object... params) {
+        if (isNull(template)) return "";
+        return MessageFormat.format(template, toStrings(params));
     }
     
     /**

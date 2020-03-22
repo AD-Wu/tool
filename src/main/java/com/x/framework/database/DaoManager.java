@@ -79,7 +79,7 @@ public class DaoManager implements IDaoManager {
         return this.getDao(clazz, null);
     }
 
-    public <T> IDao<T> getDao(Class<T> clazz, ITableInfoGetter<T> tableInfoGetter) {
+    public <T> IDao<T> getDao(Class<T> clazz, ITableInfoGetter<T> getter) {
         if (this.isStopped) {
             return null;
         } else {
@@ -91,7 +91,7 @@ public class DaoManager implements IDaoManager {
                         return dao;
                     }
 
-                    SQLInfo<T> info = this.getDaoMethods(clazz, tableInfoGetter);
+                    SQLInfo<T> info = this.getDaoMethods(clazz, getter);
 
                     try {
                         if (info.isCaching()) {
@@ -111,17 +111,17 @@ public class DaoManager implements IDaoManager {
         }
     }
 
-    private <T> SQLInfo<T> getDaoMethods(Class<T> clazz, ITableInfoGetter<T> tableInfoGetter) {
-        if (tableInfoGetter == null) {
-            tableInfoGetter = new ITableInfoGetter<T>() {
+    private <T> SQLInfo<T> getDaoMethods(Class<T> clazz, ITableInfoGetter<T> getter) {
+        if (getter == null) {
+            getter = new ITableInfoGetter<T>() {
                 public TableInfo getTableInfo(Class<T> clazz) {
-                    DataConfig info = DaoManager.this.protocol.getDataConfig(clazz);
-                    return info == null ? null : new TableInfo(info.getTable(), info.getPks(), info.isCache(), info.isHistory());
+                    DataConfig cfg = DaoManager.this.protocol.getDataConfig(clazz);
+                    return cfg == null ? null : new TableInfo(cfg.getTable(), cfg.getPks(), cfg.isCache(), cfg.isHistory());
                 }
             };
         }
 
-        return new SQLInfo(clazz, tableInfoGetter.getTableInfo(clazz), this.type);
+        return new SQLInfo(clazz, getter.getTableInfo(clazz), this.type);
     }
 
     public synchronized void stop() {
@@ -133,7 +133,6 @@ public class DaoManager implements IDaoManager {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             CacheManager.clear();
         }
     }

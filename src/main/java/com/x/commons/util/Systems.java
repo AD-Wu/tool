@@ -182,7 +182,7 @@ public final class Systems {
      *
      * @return 如：zh_CN
      */
-    public static String getLanguage() {
+    public static String getLangKey() {
         Locale locale = Locale.getDefault();
         String lang = locale.getLanguage() + "_" + locale.getCountry();
         return lang;

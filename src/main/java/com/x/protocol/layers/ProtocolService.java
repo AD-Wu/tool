@@ -4,7 +4,6 @@ import com.x.commons.collection.DataSet;
 import com.x.commons.events.Dispatcher;
 import com.x.commons.events.Event;
 import com.x.commons.local.Locals;
-import com.x.commons.socket.config.ServerConfig;
 import com.x.commons.timming.Timer;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.log.Logs;
@@ -470,7 +469,7 @@ public abstract class ProtocolService implements IProtocol, ITransportNotificati
     }
     
     @Override
-    public void onLoadConfig(List<ServerConfig> configs) {}
+    public void onLoadConfig(List<ServiceConfig> configs) {}
     
     @Override
     public void run() {

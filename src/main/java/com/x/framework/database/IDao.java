@@ -6,7 +6,7 @@ import com.x.commons.collection.Where;
 import com.x.commons.events.IListener;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2019-12-05 21:53
  * @Author AD
  */
@@ -15,59 +15,59 @@ public interface IDao<T> {
 
     void refreshCache();
 
-    void addCacheListener(String token, IListener listener);
+    void addCacheListener(String type, IListener listener);
 
-    void addCacheListener(String token, IListener listener, int action);
+    void addCacheListener(String type, IListener listener, int action);
 
-    boolean hasCacheListener(String token);
+    boolean hasCacheListener(String type);
 
-    void removeCacheListener(String token);
+    void removeCacheListener(String type);
 
-    boolean hasCacheListener(String token, IListener listener);
+    boolean hasCacheListener(String type, IListener listener);
 
     void removeAllCacheListeners();
 
-    void removeCacheListener(String token, IListener listener);
+    void removeCacheListener(String type, IListener listener);
 
-    T add(T data) throws Exception;
+    T add(T bean) throws Exception;
 
-    T add(String[] var1, Object[] var2) throws Exception;
+    T add(String[] columns, Object[] values) throws Exception;
 
-    T[] addAll(T[] datas) throws Exception;
+    T[] addAll(T[] beans) throws Exception;
 
-    T put(T data) throws Exception;
+    T put(T bean) throws Exception;
 
-    T[] putAll(T[] datas) throws Exception;
+    T[] putAll(T[] beans) throws Exception;
 
     int delete(Where[] wheres) throws Exception;
 
-    int delete(String[] var1, Object[] var2) throws Exception;
+    int delete(String[] columns, Object[] values) throws Exception;
 
-    int edit(T data) throws Exception;
+    int edit(T bean) throws Exception;
 
     T getBean(Where[] wheres) throws Exception;
 
-    T getBean(String[] var1, Object[] var2) throws Exception;
+    T getBean(String[] columns, Object[] values) throws Exception;
 
     T getByPrimary(Object... pks) throws Exception;
 
     boolean contains(Where[] wheres) throws Exception;
 
-    boolean contains(String[] var1, Object[] var2) throws Exception;
+    boolean contains(String[] columns, Object[] values) throws Exception;
 
     int getCount(Where[] wheres) throws Exception;
 
-    int getCount(String[] var1, Object[] var2) throws Exception;
+    int getCount(String[] columns, Object[] values) throws Exception;
 
-    T[] getList(Where[] wheres, KeyValue[] kvs) throws Exception;
+    T[] getList(Where[] wheres, KeyValue[] orders) throws Exception;
 
-    T[] getList(String[] var1, Object[] var2, KeyValue[] kvs) throws Exception;
+    T[] getList(String[] columns, Object[] values, KeyValue[] orders) throws Exception;
 
-    T[] getPage(int var1, int var2, Where[] wheres, KeyValue[] kvs) throws Exception;
+    T[] getPage(int page, int pageSize, Where[] wheres, KeyValue[] orders) throws Exception;
 
-    T[] getPage(int var1, int var2, String[] var3, Object[] var4, KeyValue[] kvs) throws Exception;
+    T[] getPage(int page, int pageSize, String[] columns, Object[] values, KeyValue[] orders) throws Exception;
 
-    int update(KeyValue[] kvs, Where[] wheres) throws Exception;
+    int update(KeyValue[] updates, Where[] wheres) throws Exception;
 
-    int update(String[] var1, Object[] var2, String[] var3, Object[] var4) throws Exception;
+    int update(String[] updateColumns, Object[] updateValues, String[] whereColumns, Object[] whereValues) throws Exception;
 }

@@ -55,7 +55,7 @@ public abstract class BaseHttpParamRequest extends BaseHttpRequest {
                     return getter.getEntity(param, config);
                 }
                 Logs.get(this.getClass())
-                        .error("Can't get the HttpEntity with the content type is {},you can implements IHttpEntityGetter and add the annotation of AutoService to " +
+                        .error("Can't get the HttpEntity with the content type is {},you can implements IHttpEntityGetter and add the annotation toLocalDataTime AutoService to " +
                                "get the entity", contentType);
                 return null;
         }

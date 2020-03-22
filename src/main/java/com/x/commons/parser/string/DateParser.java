@@ -17,7 +17,7 @@ public class DateParser extends IStringParser<Date, String> {
     
     @Override
     public Date parseFrom(String s) throws Exception {
-        LocalDateTime dateTime = DateTimes.autoParse(s);
+        LocalDateTime dateTime = DateTimes.toLocalDateTime(s);
         return dateTime == null ? null : DateTimes.toDate(dateTime);
     }
     

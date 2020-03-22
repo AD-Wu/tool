@@ -60,7 +60,7 @@ public final class Configs {
             }
         } else {
             Logs.get(Config.class)
-                    .error("There is no parser of {},you can implements IParser and add the annotation with AutoService&Parser" +
+                    .error("There is no parser toLocalDataTime {},you can implements IParser and add the annotation with AutoService&Parser" +
                            ".", returnType);
         }
         return null;

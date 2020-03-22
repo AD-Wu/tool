@@ -22,9 +22,18 @@ public final class Logs {
     public static Logger get(Class<?> clazz) {
         return LoggerFactory.getLogger(clazz);
     }
-
-    public static Logger get(String name){
+    
+    public static Logger get(String name) {
         return LoggerFactory.getLogger(name);
+    }
+    
+    public static boolean createLogbackXML() {
+        try {
+            return createLogbackXML("");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
     
     public static boolean createLogbackXML(String filename) throws Exception {

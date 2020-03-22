@@ -45,27 +45,27 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
     }
 
     @Override
-    public void addCacheListener(String token, IListener listener) {
+    public void addCacheListener(String type, IListener listener) {
         throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
     }
 
     @Override
-    public void addCacheListener(String token, IListener listener, int action) {
+    public void addCacheListener(String type, IListener listener, int action) {
         throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
     }
 
     @Override
-    public boolean hasCacheListener(String token) {
+    public boolean hasCacheListener(String type) {
         throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
     }
 
     @Override
-    public boolean hasCacheListener(String token, IListener listener) {
+    public boolean hasCacheListener(String type, IListener listener) {
         throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
     }
 
     @Override
-    public void removeCacheListener(String token) {
+    public void removeCacheListener(String type) {
         throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
     }
 
@@ -75,19 +75,19 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
     }
 
     @Override
-    public void removeCacheListener(String token, IListener listener) {
+    public void removeCacheListener(String type, IListener listener) {
         throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
     }
 
     @Override
-    public T add(T data) throws Exception {
-        SQLParams sqlParams = this.sqlInfo.getCreate(data);
+    public T add(T bean) throws Exception {
+        SQLParams sqlParams = this.sqlInfo.getCreate(bean);
         if (sqlParams == null) {
             return null;
         } else {
             try {
                 return this.execute(sqlParams.getSql(), sqlParams.getParams(),
-                                    sqlParams.getTypes()) > 0 ? data : null;
+                                    sqlParams.getTypes()) > 0 ? bean : null;
             } catch (Exception e) {
                 this.protocol.getLogger().error(
                         Locals.text("framework.db.add.err", this.sqlInfo.getDataClass()));
@@ -97,14 +97,14 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
     }
 
     @Override
-    public T[] addAll(T[] datas) throws Exception {
-        if (datas == null) {
+    public T[] addAll(T[] beans) throws Exception {
+        if (beans == null) {
             return (T[]) Array.newInstance(sqlInfo.getDataClass(), 0);
         } else {
             List<T> dataList = New.list();
 
-            for (int i = 0, L = datas.length; i < L; ++i) {
-                T data = datas[i];
+            for (int i = 0, L = beans.length; i < L; ++i) {
+                T data = beans[i];
                 SQLParams sqlParams = this.sqlInfo.getCreate(data);
                 if (sqlParams != null) {
                     try {
@@ -125,8 +125,8 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
     }
 
     @Override
-    public T put(T data) throws Exception {
-        SQLParams sqlParams = sqlInfo.getCountByPrimary(data);
+    public T put(T bean) throws Exception {
+        SQLParams sqlParams = sqlInfo.getCountByPrimary(bean);
         if (sqlParams == null) {
             return null;
         } else {
@@ -134,22 +134,22 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
             this.executeReader(reader, sqlParams.getSql(), sqlParams.getParams(),
                                sqlParams.getTypes());
             if (reader.getCount() > 0) {
-                return this.edit(data) > 0 ? data : null;
+                return this.edit(bean) > 0 ? bean : null;
             } else {
-                return this.add(data);
+                return this.add(bean);
             }
         }
     }
 
     @Override
-    public T[] putAll(T[] datas) throws Exception {
-        if (datas == null) {
+    public T[] putAll(T[] beans) throws Exception {
+        if (beans == null) {
             return (T[]) Array.newInstance(this.sqlInfo.getDataClass(), 0);
         } else {
             List<T> dataList = New.list();
 
-            for (int i = 0, L = datas.length; i < L; ++i) {
-                T data = datas[i];
+            for (int i = 0, L = beans.length; i < L; ++i) {
+                T data = beans[i];
 
                 try {
                     T t = this.put(data);
@@ -185,8 +185,8 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
     }
 
     @Override
-    public int edit(T data) throws Exception {
-        SQLParams sqlParams = sqlInfo.getUpdateBean(data);
+    public int edit(T bean) throws Exception {
+        SQLParams sqlParams = sqlInfo.getUpdateBean(bean);
         if (sqlParams == null) {
             return -1;
         } else {
@@ -209,8 +209,7 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
         } else {
             try {
                 DaoBeanReader<T> reader = sqlInfo.getBeanReader();
-                return super.executeReader(reader, sqlParams.getSql(), sqlParams.getParams(),
-                                           sqlParams.getTypes()) > 0 ? reader.getData() : null;
+                return super.executeReader(reader, sqlParams.getSql(), sqlParams.getParams(),sqlParams.getTypes()) > 0 ? reader.getData() : null;
             } catch (Exception e) {
                 protocol.getLogger().error(
                         Locals.text("framework.db.bean.err", sqlInfo.getDataClass()));
@@ -262,8 +261,8 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
     }
 
     @Override
-    public T[] getList(Where[] wheres, KeyValue[] order) throws Exception {
-        SQLParams sqlParams = sqlInfo.getRetrieve(wheres, order);
+    public T[] getList(Where[] wheres, KeyValue[] orders) throws Exception {
+        SQLParams sqlParams = sqlInfo.getRetrieve(wheres, orders);
         if (sqlParams == null) {
             return null;
         } else {
@@ -281,8 +280,8 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
     }
 
     @Override
-    public T[] getPage(int page, int pageSize, Where[] wheres, KeyValue[] order) throws Exception {
-        SQLParams sqlParams = sqlInfo.getRetrieve(wheres, order);
+    public T[] getPage(int page, int pageSize, Where[] wheres, KeyValue[] orders) throws Exception {
+        SQLParams sqlParams = sqlInfo.getRetrieve(wheres, orders);
         if (sqlParams == null) {
             return null;
         } else {
@@ -328,43 +327,43 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
     }
 
     @Override
-    public T add(String[] wheres, Object[] values) throws Exception {
-        T data = sqlInfo.createBean(wheres, values);
+    public T add(String[] columns, Object[] values) throws Exception {
+        T data = sqlInfo.createBean(columns, values);
         return data == null ? null : this.add(data);
     }
 
     @Override
-    public int delete(String[] wheres, Object[] values) throws Exception {
-        return this.delete(Sqls.getWheres(wheres, values));
+    public int delete(String[] columns, Object[] values) throws Exception {
+        return this.delete(Sqls.getWheres(columns, values));
     }
 
     @Override
-    public T getBean(String[] wheres, Object[] values) throws Exception {
-        return this.getBean(Sqls.getWheres(wheres, values));
+    public T getBean(String[] columns, Object[] values) throws Exception {
+        return this.getBean(Sqls.getWheres(columns, values));
     }
 
     @Override
-    public boolean contains(String[] wheres, Object[] values) throws Exception {
-        return this.getCount(Sqls.getWheres(wheres, values)) > 0;
+    public boolean contains(String[] columns, Object[] values) throws Exception {
+        return this.getCount(Sqls.getWheres(columns, values)) > 0;
     }
 
     @Override
-    public int getCount(String[] wheres, Object[] values) throws Exception {
-        return this.getCount(Sqls.getWheres(wheres, values));
+    public int getCount(String[] columns, Object[] values) throws Exception {
+        return this.getCount(Sqls.getWheres(columns, values));
     }
 
     @Override
-    public T[] getList(String[] wheres, Object[] values, KeyValue[] order) throws Exception {
-        return this.getList(Sqls.getWheres(wheres, values), order);
+    public T[] getList(String[] columns, Object[] values, KeyValue[] orders) throws Exception {
+        return this.getList(Sqls.getWheres(columns, values), orders);
     }
 
     @Override
-    public T[] getPage(int page, int pageSize, String[] columns, Object[] values, KeyValue[] kvs) throws Exception {
-        return this.getPage(page, pageSize, Sqls.getWheres(columns, values), kvs);
+    public T[] getPage(int page, int pageSize, String[] columns, Object[] values, KeyValue[] orders) throws Exception {
+        return this.getPage(page, pageSize, Sqls.getWheres(columns, values), orders);
     }
 
     @Override
-    public int update(String[] updates, Object[] updateValues, String[] wheres, Object[] whereValues) throws Exception {
-        return this.update(Sqls.getUpdates(updates, updateValues), Sqls.getWheres(wheres, whereValues));
+    public int update(String[] updateColumns, Object[] updateValues, String[] whereColumns, Object[] whereValues) throws Exception {
+        return this.update(Sqls.getUpdates(updateColumns, updateValues), Sqls.getWheres(whereColumns, whereValues));
     }
 }

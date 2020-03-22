@@ -19,7 +19,7 @@ public class MethodManager {
     private MethodManager() {}
     
     public static MethodData getMethodData(Class<?> beanClass) {
-        MethodData data = (MethodData) MAP.get(beanClass);
+        MethodData data = MAP.get(beanClass);
         return data == null ? new MethodData(beanClass, null) : data;
     }
     

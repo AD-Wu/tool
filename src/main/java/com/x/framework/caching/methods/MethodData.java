@@ -55,32 +55,32 @@ public final class MethodData {
             Method method = ms[i];
             String name = method.getName();
             String NAME = name.toUpperCase();
-            String key;
+            String column;
             String propName;
             int returnSqlType;
             if (NAME.startsWith("GET")) {
-                // key是属性大写名，即映射表的字段名
-                key = NAME.substring(3);
+                // 映射表的字段名,也是key
+                column = NAME.substring(3);
                 // 属性名
                 propName = name.substring(3);
                 // 返回值所对应的数据库表sql类型
                 returnSqlType = Sqls.getReturnSqlType(method);
-                gets.add(new MethodInfo(key, propName, method, dbType, returnSqlType));
+                gets.add(new MethodInfo(column, propName, method, dbType, returnSqlType));
             } else if (NAME.startsWith("SET")) {
                 // 获取参数类型
                 int paramSqlType = Sqls.getParameterSqlType(method);
                 if (paramSqlType != Types.NULL) {
                     // 字段名
-                    key = NAME.substring(3);
+                    column = NAME.substring(3);
                     // 属性名
                     propName = name.substring(3);
-                    sets.add(new MethodInfo(key, propName, method, dbType, paramSqlType));
+                    sets.add(new MethodInfo(column, propName, method, dbType, paramSqlType));
                 }
             } else if (NAME.startsWith("IS")) {
-                key = NAME.substring(2);
+                column = NAME.substring(2);
                 propName = name.substring(2);
                 returnSqlType = Sqls.getReturnSqlType(method);
-                gets.add(new MethodInfo(key, propName, method, dbType, returnSqlType));
+                gets.add(new MethodInfo(column, propName, method, dbType, returnSqlType));
             }
         }
         

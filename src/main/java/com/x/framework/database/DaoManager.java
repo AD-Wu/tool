@@ -35,26 +35,26 @@ public class DaoManager implements IDaoManager {
 
     public DaoManager(String name, DatabaseConfig config) throws Exception {
         this.name = name;
-        PoolConfig poolConfig = new PoolConfig();
-        poolConfig.setPoolName(name);
-        poolConfig.setType(config.getType());
-        poolConfig.setUrl(config.getUrl());
-        poolConfig.setDriver(config.getDriverClass());
-        poolConfig.setUser(config.getUser());
-        poolConfig.setPassword(config.getPassword());
-        poolConfig.setInitialSize(Converts.toInt(config.getInitialSize(), 0));
-        poolConfig.setMaxActive(Converts.toInt(config.getMaxActive(), 0));
-        poolConfig.setMaxWait(Converts.toLong(config.getMaxWait(), 60000L));
-        poolConfig.setMinEvictableIdleTimeMillis(Converts.toLong(config.getMinEvictableIdleTimeMillis(), 1800000L));
-        poolConfig.setMinIdle(Converts.toInt(config.getMinIdle(), 5));
-        poolConfig.setTestOnBorrow(Converts.toBoolean(config.getTestOnBorrow(), false));
-        poolConfig.setTestOnReturn(Converts.toBoolean(config.getTestOnReturn(), false));
-        poolConfig.setTestWhileIdle(Converts.toBoolean(config.getTestWhileIdle(), true));
-        poolConfig.setTimeBetweenEvictionRunsMillis(Converts.toLong(config.getTimeBetweenEvictionRunsMillis(), 60000L));
-        poolConfig.setValidationQuery(config.getValidateQuery());
+        PoolConfig cfg = new PoolConfig();
+        cfg.setPoolName(name);
+        cfg.setType(config.getType());
+        cfg.setUrl(config.getUrl());
+        cfg.setDriver(config.getDriverClass());
+        cfg.setUser(config.getUser());
+        cfg.setPassword(config.getPassword());
+        cfg.setInitialSize(Converts.toInt(config.getInitialSize(), cfg.getInitialSize()));
+        cfg.setMaxActive(Converts.toInt(config.getMaxActive(), cfg.getMaxActive()));
+        cfg.setMaxWait(Converts.toLong(config.getMaxWait(), cfg.getMaxWait()));
+        cfg.setMinEvictableIdleTimeMillis(Converts.toLong(config.getMinEvictableIdleTimeMillis(), cfg.getMinEvictableIdleTimeMillis()));
+        cfg.setMinIdle(Converts.toInt(config.getMinIdle(), cfg.getMinIdle()));
+        cfg.setTestOnBorrow(Converts.toBoolean(config.getTestOnBorrow(), cfg.isTestOnBorrow()));
+        cfg.setTestOnReturn(Converts.toBoolean(config.getTestOnReturn(), cfg.isTestOnReturn()));
+        cfg.setTestWhileIdle(Converts.toBoolean(config.getTestWhileIdle(), cfg.isTestWhileIdle()));
+        cfg.setTimeBetweenEvictionRunsMillis(Converts.toLong(config.getTimeBetweenEvictionRunsMillis(), cfg.getTimeBetweenEvictionRunsMillis()));
+        cfg.setValidationQuery(config.getValidateQuery());
 
         try {
-            Pool pool = Pools.start(poolConfig);
+            Pool pool = Pools.start(cfg);
             this.type = pool.getType();
         } catch (Exception e) {
             Logs.get(name).error(Locals.text("framework.db.start.err",name));

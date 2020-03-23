@@ -33,8 +33,17 @@ public final class DBSources {
     }
     
     public static DaoManager getDaoManager() {
-        if (managers.size() == 1) {
-            return managers.values().toArray(new DaoManager[0])[0];
+        if (FIRST != null) {
+            return FIRST;
+        }
+        synchronized (DBSources.class) {
+            if (FIRST != null) {
+                return FIRST;
+            }
+            if (managers.size() == 1) {
+                FIRST = managers.values().toArray(new DaoManager[0])[0];
+                return FIRST;
+            }
         }
         return null;
     }

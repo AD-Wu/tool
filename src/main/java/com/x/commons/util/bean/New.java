@@ -220,5 +220,5 @@ public final class New {
     public static SB sb(String... ss)        {return new SB(ss);}
     
     public static MD5 md5() throws Exception { return new MD5(); }
-    
+
 }

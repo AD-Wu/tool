@@ -121,8 +121,7 @@ public final class DateTimes {
          * date=1700-3-2 1:2:3.234 => localDateTime=1700-03-02T01:07:46
          * date=1100-3-2 1:2:3.234 => localDateTime=1100-03-09T01:07:46.234
          */
-        LocalDateTime result = fixLocalDateTime(date, before);
-        return result;
+        return fixLocalDateTime(date, before);
     }
     
     /**

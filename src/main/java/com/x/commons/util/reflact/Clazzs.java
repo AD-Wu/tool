@@ -3,7 +3,6 @@ package com.x.commons.util.reflact;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.file.Files;
 import com.x.commons.util.string.Strings;
-import lombok.SneakyThrows;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -92,7 +91,7 @@ public final class Clazzs {
     }
     
     public static boolean isArray(Class<?> clazz) {
-        return clazz == null ? false : clazz.isArray();
+        return clazz != null && clazz.isArray();
     }
     
     /**
@@ -101,15 +100,10 @@ public final class Clazzs {
      * @param packageName 包名
      * @param annotation  注解类
      *
-     * @return
-     *
-     * @author AD
-     * @date 2018-12-22 23:37
      */
-    @SneakyThrows
     public static <T extends Annotation> List<Class<?>> getClass(
             String packageName,
-            Class<T> annotation) {
+            Class<T> annotation){
         return getClass(packageName, New.list())
                 .stream()
                 .filter(c -> c.getDeclaredAnnotation(annotation) != null)
@@ -119,8 +113,13 @@ public final class Clazzs {
     public static <A extends Annotation, I> List<Class<I>> getClass(
             String packageName,
             Class<A> annotation,
-            Class<I> interfaceClass) {
-        List<Class<?>> collect = getClass(packageName, New.list());
+            Class<I> interfaceClass)  {
+        List<Class<?>> collect = null;
+        try {
+            collect = getClass(packageName, New.list());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         List<Class<I>> result = collect.stream()
                 .filter(c -> c.getDeclaredAnnotation(annotation) != null &&
                              interfaceClass.isAssignableFrom(c))
@@ -132,19 +131,17 @@ public final class Clazzs {
      * 获取某个包下的所有类
      *
      * @param packageName 包名
-     * @param list
-     *
-     * @return
-     *
-     * @author AD
-     * @date 2018-12-22 23:36
+     * @param list 容器
      */
-    @SneakyThrows
-    public static List<Class<?>> getClass(String packageName, List<Class<?>> list) {
+    public static List<Class<?>> getClass(String packageName, List<Class<?>> list)  {
         for (File f : Files.getFiles(packageName)) {
             if (f.isDirectory()) { getClass(getPath(packageName, f), list); }
             if (f.getName().endsWith(".class")) {
-                list.add(LOADER.loadClass(getClassName(packageName, f)));
+                try {
+                    list.add(LOADER.loadClass(getClassName(packageName, f)));
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return list;

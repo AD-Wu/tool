@@ -265,7 +265,32 @@ public final class Files {
     }
 
     /**
-     * 指定文件夹目录创建文件
+     * 如果文件不存在，创建文件，否则返回原文件对象
+     *
+     * @param folder   文件夹名
+     * @param filename 文件名，包括后缀
+     * @return File 该文件对象
+     */
+    public static File createFileIfNotExists(String folder, String filename) {
+        if (createFolder(folder)) {
+            String fixFolder = endSP(folder);
+            String path = fixFolder + filename;
+            try {
+                File file = new File(path);
+                boolean exists = file.exists();
+                if (!exists) {
+                    file.createNewFile();
+                }
+                return file;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 指定文件夹目录创建文件(全新空白文件,如果已存在,会覆盖原内容)
      *
      * @param folder   文件夹目录，没有回自动创建，无需以分隔符结尾
      * @param filename 文件名
@@ -280,7 +305,7 @@ public final class Files {
     }
 
     /**
-     * 默认以UTF-8的编码创建文件
+     * 默认以UTF-8的编码创建文件,content会覆盖原有文件内容
      *
      * @param folder   文件夹路径（包含文件夹名）
      * @param filename 文件名
@@ -288,11 +313,11 @@ public final class Files {
      * @return true:成功 <p> false:失败
      */
     public static boolean createFile(String folder, String filename, String content) {
-        return createFile(folder, filename, content, Charsets.UTF8);
+        return createFile(folder, filename, content, Charsets.UTF8.name());
     }
 
     /**
-     * 创建文件
+     * 创建文件,如果文件已存在,会覆盖原有内容
      *
      * @param folder   文件夹路径（包含文件夹名）
      * @param filename 文件名
@@ -300,16 +325,17 @@ public final class Files {
      * @param charset  文件字符编码
      * @return true:成功 <p> false:失败
      */
-    public static boolean createFile(String folder, String filename, String content, Charset charset) {
+    public static boolean createFile(String folder, String filename, String content, String charset) {
         if (createFolder(folder)) {
             String fixFolder = endSP(folder);
             String path = fixFolder + filename;
             try {
                 File file = new File(path);
-                if (!file.exists()) {
+                boolean exists = file.exists();
+                if (!exists) {
                     file.createNewFile();
                 }
-                try (PrintWriter writer = new PrintWriter(file, charset.name());) {
+                try (PrintWriter writer = new PrintWriter(file, charset);) {
                     writer.print(content);
                 }
                 return true;
@@ -326,7 +352,7 @@ public final class Files {
         }
         try {
             File file = new File(path);
-            return !file.exists() ? file.mkdirs() : true;
+            return file.exists() || file.mkdirs();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -395,6 +421,63 @@ public final class Files {
     public static File toFileAtResources(byte[] data, String folderName, String filename) throws IOException {
         String folderPath = Files.getResourcesPath(true) + folderName;
         return toFile(data, folderPath, filename);
+    }
+
+    /**
+     * 向指定文件写入内容（文件不存在会自动创建,createFile会覆盖原有内容）
+     *
+     * @param content  写入内容
+     * @param filePath 完整文件路径,包括文件名后缀
+     * @param charset 编码
+     * @return boolean true:成功 false:失败
+     */
+    public static boolean writeTxt(String content, String filePath, Charset charset) {
+        if (Strings.isNull(filePath)) {
+            return false;
+        }
+        int spIndex = filePath.lastIndexOf(SP);
+        if (spIndex == -1) {
+            return false;
+        }
+        String folder = filePath.substring(0, spIndex);
+        String filename = filePath.substring(spIndex + 1);
+        return writeTxt(content, folder, filename, charset);
+    }
+
+    /**
+     * 向指定文件写入内容（文件不存在会自动创建,createFile会覆盖原有内容）
+     *
+     * @param content  写入内容
+     * @param folder   文件夹
+     * @param filename 文件名，包括后缀
+     * @param charset  编码
+     * @return
+     */
+    public static boolean writeTxt(String content, String folder, String filename,
+                                   Charset charset) {
+        if (Strings.isNull(folder) || Strings.isNull(filename)) {
+            return false;
+        }
+        folder = fixPath(folder);
+        File file = createFileIfNotExists(folder, filename);
+        String old = "";
+        try {
+            old = readTxt(file.getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try (PrintWriter writer = new PrintWriter(file, charset.name());) {
+            if(Strings.isNotNull(old)){
+                writer.write(old);
+                writer.write("\r\n");
+            }
+            writer.write(content);
+            writer.write("\r\n");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -757,9 +840,8 @@ public final class Files {
     }
 
     /**
-     * @param path
-     * @return
-     * @throws Exception
+     * @param path xxx.properties文件所在路径
+     * @return Properties 属性对象
      */
     public static Properties toProperties(String path) throws Exception {
         try (InputStream in = Loader.get().getResourceAsStream(path);) {
@@ -823,11 +905,11 @@ public final class Files {
         return path.endsWith(SP) ? path : path + SP;
     }
 
-    public static void main(String[] args) throws Exception {
-        // String path = "/Users/sunday/Java/StudyVideo/SpringMVC";
-        // String old = "北京动力节点-SpringMVC4-";
-        // String newChar = "";
-        // editNames(path, old, newChar);
-    }
+    // public static void main(String[] args) throws Exception {
+    //     // String path = "/Users/sunday/Java/StudyVideo/SpringMVC";
+    //     // String old = "北京动力节点-SpringMVC4-";
+    //     // String newChar = "";
+    //     // editNames(path, old, newChar);
+    // }
 
 }

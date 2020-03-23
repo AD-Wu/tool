@@ -24,7 +24,7 @@ public class CacheDao<T> implements IDao<T> {
     CacheDao(IProtocol protocol, SQLInfo<T> sqlInfo) throws Exception {
         this.dataClass = sqlInfo.getDataClass();
         this.sqlInfo = sqlInfo;
-        this.dao = new Dao(protocol, sqlInfo);
+        this.dao = protocol == null ? new Dao<>(sqlInfo) : new Dao<>(protocol, sqlInfo);
         CacheManager.createCache(dataClass, sqlInfo.getPrimaryKeys(), sqlInfo.isCachingHistory(),
                                  sqlInfo.getType());
         CacheData<T> cacheData = CacheManager.lock(this.dataClass);
@@ -323,6 +323,7 @@ public class CacheDao<T> implements IDao<T> {
 
     @Override
     public int update(String[] updateColumns, Object[] updateValues, String[] whereColumns, Object[] whereValues) throws Exception {
-        return this.update(Sqls.getUpdates(updateColumns, updateValues), Sqls.getWheres(whereColumns, whereValues));
+        return this.update(Sqls.getUpdates(updateColumns, updateValues),
+                           Sqls.getWheres(whereColumns, whereValues));
     }
 }

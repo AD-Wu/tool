@@ -20,7 +20,7 @@ public class DatabaseConfig implements Serializable {
     
     private String url;
     
-    private String user;
+    private  String user;
     
     private String password;
     

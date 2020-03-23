@@ -2,7 +2,10 @@ package com.x.commons.config;
 
 import com.ax.commons.utils.FileHelper;
 import com.x.commons.util.bean.New;
+import com.x.commons.util.collection.XArrays;
 import com.x.commons.util.convert.Converts;
+import com.x.commons.util.file.Files;
+import com.x.commons.util.string.Strings;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -74,17 +77,12 @@ public class Configure {
         return sct == null ? defaultValue : sct.getBoolean(key, defaultValue);
     }
     
-    public static void main(String[] args) {
-        Configure conf = new Configure();
-        conf.load("x-framework/PoolConfig.properties");
-    }
-    
-    public void load(String var1) {
+    public void load(String path) {
         this.sections = new LinkedHashMap();
         String text = null;
         
         try {
-            text = FileHelper.readTxt(var1, "UTF-8");
+            text = Files.readTxt(path, "UTF-8");
         } catch (IOException e) {
         }
         
@@ -92,7 +90,7 @@ public class Configure {
             text = text.replaceAll("\r\n", "\n");
             text = text.replaceAll("\r", "\n");
             String[] lines = text.split("[\n]");
-            if (lines != null && lines.length != 0) {
+            if (!XArrays.isEmpty(lines)) {
                 Pattern p = Pattern.compile("^\\[\\s*(.*)\\s*\\]$");
                 StringBuilder snote = new StringBuilder();
                 Section section = null;
@@ -166,14 +164,14 @@ public class Configure {
             }
         }
         
-        fileName = FileHelper.getLocalPath(fileName, false);
+        fileName = Files.getLocalPath(fileName, false);
         int spIndex = fileName.lastIndexOf(FileHelper.SP);
         if (spIndex != -1) {
             String folder = fileName.substring(0, spIndex);
-            FileHelper.createFolder(folder);
+            Files.createFolder(folder);
         }
         
-        return FileHelper.createFile(fileName, text.toString(), charset);
+        return Files.createFile(fileName, text.toString(), charset);
     }
     
     private String getNote(StringBuilder sb) {
@@ -245,7 +243,11 @@ public class Configure {
         public void setNote(String note) {
             this.note = note;
         }
-        
+
+        @Override
+        public String toString() {
+            return Strings.defaultToString(this);
+        }
     }
     
     public class Section {
@@ -319,7 +321,11 @@ public class Configure {
         public boolean getBoolean(String key, boolean defaultValue) {
             return Converts.toBoolean(this.getValue(key), defaultValue);
         }
-        
+
+        @Override
+        public String toString() {
+            return Strings.defaultToString(this);
+        }
     }
     
 }

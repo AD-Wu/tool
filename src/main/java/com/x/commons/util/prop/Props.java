@@ -1,7 +1,7 @@
 package com.x.commons.util.prop;
 
-import com.x.commons.database.pool.PoolConfig;
 import com.x.commons.parser.Parsers;
+import com.x.commons.parser.core.IParser;
 import com.x.commons.parser.core.IStringParser;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.bean.SB;
@@ -9,6 +9,7 @@ import com.x.commons.util.collection.Maps;
 import com.x.commons.util.file.Files;
 import com.x.commons.util.prop.annotation.Prop;
 import com.x.commons.util.prop.annotation.XValue;
+import com.x.commons.util.prop.test.User;
 import com.x.commons.util.reflact.Clazzs;
 import com.x.commons.util.reflact.Fields;
 import com.x.commons.util.string.Strings;
@@ -28,11 +29,11 @@ import java.util.stream.Stream;
  * @Date 2019/11/21 9:37
  */
 public final class Props {
-    
+
     // ------------------------ 构造方法 ------------------------
-    
+
     private Props() {}
-    
+
     // ---------------------- 成员方法 ---------------------
     public static Map<String, String> load(String path) throws Exception {
         /**
@@ -48,17 +49,13 @@ public final class Props {
             throw e;
         }
     }
-    
+
     /**
      * 将类转为xxx.properties的文件（resources/x-framework）
      *
      * @param clazz 需要转换的类，如数据库连接池的配置文件
-     *
-     * @return
-     *
-     * @throws Exception
      */
-    public static boolean to(Class<?> clazz) throws Exception {
+    public static boolean toPropFile(Class<?> clazz) throws Exception {
         if (clazz == null) {
             return false;
         }
@@ -81,16 +78,12 @@ public final class Props {
         String folder = Files.getResourcesPath() + "x-framework";
         return Files.createFile(folder, filename + ".properties", sb.get());
     }
-    
+
     /**
      * 将xxx.properties的配置文件解析成class
      *
      * @param clazz 加了@Prop(path="",prefix="")注解的类，该类属性可以配合@XValue使用
      * @param <T>   目标类型
-     *
-     * @return 目标类对象
-     *
-     * @throws Exception
      */
     public static <T> T get(Class<T> clazz) throws Exception {
         Prop config = clazz.getAnnotation(Prop.class);
@@ -122,13 +115,13 @@ public final class Props {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            
+
         });
         return target;
     }
-    
+
     // ---------------------- 私有方法 ---------------------
-    
+
     /**
      * 有注解@XValue的，通过注解解析
      *
@@ -137,7 +130,6 @@ public final class Props {
      * @param field  类的成员属性
      * @param parsed 被解析field属性类型
      * @param target 被解析的属性所对应的对象
-     *
      * @throws Exception
      */
     private static void setValueWithoutAnnotation(
@@ -149,12 +141,15 @@ public final class Props {
         // 获取值
         String str = prop.getProperty(prefix + field.getName());
         // 解析值
-        Object value = Parsers.getParser(parsed).parse(str);
-        // 设置值
-        field.set(target, value);
-        
+        IParser<?, Object> parser = Parsers.getParser(parsed);
+        if (parser != null) {
+            Object value = parser.parse(str);
+            field.set(target, value);
+        }
+
+
     }
-    
+
     private static void setValueWithAnnotation(
             Properties prop,
             XValue msg,
@@ -170,30 +165,33 @@ public final class Props {
             Parsers.addParser(parsed, msg.parser());
         }
         try {
-            // 获取值
-            Object value = Parsers.getParser(parsed).parse(param);
-            // 设置值
-            field.set(target, value);
+            // 解析值
+            IParser<?, Object> parser = Parsers.getParser(parsed);
+            if(parser!=null){
+                Object value = parser.parse(param);
+                field.set(target, value);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
     }
-    
+
     private static boolean needFormat(XValue msg) {
         Class<? extends IStringParser> parser = msg.parser();
-        return parser != null && parser != IStringParser.class && IStringParser.class.isAssignableFrom(parser);
+        return parser != null && parser != IStringParser.class && IStringParser.class.isAssignableFrom(
+                parser);
     }
-    
+
     private static String fixPrefix(String prefix) {
         return Strings.isNull(prefix) ? "" : (prefix.endsWith(".") ? prefix : prefix + ".");
     }
-    
+
     public static void main(String[] args) throws Exception {
-        // User user = get(User.class);
-        // System.getOutputStream.println(user);
-        boolean to = to(PoolConfig.class);
-        System.out.println(to);
+        User user = get(User.class);
+        System.out.println(user);
+        // boolean to = toPropFile(PoolConfig.class);
+        // System.out.println(to);
     }
-    
+
 }

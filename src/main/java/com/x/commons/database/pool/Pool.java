@@ -17,7 +17,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2020-01-07 23:04
  * @Author AD
  */
@@ -78,7 +78,7 @@ public class Pool {
                         } else {
                             driver = config.getDriver();
                         }
-                        
+                        this.type = DatabaseType.MYSQL;
                         this.poolName = poolName;
                         this.connectionURL = url;
                         this.isUseDruid = config.isUseDruid();

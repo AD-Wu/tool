@@ -28,6 +28,11 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
 
     private SQLInfo<T> sqlInfo;
 
+    Dao(SQLInfo<T> sqlInfo) throws Exception {
+        super("X");
+        this.sqlInfo = sqlInfo;
+    }
+
     Dao(IProtocol protocol, SQLInfo<T> sqlInfo) throws Exception {
         super(protocol.getName());
         this.protocol = protocol;
@@ -89,8 +94,8 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
                 return this.execute(sqlParams.getSql(), sqlParams.getParams(),
                                     sqlParams.getTypes()) > 0 ? bean : null;
             } catch (Exception e) {
-                this.protocol.getLogger().error(
-                        Locals.text("framework.db.add.err", this.sqlInfo.getDataClass()));
+                // this.protocol.getLogger().error(
+                //         Locals.text("framework.db.add.err", this.sqlInfo.getDataClass()));
                 throw e;
             }
         }

@@ -176,7 +176,7 @@ public final class Sqls {
                     Timestamp timestamp = (Timestamp) columnValue;
                     date = new Date(timestamp.getTime());
                 }
-                if(date!=null){
+                if (date != null) {
                     Class<?>[] paramTypes = setInfo.getMethod().getParameterTypes();
                     if (!XArrays.isEmpty(paramTypes)) {
                         Class<?> param = paramTypes[0];

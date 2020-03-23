@@ -28,7 +28,18 @@ public class User implements Serializable {
 
     @XField(doc = "性别")
     private boolean sex;
-
+    
+    @XField(doc = "图片")
+    private byte[] image;
+    
+    public byte[] getImage() {
+        return image;
+    }
+    
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+    
     public String getId() {
         return id;
     }

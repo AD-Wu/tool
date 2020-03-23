@@ -165,6 +165,10 @@ public final class Sqls {
                 return Converts.toDouble(columnValue);
             case Types.VARCHAR:
                 return columnValue == null ? null : String.valueOf(columnValue).trim();
+            case Types.BLOB:
+            case Types.CLOB:
+            case Types.NCLOB:
+                return columnValue;
             case Types.TIMESTAMP:
                 Date date = null;
                 if (columnValue == null) {
@@ -544,6 +548,10 @@ public final class Sqls {
             
             if (returnType.equals(Byte.class)) {
                 return Types.TINYINT;
+            }
+            
+            if(returnType.equals(byte[].class)){
+                return Types.BLOB;
             }
         }
         return Types.OTHER;

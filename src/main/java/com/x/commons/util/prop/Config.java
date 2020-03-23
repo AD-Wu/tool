@@ -23,12 +23,14 @@ import java.util.regex.Pattern;
  * @Date：2020/3/23 11:31
  */
 public class Config {
-
+    
     /**
      * 将制定路径下的配置文件解析成Part对象数组
      *
      * @param path
+     *
      * @return
+     *
      * @throws IOException
      */
     public Part[] load(String path) throws IOException {
@@ -101,14 +103,16 @@ public class Config {
         }
         return parts.values().toArray(new Part[0]);
     }
-
+    
     /**
      * 将Part对象解析成指定对象
      *
      * @param clazz
      * @param part
      * @param <T>
+     *
      * @return
+     *
      * @throws Exception
      */
     public <T> T toClass(Class<T> clazz, Part part) throws Exception {
@@ -128,31 +132,42 @@ public class Config {
         }
         return null;
     }
-
+    
     /**
      * 将制定类保存成文件
      *
      * @param filename
      * @param clazz
      * @param charset
+     *
      * @throws Exception
      */
     public void toFile(String filename, Class<?> clazz, String charset) throws Exception {
         if (clazz != null && Strings.isNotNull(filename)) {
-            String name = clazz.getName();
-            Part part = new Part("", name);
-            Field[] fields = clazz.getDeclaredFields();
             Object o = Clazzs.newInstance(clazz);
-            for (Field field : fields) {
-                field.setAccessible(true);
-                String key = field.getName();
-                String value = Strings.of(field.get(o));
-                part.putProp(new Prop("", key, value));
-            }
-            save(filename, charset, part);
+            save(filename, charset, generatePart(clazz, o));
         }
     }
-
+    
+    public void toFile(String filename, Object o, String charset) throws Exception {
+        if (o != null && Strings.isNotNull(filename)) {
+            save(filename, charset, generatePart(o.getClass(), o));
+        }
+    }
+    
+    private Part generatePart(Class<?> clazz, Object o) throws Exception {
+        String name = clazz.getSimpleName();
+        Part part = new Part("", name);
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            String key = field.getName();
+            String value = Strings.of(field.get(o));
+            part.putProp(new Prop("", key, value));
+        }
+        return part;
+    }
+    
     private boolean save(String filename, String charset, Part... parts) {
         SB text = New.sb();
         for (Part part : parts) {
@@ -171,7 +186,7 @@ public class Config {
         }
         return Files.writeTxt(text.get(), filename, Charset.forName(charset));
     }
-
+    
     private String fixNote(String note) {
         if (Strings.isNotNull(note)) {
             note = note.replaceAll("\r\n", "\n");
@@ -179,10 +194,10 @@ public class Config {
             String[] lines = note.split("[\n]");
             if (XArrays.isEmpty(lines)) {
                 SB snote = New.sb();
-
+                
                 for (String line : lines) {
                     line = line.trim();
-                    if (line.length() == 0) {
+                    if (Strings.isNull(line)) {
                         snote.append("\r\n");
                     } else if (!line.startsWith("#")) {
                         snote.append("# ");
@@ -198,4 +213,5 @@ public class Config {
             return "";
         }
     }
+    
 }

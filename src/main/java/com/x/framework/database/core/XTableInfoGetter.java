@@ -18,25 +18,25 @@ public class XTableInfoGetter<T> implements ITableInfoGetter<T> {
     
     @Override
     public TableInfo getTableInfo(Class<T> clazz) {
-        if (clazz.isAnnotationPresent(XData.class)) {
-            XData xData = clazz.getAnnotation(XData.class);
-            String table = xData.table();
-            boolean cache = xData.cache();
-            boolean history = xData.history();
-            Field[] fields = clazz.getDeclaredFields();
-            List<String> pks = New.list();
-            Arrays.stream(fields).forEach(field -> {
-                if (field.isAnnotationPresent(XField.class)) {
-                    XField xf = field.getAnnotation(XField.class);
-                    if (xf.pk()) {
-                        String pk = field.getName();
-                        pks.add(pk);
-                    }
-                }
-            });
-            new TableInfo(table, pks.toArray(XArrays.EMPTY_STRING), cache, history);
+        if (!clazz.isAnnotationPresent(XData.class)) {
+            return null;
         }
-        return null;
+        XData xData = clazz.getAnnotation(XData.class);
+        String table = xData.table();
+        boolean cache = xData.cache();
+        boolean history = xData.history();
+        Field[] fields = clazz.getDeclaredFields();
+        List<String> pks = New.list();
+        Arrays.stream(fields).forEach(field -> {
+            if (field.isAnnotationPresent(XField.class)) {
+                XField xf = field.getAnnotation(XField.class);
+                if (xf.pk()) {
+                    String pk = field.getName();
+                    pks.add(pk);
+                }
+            }
+        });
+        return new TableInfo(table, pks.toArray(XArrays.EMPTY_STRING), cache, history);
     }
     
 }

@@ -1,10 +1,11 @@
 package com.x.framework.database.test.data;
 
+import com.x.commons.util.string.Strings;
 import com.x.protocol.annotations.XData;
 import com.x.protocol.annotations.XField;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @Desc：
@@ -23,7 +24,7 @@ public class User implements Serializable {
     private String name;
 
     @XField(doc = "生日")
-    private Date birthday;
+    private LocalDateTime birthday;
 
     @XField(doc = "性别")
     private boolean sex;
@@ -52,11 +53,11 @@ public class User implements Serializable {
         this.name = name;
     }
 
-    public Date getBirthday() {
+    public LocalDateTime getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(LocalDateTime birthday) {
         this.birthday = birthday;
     }
 
@@ -67,4 +68,10 @@ public class User implements Serializable {
     public void setSex(boolean sex) {
         this.sex = sex;
     }
+    
+    @Override
+    public String toString() {
+        return Strings.defaultToString(this);
+    }
+    
 }

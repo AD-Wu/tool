@@ -21,7 +21,7 @@ public class DatabaseAccess implements IDatabase {
         if (pool == null) {
             throw new Exception(Locals.text("commons.pool.name.invalid", poolName));
         } else {
-            DatabaseType type = pool.getType();
+            DatabaseType type = pool.getDBType();
             switch(type) {
                 case MYSQL:
                     access = new MySQL(pool);

@@ -6,6 +6,7 @@ import com.x.commons.database.DatabaseAccess;
 import com.x.commons.events.IListener;
 import com.x.commons.local.Locals;
 import com.x.commons.util.bean.New;
+import com.x.commons.util.log.Logs;
 import com.x.framework.database.core.SQLInfo;
 import com.x.framework.database.core.SQLParams;
 import com.x.framework.database.core.Sqls;
@@ -14,6 +15,7 @@ import com.x.framework.database.reader.DaoCountReader;
 import com.x.framework.database.reader.DaoListReader;
 import com.x.framework.database.reader.DaoPageReader;
 import com.x.protocol.core.IProtocol;
+import org.slf4j.Logger;
 
 import java.lang.reflect.Array;
 import java.util.List;
@@ -182,8 +184,7 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
                 return super.execute(sqlParams.getSql(), sqlParams.getParams(),
                                      sqlParams.getTypes());
             } catch (Exception e) {
-                this.protocol.getLogger().error(
-                        Locals.text("framework.db.delete.err", this.sqlInfo.getDataClass()));
+                logErr("framework.db.delete.err");
                 throw e;
             }
         }
@@ -199,8 +200,7 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
                 return this.execute(sqlParams.getSql(), sqlParams.getParams(),
                                     sqlParams.getTypes());
             } catch (Exception e) {
-                this.protocol.getLogger().error(
-                        Locals.text("framework.db.edit.err", this.sqlInfo.getDataClass()));
+                logErr("framework.db.edit.err");
                 throw e;
             }
         }
@@ -214,10 +214,10 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
         } else {
             try {
                 DaoBeanReader<T> reader = sqlInfo.getBeanReader();
-                return super.executeReader(reader, sqlParams.getSql(), sqlParams.getParams(),sqlParams.getTypes()) > 0 ? reader.getData() : null;
+                return super.executeReader(reader, sqlParams.getSql(), sqlParams.getParams(),
+                                           sqlParams.getTypes()) > 0 ? reader.getData() : null;
             } catch (Exception e) {
-                protocol.getLogger().error(
-                        Locals.text("framework.db.bean.err", sqlInfo.getDataClass()));
+                logErr("framework.db.bean.err");
                 throw e;
             }
         }
@@ -234,8 +234,7 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
                 return super.executeReader(reader, sqlParams.getSql(), sqlParams.getParams(),
                                            sqlParams.getTypes()) > 0 ? reader.getData() : null;
             } catch (Exception e) {
-                protocol.getLogger().error(
-                        Locals.text("framework.db.bean.err", this.sqlInfo.getDataClass()));
+                logErr("framework.db.bean.err");
                 throw e;
             }
         }
@@ -258,8 +257,7 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
                                     sqlParams.getTypes());
                 return reader.getCount();
             } catch (Exception e) {
-                protocol.getLogger().error(
-                        Locals.text("framework.db.count.err", sqlInfo.getDataClass()));
+                logErr("framework.db.count.err");
                 throw e;
             }
         }
@@ -277,8 +275,7 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
                                     sqlParams.getTypes());
                 return reader.getDatas();
             } catch (Exception e) {
-                protocol.getLogger().error(
-                        Locals.text("framework.db.list.err", this.sqlInfo.getDataClass()));
+                logErr("framework.db.list.err");
                 throw e;
             }
         }
@@ -307,8 +304,7 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
                                     pageSize);
                 return reader.getDatas();
             } catch (Exception e) {
-                protocol.getLogger().error(
-                        Locals.text("framework.db.page.err", this.sqlInfo.getDataClass()));
+                logErr("framework.db.page.err");
                 throw e;
             }
         }
@@ -324,8 +320,7 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
                 return super.execute(sqlParams.getSql(), sqlParams.getParams(),
                                      sqlParams.getTypes());
             } catch (Exception e) {
-                protocol.getLogger().error(
-                        Locals.text("framework.db.update.err", this.sqlInfo.getDataClass()));
+                logErr("framework.db.update.err");
                 throw e;
             }
         }
@@ -369,6 +364,20 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
 
     @Override
     public int update(String[] updateColumns, Object[] updateValues, String[] whereColumns, Object[] whereValues) throws Exception {
-        return this.update(Sqls.getUpdates(updateColumns, updateValues), Sqls.getWheres(whereColumns, whereValues));
+        return this.update(Sqls.getUpdates(updateColumns, updateValues),
+                           Sqls.getWheres(whereColumns, whereValues));
+    }
+
+    private void logErr(String key) {
+        Logger logger;
+        if (protocol == null) {
+            logger = Logs.get(this.getClass());
+        } else {
+            logger = protocol.getLogger();
+        }
+        if(logger!=null){
+            logger.error(Locals.text(key,sqlInfo.getDataClass()));
+        }
+
     }
 }

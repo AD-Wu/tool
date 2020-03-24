@@ -82,7 +82,7 @@ public class Dispatcher {
         }
     }
     
-    public void removeAllcontainer() {
+    public void removeAllListeners() {
         synchronized (this.lock) {
             map.clear();
         }

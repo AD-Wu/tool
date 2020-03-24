@@ -24,9 +24,9 @@ import java.util.Map;
  * @Date：2020/1/15 16:44
  */
 public final class CacheHelper {
-
+    
     private CacheHelper() {}
-
+    
     public static <T> T[] getPageData(Class<T> clazz, T[] src, int var2, int length) {
         if (!XArrays.isEmpty(src)) {
             if (var2 <= 0) {
@@ -54,18 +54,19 @@ public final class CacheHelper {
             return src;
         }
     }
-
+    
     public static void upperCaseWhereKeys(Where[] wheres) {
         Arrays.stream(wheres).forEach(where -> {
             where.setK(where.getK().toUpperCase());
         });
     }
-
+    
     public static String getWhereString(Where[] ws) {
         if (!XArrays.isEmpty(ws)) {
             Where[] wheres = new Where[ws.length];
             System.arraycopy(ws, 0, wheres, 0, ws.length);
             Arrays.sort(wheres, new Comparator<Where>() {
+                
                 public int compare(Where w1, Where w2) {
                     if (w1 != null && w2 != null) {
                         String key1 = w1.getK();
@@ -111,7 +112,7 @@ public final class CacheHelper {
             return null;
         }
     }
-
+    
     public static int getHistoryCacheKey(String var0, Where[] wheres, KeyValue[] kvs) {
         if (!Strings.isNull(var0)) {
             SB sb = New.sb(var0);
@@ -120,6 +121,7 @@ public final class CacheHelper {
                 Where[] copyWheres = new Where[wheres.length];
                 System.arraycopy(wheres, 0, copyWheres, 0, wheres.length);
                 Arrays.sort(copyWheres, new Comparator<Where>() {
+                    
                     public int compare(Where where1, Where where2) {
                         if (where1 != null && where2 != null) {
                             String k1 = where1.getK();
@@ -137,7 +139,7 @@ public final class CacheHelper {
                         }
                     }
                 });
-
+                
                 for (int i = 0, L = copyWheres.length; i < L; ++i) {
                     Where where = copyWheres[i];
                     if (where != null) {
@@ -155,7 +157,7 @@ public final class CacheHelper {
                     }
                 }
             }
-
+            
             if (!XArrays.isEmpty(kvs)) {
                 for (int i = 0, L = kvs.length; i < L; ++i) {
                     KeyValue kv = kvs[i];
@@ -181,7 +183,7 @@ public final class CacheHelper {
             return 0;
         }
     }
-
+    
     public static String getPrimaryValueAsString(Object[] os) {
         if (os != null && os.length != 0) {
             SB sb = New.sb();
@@ -195,67 +197,63 @@ public final class CacheHelper {
             return null;
         }
     }
-
+    
     public static String[] upperCasePrimaryKeys(String[] pks) {
         String[] keys = new String[pks.length];
-
+        
         for (int i = 0, L = pks.length; i < L; ++i) {
             keys[i] = pks[i].toUpperCase();
         }
-
+        
         return keys;
     }
-
+    
     public static String getPrimaryValueByWheres(String[] pks, Where[] wheres) {
-        if (wheres.length != pks.length) {
+        if (XArrays.isValue(pks, wheres)) {
             return null;
-        } else {
-            SB sb = New.sb();
-            for (int i = 0, L = pks.length; i < L; ++i) {
-                String pk = pks[i];
-                boolean var7 = false;
-                for (int k = 0, len = wheres.length; k < len; ++k) {
-                    Where where = wheres[k];
-                    if (pk.equals(where.getK())) {
-                        if (!"=".equals(where.getO())) {
-                            return null;
-                        }
-                        sb.append(where.getV());
-                        sb.append("|");
-                        var7 = true;
-                        break;
+        }
+        SB sb = New.sb();
+        for (String pk : pks) {
+            boolean var7 = false;
+            for (Where where : wheres) {
+                if (pk.equals(where.getK())) {
+                    if (!"=".equals(where.getO())) {
+                        return null;
                     }
-                }
-
-                if (!var7) {
-                    return null;
+                    sb.append(where.getV());
+                    sb.append("|");
+                    var7 = true;
+                    break;
                 }
             }
-
-            return String.valueOf(sb.toString().hashCode());
+            
+            if (!var7) {
+                return null;
+            }
         }
+        
+        return String.valueOf(sb.toString().hashCode());
     }
-
-    public static String getPrimaryValueByKeys(Map<String, MethodInfo> getMethodInfos, String[] pks, Object o) throws Exception {
+    
+    public static String getPrimaryValueByKeys(Map<String, MethodInfo> gets, String[] pks, Object o) throws Exception {
         if (o == null) {
             return null;
         } else {
             SB sb = New.sb();
-
-            for (int i = 0, L = pks.length; i < L; ++i) {
-                String pk = pks[i];
-                MethodInfo info = getMethodInfos.get(pk);
-                sb.append(info.getMethod().invoke(o));
+            
+            for (String pk : pks) {
+                MethodInfo get = gets.get(pk);
+                sb.append(get.getMethod().invoke(o));
                 sb.append("|");
             }
-
+            
             return String.valueOf(sb.toString().hashCode());
         }
     }
-
+    
     public static ValueMatcher[] getWhereMatchers(Map<String, MethodInfo> getMethodInfos, Where[] wheres) throws Exception {
         ValueMatcher[] matchers = new ValueMatcher[wheres.length];
-
+        
         for (int i = 0, L = wheres.length; i < L; ++i) {
             ValueMatcher matcher = ValueMatcher.getValueMatcher(getMethodInfos, wheres[i]);
             if (matcher == null) {
@@ -263,33 +261,34 @@ public final class CacheHelper {
             }
             matchers[i] = matcher;
         }
-
+        
         return matchers;
     }
-
+    
     public static boolean matchCondition(ValueMatcher[] matchers, Object o) throws Exception {
-
+        
         for (int i = 0, L = matchers.length; i < L; ++i) {
             ValueMatcher matcher = matchers[i];
             if (!matcher.match(o)) {
                 return false;
             }
         }
-
+        
         return true;
     }
-
+    
     public static void sortArray(Map<String, MethodInfo> getMethodInfos, KeyValue[] kvs, Object[] os) {
         if (kvs != null && kvs.length != 0 && os != null && os.length >= 2) {
             final ValueSorter[] sorters = new ValueSorter[kvs.length];
-
+            
             for (int i = 0, L = kvs.length; i < L; ++i) {
                 sorters[i] = ValueSorter.getValueSorter(getMethodInfos, kvs[i]);
             }
-
+            
             Arrays.sort(os, new Comparator<Object>() {
+                
                 public int compare(Object o1, Object o2) {
-
+                    
                     for (int i = 0, L = sorters.length; i < L; ++i) {
                         ValueSorter sorter = sorters[i];
                         if (sorter != null) {
@@ -306,10 +305,10 @@ public final class CacheHelper {
             });
         }
     }
-
+    
     public static ValueUpdater[] getUpdaters(Map<String, MethodInfo> var0, KeyValue[] kvs) throws Exception {
         ValueUpdater[] updaters = new ValueUpdater[kvs.length];
-
+        
         for (int i = 0, L = kvs.length; i < L; ++i) {
             KeyValue kv = kvs[i];
             String K = kv.getK().toUpperCase();
@@ -318,10 +317,10 @@ public final class CacheHelper {
             ValueUpdater updater = new ValueUpdater(K, method, fixValueType(method, kv.getV()));
             updaters[i] = updater;
         }
-
+        
         return updaters;
     }
-
+    
     private static Object fixValueType(Method method, Object converted) {
         Class[] paramTypes = method.getParameterTypes();
         if (XArrays.isEmpty(paramTypes)) {
@@ -352,8 +351,9 @@ public final class CacheHelper {
                     return Converts.toLocalDateTime(converted);
                 default:
                     return converted;
-
+                
             }
         }
     }
+    
 }

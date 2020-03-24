@@ -27,9 +27,9 @@ public class CacheData<T> {
 
     private final String[] pks;
 
-    private final Set<String> pkSet = new HashSet();
+    private final Set<String> pkSet = New.set();
 
-    private final Map<String, T> datas = new LinkedHashMap();
+    private final Map<String, T> datas = New.linkedMap();
 
     private Dispatcher dispatcher = null;
 
@@ -43,21 +43,14 @@ public class CacheData<T> {
 
     private HistoryCache<T> history = null;
 
-    CacheData(Class<T> dataClass, String[] pks, boolean cache, DatabaseType databaseType) {
+    CacheData(Class<T> dataClass, String[] pks, boolean cacheHistory, DatabaseType type) {
         if (!XArrays.isEmpty(pks)) {
             this.dataClass = dataClass;
             this.pks = CacheHelper.upperCasePrimaryKeys(pks);
-
-            for (int i = 0, L = pks.length; i < L; ++i) {
-                this.pkSet.add(pks[i]);
-            }
-
+            this.pkSet.addAll(Arrays.asList(pks));
             this.dataAry = (T[]) Array.newInstance(dataClass, 0);
-            this.methods = MethodManager.getMethodData(dataClass, databaseType);
-            if (cache) {
-                this.history = new HistoryCache();
-            }
-
+            this.methods = MethodManager.getMethodData(dataClass, type);
+            this.history = cacheHistory ? new HistoryCache<>() : null;
         } else {
             throw new IllegalArgumentException(
                     "No primary key in data caching! Class: " + dataClass.getName());
@@ -65,11 +58,11 @@ public class CacheData<T> {
     }
 
     void lock() {
-        this.writeLock.lock();
+        writeLock.lock();
     }
 
     void unlock() {
-        this.writeLock.unlock();
+        writeLock.unlock();
     }
 
     boolean hasData() {
@@ -77,7 +70,7 @@ public class CacheData<T> {
     }
 
     int size() {
-        return this.datas.size();
+        return datas.size();
     }
 
     private T[] getArrayData() {
@@ -125,8 +118,8 @@ public class CacheData<T> {
 
     void put(T data) throws Exception {
         if (data != null) {
-            String primaryValue = CacheHelper.getPrimaryValueByKeys(this.methods.getMethodsGetMap(),
-                                                                    this.pks, data);
+            String primaryValue = CacheHelper.getPrimaryValueByKeys(methods.getMethodsGetMap(),
+                                                                    pks, data);
             if (primaryValue != null) {
                 T result = this.datas.put(primaryValue, data);
                 if (!this.dataChanged) {
@@ -146,20 +139,19 @@ public class CacheData<T> {
         }
     }
 
-    void putAll(T[] datas) throws Exception {
-        for (int i = 0, L = datas.length; i < L; ++i) {
-            T data = datas[i];
-            if (data != null) {
-                String primaryValue = CacheHelper.getPrimaryValueByKeys(
-                        this.methods.getMethodsGetMap(),
-                        this.pks, data);
-                if (primaryValue != null) {
-                    T result = this.datas.put(primaryValue, data);
+    void putAll(T[] beans) throws Exception {
+        for (T bean : beans) {
+            if (bean != null) {
+                String pkValue = CacheHelper.getPrimaryValueByKeys(
+                        methods.getMethodsGetMap(),
+                        pks, bean);
+                if (pkValue != null) {
+                    T result = this.datas.put(pkValue, bean);
                     if (this.dispatcher != null) {
                         if (result == null) {
-                            this.dispatchChanged(CacheEvent.ACTION_ADDED, data);
+                            this.dispatchChanged(CacheEvent.ACTION_ADDED, bean);
                         } else {
-                            this.dispatchChanged(CacheEvent.ACTION_UPDATED, data);
+                            this.dispatchChanged(CacheEvent.ACTION_UPDATED, bean);
                         }
                     }
                 }
@@ -485,7 +477,8 @@ public class CacheData<T> {
             int cacheKey = 0;
             T[] historyDatas;
             if (this.history != null && this.history.size() > 0) {
-                cacheKey = CacheHelper.getHistoryCacheKey("page|" + var1 + "|" + pageSize, wheres, kvs);
+                cacheKey = CacheHelper.getHistoryCacheKey("page|" + var1 + "|" + pageSize, wheres,
+                                                          kvs);
                 historyDatas = this.history.get(cacheKey);
                 if (historyDatas != null) {
                     return historyDatas;

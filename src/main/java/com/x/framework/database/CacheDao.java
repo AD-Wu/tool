@@ -56,12 +56,12 @@ public class CacheDao<T> implements IDao<T> {
     
     @Override
     public String[] getPrimaryKeys() {
-        return this.sqlInfo.getPrimaryKeys();
+        return sqlInfo.getPrimaryKeys();
     }
     
     @Override
     public void refreshCache() {
-        CacheData<T> cacheData = CacheManager.lock(this.dataClass);
+        CacheData<T> cacheData = CacheManager.lock(dataClass);
         
         try {
             CacheManager.clear(cacheData);
@@ -76,7 +76,7 @@ public class CacheDao<T> implements IDao<T> {
     
     @Override
     public void addCacheListener(String type, IListener listener) {
-        CacheData<T> cacheData = CacheManager.lock(this.dataClass);
+        CacheData<T> cacheData = CacheManager.lock(dataClass);
         
         try {
             cacheData.addListener(type, listener);
@@ -88,7 +88,7 @@ public class CacheDao<T> implements IDao<T> {
     
     @Override
     public void addCacheListener(String type, IListener listener, int cacheEventAction) {
-        CacheData<T> cache = CacheManager.lock(this.dataClass);
+        CacheData<T> cache = CacheManager.lock(dataClass);
         
         try {
             cache.addListener(type, listener, cacheEventAction);
@@ -100,7 +100,7 @@ public class CacheDao<T> implements IDao<T> {
     
     @Override
     public boolean hasCacheListener(String type) {
-        CacheData<T> cacheData = CacheManager.lock(this.dataClass);
+        CacheData<T> cacheData = CacheManager.lock(dataClass);
         
         boolean contain;
         try {
@@ -114,7 +114,7 @@ public class CacheDao<T> implements IDao<T> {
     
     @Override
     public boolean hasCacheListener(String type, IListener listener) {
-        CacheData<T> cacheData = CacheManager.lock(this.dataClass);
+        CacheData<T> cacheData = CacheManager.lock(dataClass);
         
         boolean contain;
         try {
@@ -128,7 +128,7 @@ public class CacheDao<T> implements IDao<T> {
     
     @Override
     public void removeCacheListener(String type) {
-        CacheData<T> cacheData = CacheManager.lock(this.dataClass);
+        CacheData<T> cacheData = CacheManager.lock(dataClass);
         
         try {
             cacheData.removeListener(type);
@@ -140,7 +140,7 @@ public class CacheDao<T> implements IDao<T> {
     
     @Override
     public void removeAllCacheListeners() {
-        CacheData<T> cacheData = CacheManager.lock(this.dataClass);
+        CacheData<T> cacheData = CacheManager.lock(dataClass);
         
         try {
             cacheData.removeAllListeners();
@@ -152,7 +152,7 @@ public class CacheDao<T> implements IDao<T> {
     
     @Override
     public void removeCacheListener(String type, IListener listener) {
-        CacheData<T> cacheData = CacheManager.lock(this.dataClass);
+        CacheData<T> cacheData = CacheManager.lock(dataClass);
         
         try {
             cacheData.removeListener(type, listener);
@@ -164,11 +164,11 @@ public class CacheDao<T> implements IDao<T> {
     
     @Override
     public T add(T bean) throws Exception {
-        CacheData<T> cacheData = CacheManager.lock(this.dataClass);
+        CacheData<T> cacheData = CacheManager.lock(dataClass);
         
         T t;
         try {
-            t = this.dao.add(bean);
+            t = dao.add(bean);
             CacheManager.put(cacheData, t);
         } finally {
             CacheManager.unlock(cacheData);
@@ -178,11 +178,11 @@ public class CacheDao<T> implements IDao<T> {
     
     @Override
     public T[] addAll(T[] beans) throws Exception {
-        CacheData<T> cacheData = CacheManager.lock(this.dataClass);
+        CacheData<T> cacheData = CacheManager.lock(dataClass);
         
         T[] results;
         try {
-            results = this.dao.addAll(beans);
+            results = dao.addAll(beans);
             CacheManager.putAll(cacheData, results, true);
         } finally {
             CacheManager.unlock(cacheData);
@@ -193,11 +193,11 @@ public class CacheDao<T> implements IDao<T> {
     
     @Override
     public T put(T bean) throws Exception {
-        CacheData<T> cacheData = CacheManager.lock(this.dataClass);
+        CacheData<T> cacheData = CacheManager.lock(dataClass);
         
         T t;
         try {
-            t = this.dao.put(bean);
+            t = dao.put(bean);
             CacheManager.put(cacheData, t);
         } finally {
             CacheManager.unlock(cacheData);
@@ -208,11 +208,11 @@ public class CacheDao<T> implements IDao<T> {
     
     @Override
     public T[] putAll(T[] beans) throws Exception {
-        CacheData<T> cacheData = CacheManager.lock(this.dataClass);
+        CacheData<T> cacheData = CacheManager.lock(dataClass);
         
         T[] results;
         try {
-            results = this.dao.putAll(beans);
+            results = dao.putAll(beans);
             CacheManager.putAll(cacheData, results, true);
         } finally {
             CacheManager.unlock(cacheData);

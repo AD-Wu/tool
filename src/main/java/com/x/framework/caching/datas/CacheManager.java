@@ -4,6 +4,7 @@ import com.x.commons.collection.KeyValue;
 import com.x.commons.collection.Where;
 import com.x.commons.database.pool.DatabaseType;
 import com.x.commons.util.bean.New;
+import com.x.commons.util.collection.XArrays;
 
 import java.util.Map;
 
@@ -13,17 +14,17 @@ import java.util.Map;
  * @Date：2020/1/19 15:25
  */
 public final class CacheManager {
-    private static final Map<Class<?>, CacheData> cacheMap = New.map();
+    private static final Map<Class<?>, CacheData<?>> cacheMap = New.map();
     private static final Object cacheLock = new Object();
 
     private CacheManager() {
     }
 
-    public static <T> void createCache(Class<T> dataClass, String[] pks, boolean cache, DatabaseType databaseType) {
+    public static <T> void createCache(Class<T> dataClass, String[] pks, boolean cacheHistory, DatabaseType type) {
         if (!cacheMap.containsKey(dataClass)) {
             synchronized(cacheLock) {
                 if (!cacheMap.containsKey(dataClass)) {
-                    cacheMap.put(dataClass, new CacheData<>(dataClass, pks, cache, databaseType));
+                    cacheMap.put(dataClass, new CacheData<>(dataClass, pks, cacheHistory, type));
                 }
             }
         }
@@ -90,7 +91,7 @@ public final class CacheManager {
         if (dataClass == null) {
             return null;
         } else {
-            CacheData data = cacheMap.get(dataClass);
+            CacheData<T> data = (CacheData<T>) cacheMap.get(dataClass);
             if (data != null) {
                 data.lock();
             }
@@ -113,7 +114,7 @@ public final class CacheManager {
     }
 
     public static <T> void putAll(CacheData<T> cache, T[] datas, boolean isCache) throws Exception {
-        if (cache != null && datas != null && datas.length != 0) {
+        if (cache != null && !XArrays.isEmpty(datas)) {
             if (isCache || !cache.hasData()) {
                 cache.putAll(datas);
             }

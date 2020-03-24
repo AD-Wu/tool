@@ -61,11 +61,11 @@ public class DataCaching<T> extends CacheData<T> {
 
     }
 
-    public void putAll(T[] datas) throws Exception {
+    public void putAll(T[] beans) throws Exception {
         super.lock();
 
         try {
-            super.putAll(datas);
+            super.putAll(beans);
         } finally {
             super.unlock();
         }

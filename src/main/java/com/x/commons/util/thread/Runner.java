@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutorService;
  */
 public final class Runner {
     
-    private static final int threadNum = 3;
+    private static final int MAX = 100;
     
     private static ExecutorService runner;
     
@@ -25,7 +25,7 @@ public final class Runner {
         } else {
             synchronized (Runner.class) {
                 if (runner == null) {
-                    runner = New.threadPool(threadNum);
+                    runner = New.threadPool(MAX);
                 }
                 runner.submit(runnable);
             }

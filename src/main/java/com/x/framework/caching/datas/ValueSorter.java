@@ -20,8 +20,8 @@ public final class ValueSorter {
 
     private final IComparer desc;
 
-    public ValueSorter(Method method, IComparer asc, IComparer desc) {
-        this.method = method;
+    public ValueSorter(Method get, IComparer asc, IComparer desc) {
+        this.method = get;
         this.asc = asc;
         this.desc = desc;
     }
@@ -61,18 +61,18 @@ public final class ValueSorter {
     }
 
     /**
-     * @param getMethodInfos get方法信息，prop=属性名，methodInfo=对应的方法信息
-     * @param kv         key=prop,value=asc|desc
+     * @param gets get方法信息，prop=属性名，methodInfo=对应的方法信息
+     * @param kv   key=prop,value=asc|desc
      * @return
      */
-    public static ValueSorter getValueSorter(Map<String, MethodInfo> getMethodInfos, KeyValue kv) {
+    public static ValueSorter getValueSorter(Map<String, MethodInfo> gets, KeyValue kv) {
         // 判断有效性
         if (kv == null || Strings.isNull(kv.getK())) {
             return null;
         }
         String prop = kv.getK().toUpperCase();
-        MethodInfo methodInfo = getMethodInfos.get(prop);
-        if (methodInfo == null) {
+        MethodInfo get = gets.get(prop);
+        if (get == null) {
             return null;
         }
         // 判断是asc还是desc
@@ -81,7 +81,7 @@ public final class ValueSorter {
         boolean isAsc = Strings.isNull(v) || !"DESC".equals(v);
 
         // 获取返回值类型，判断出需要使用哪种类型的比较器
-        Method method = methodInfo.getMethod();
+        Method method = get.getMethod();
         Class<?> type = method.getReturnType();
         IComparer asc = null;
         IComparer desc = null;

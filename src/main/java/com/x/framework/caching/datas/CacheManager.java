@@ -151,7 +151,7 @@ public final class CacheManager {
             return false;
         } else {
             CacheData var2 = cacheMap.get(dataClass);
-            return var2 == null ? false : var2.contains(wheres);
+            return var2 != null && var2.contains(wheres);
         }
     }
 

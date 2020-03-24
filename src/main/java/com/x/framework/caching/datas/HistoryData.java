@@ -9,7 +9,7 @@ class HistoryData<T> {
 
     private final int key;
 
-    private T[] datas;
+    private final T[] datas;
 
     private long accessTime;
 

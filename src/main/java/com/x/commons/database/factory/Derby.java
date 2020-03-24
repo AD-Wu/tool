@@ -2,7 +2,7 @@ package com.x.commons.database.factory;
 
 import com.x.commons.database.core.Database;
 import com.x.commons.database.pool.Pool;
-import com.x.commons.database.reader.IDataReader;
+import com.x.commons.database.core.IDataReader;
 
 /**
  * @Desc TODO

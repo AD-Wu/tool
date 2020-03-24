@@ -15,38 +15,42 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * @Desc
+ * @Desc 数据库连接池对象
  * @Date 2020-01-07 23:04
  * @Author AD
  */
-public class Pool {
-    
-    private DatabaseType DBType;
-    
-    private String poolName;
-    
-    private String connectionURL;
-    
-    // 最快连接池，比druid快
-    private DataSource pool;
-    
-    private boolean useDruid;
-    
+public final class Pool {
+
+    // 数据库类型
+    private final DatabaseType DBType;
+
+    // 连接池名字（使用框架时是协议名）
+    private final String poolName;
+
+    // jdbcURL
+    private final String url;
+
+    // 数据库池
+    private final DataSource pool;
+
+    // 使用druid（默认使用Hikari,最快）
+    private final boolean useDruid;
+
     Pool(PoolConfig config) throws Exception {
         String type = config.getType();
-        String poolName = config.getPoolName();
-        String url = config.getUrl();
+        this.DBType = DatabaseType.get(type);
+        this.poolName = config.getPoolName();
+        this.url = config.getUrl();
+        this.useDruid = config.isUseDruid();
         String user = config.getUser();
         String driver = config.getDriver();
         String pwd = config.getPassword();
-        this.DBType = DatabaseType.get(type);
+
         // 检查参数
         checkError(type, poolName, url, user, driver, DBType);
         driver = Strings.isNull(driver) ? DBType.driver() : driver;
         config.setDriver(driver);
-        this.poolName = poolName;
-        this.connectionURL = url;
-        this.useDruid = config.isUseDruid();
+
         // 创建数据源
         if (useDruid) {
             this.pool = DruidDataSourceFactory.createDataSource(config.toProperties());
@@ -59,21 +63,21 @@ public class Pool {
                 e.printStackTrace();
             }
         }
-        
+
     }
-    
+
     public DatabaseType getDBType() {
         return this.DBType;
     }
-    
+
     public String getPoolName() {
         return this.poolName;
     }
-    
-    public String getConnectionURL() {
-        return this.connectionURL;
+
+    public String getUrl() {
+        return this.url;
     }
-    
+
     void stop() throws Exception {
         if (useDruid) {
             DruidDataSource druidPool = (DruidDataSource) pool;
@@ -88,13 +92,13 @@ public class Pool {
             } catch (Exception e) {
             }
         }
-        
+
     }
-    
+
     public Connection getConnection() throws SQLException {
         return pool.getConnection();
     }
-    
+
     public String getStatus() {
         if (useDruid) {
             return pool.toString();
@@ -110,15 +114,16 @@ public class Pool {
             sb.append("\t").append("activeConnections:").append(activeConn).append("\n");
             sb.append("\t").append("idleConnections:").append(idleConn).append("\n");
             sb.append("\t").append("totalConnections:").append(totalConn).append("\n");
-            sb.append("\t").append("threadsAwaitingConnection:").append(threadsAwaitingConnection).append("\n").append("]");
-            
+            sb.append("\t").append("threadsAwaitingConnection:").append(
+                    threadsAwaitingConnection).append("\n").append("]");
+
             return sb.toString();
         }
     }
-    
+
     private void checkError(String type, String poolName, String url, String user,
-            String driver, DatabaseType DBType) throws IllegalArgumentException {
-        
+                            String driver, DatabaseType DBType) throws IllegalArgumentException {
+
         if (Strings.isNull(type)) {
             throw new IllegalArgumentException(Locals.text("commons.pool.type"));
         }
@@ -135,5 +140,5 @@ public class Pool {
             throw new IllegalArgumentException(Locals.text("commons.pool.type.invalid", type));
         }
     }
-    
+
 }

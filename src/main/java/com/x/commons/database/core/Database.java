@@ -1,7 +1,6 @@
 package com.x.commons.database.core;
 
 import com.x.commons.database.pool.Pool;
-import com.x.commons.database.reader.IDataReader;
 import com.x.commons.util.collection.XArrays;
 
 import java.sql.*;
@@ -46,6 +45,7 @@ public abstract class Database implements IDatabase {
     
     @Override
     public int execute(String sql, Object[] args, int[] sqlTypes) throws Exception {
+        System.out.println(">>> " + sql);
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             fillPrepareStatement(ps, args, sqlTypes);
@@ -68,19 +68,20 @@ public abstract class Database implements IDatabase {
     
     @Override
     public int executeReader(IDataReader reader, String sql, Object[] args, int[] sqlTypes) throws Exception {
+        System.out.println(">>> " + sql);
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY,
                      ResultSet.CONCUR_READ_ONLY)) {
-            this.fillPrepareStatement(ps, args, sqlTypes);
-            ResultSet resultSet = ps.executeQuery();
-            return reader.read(resultSet);
+            fillPrepareStatement(ps, args, sqlTypes);
+            ResultSet rs = ps.executeQuery();
+            return reader.read(rs);
         }
         
     }
     
     @Override
     public Object[] executeReturnGeneratedKeys(String sql, Object[] args, int[] sqlTypes, String[] rows) throws Exception {
-        
+        System.out.println(">>> " + sql);
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);) {
             

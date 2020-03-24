@@ -1,6 +1,6 @@
 package com.x.framework.database.reader;
 
-import com.x.commons.database.reader.IDataReader;
+import com.x.commons.database.core.IDataReader;
 
 import java.sql.ResultSet;
 

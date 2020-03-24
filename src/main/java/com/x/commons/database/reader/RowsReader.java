@@ -1,6 +1,7 @@
 package com.x.commons.database.reader;
 
 import com.x.commons.collection.DataSet;
+import com.x.commons.database.core.IDataReader;
 import com.x.commons.util.bean.New;
 
 import java.sql.ResultSet;
@@ -8,16 +9,13 @@ import java.sql.ResultSetMetaData;
 import java.util.List;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2019-11-08 17:33
  * @Author AD
  */
 public class RowsReader implements IDataReader {
 
     private List<DataSet> datas;
-
-    public RowsReader() {
-    }
 
     @Override
     public int read(ResultSet rs) throws Exception {
@@ -38,7 +36,7 @@ public class RowsReader implements IDataReader {
     }
 
     public DataSet[] getRowsData() {
-        return this.datas.toArray(new DataSet[datas.size()]);
+        return datas.toArray(new DataSet[0]);
     }
 
 }

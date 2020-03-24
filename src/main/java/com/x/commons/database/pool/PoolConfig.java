@@ -352,7 +352,7 @@ public class PoolConfig {
      *
      * @return boolean 是否使用Druid连接池，默认使用Hikari
      */
-    public boolean isUseDruid() {
+    boolean isUseDruid() {
         return this.useDruid;
     }
     
@@ -365,7 +365,7 @@ public class PoolConfig {
         this.useDruid = useDruid;
     }
     
-    public Properties toProperties() throws Exception {
+    Properties toProperties() throws Exception {
         Field[] fields = Fields.getFields(this.getClass());
         Properties prop = new Properties();
         for (Field field : fields) {
@@ -379,7 +379,7 @@ public class PoolConfig {
         return prop;
     }
     
-    public HikariConfig toHikariConfig() {
+    HikariConfig toHikariConfig() {
         HikariConfig config = new HikariConfig();
         
         config.setPoolName(this.getPoolName());

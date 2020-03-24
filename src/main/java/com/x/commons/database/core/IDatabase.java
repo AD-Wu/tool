@@ -1,7 +1,5 @@
 package com.x.commons.database.core;
 
-import com.x.commons.database.reader.IDataReader;
-
 /**
  * @Desc
  * @Date 2019-11-08 17:29

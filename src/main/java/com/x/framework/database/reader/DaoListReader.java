@@ -1,6 +1,6 @@
 package com.x.framework.database.reader;
 
-import com.x.commons.database.reader.IDataReader;
+import com.x.commons.database.core.IDataReader;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.collection.XArrays;
 import com.x.commons.util.reflact.Clazzs;
@@ -8,7 +8,6 @@ import com.x.commons.util.string.Strings;
 import com.x.framework.caching.methods.MethodInfo;
 import com.x.framework.database.core.Sqls;
 
-import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.List;

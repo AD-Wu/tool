@@ -1,4 +1,4 @@
-package com.x.commons.database.reader;
+package com.x.commons.database.core;
 
 import java.sql.ResultSet;
 

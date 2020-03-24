@@ -1,12 +1,13 @@
 package com.x.commons.database.reader;
 
 import com.x.commons.collection.DataSet;
+import com.x.commons.database.core.IDataReader;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2019-11-08 17:33
  * @Author AD
  */

@@ -64,7 +64,7 @@ public class DataSet {
     }
     
     public boolean containsKey(Object key) {
-        return key == null ? false : datas.containsKey(Strings.toUppercase(key));
+        return key != null && datas.containsKey(Strings.toUppercase(key));
     }
     
     public <T> T get(Object key) {

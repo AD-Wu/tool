@@ -1,6 +1,6 @@
 package com.x.framework.database.reader;
 
-import com.x.commons.database.reader.IDataReader;
+import com.x.commons.database.core.IDataReader;
 import com.x.commons.util.reflact.Clazzs;
 import com.x.commons.util.string.Strings;
 import com.x.framework.caching.methods.MethodInfo;

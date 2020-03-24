@@ -1,6 +1,6 @@
 package com.x.framework.database.reader;
 
-import com.x.commons.database.reader.IDataReader;
+import com.x.commons.database.core.IDataReader;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.collection.XArrays;
 import com.x.commons.util.reflact.Clazzs;

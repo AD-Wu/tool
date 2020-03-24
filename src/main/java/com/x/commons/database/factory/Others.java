@@ -2,7 +2,7 @@ package com.x.commons.database.factory;
 
 import com.x.commons.database.core.Database;
 import com.x.commons.database.pool.Pool;
-import com.x.commons.database.reader.IDataReader;
+import com.x.commons.database.core.IDataReader;
 
 import java.sql.ResultSet;
 
@@ -18,10 +18,10 @@ public class Others extends Database {
     }
     
     public int executeReader(IDataReader reader, String sql, Object[] args, int[] sqlTypes, int startIndex, int rows) throws Exception {
-        return executeReader(new Others.OtherReader(reader, startIndex), sql, args, sqlTypes);
+        return executeReader(new OtherReader(reader, startIndex), sql, args, sqlTypes);
     }
     
-    private class OtherReader implements IDataReader {
+    private static class OtherReader implements IDataReader {
         
         private IDataReader reader;
         

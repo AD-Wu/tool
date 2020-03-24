@@ -7,7 +7,7 @@ import com.x.commons.util.string.Strings;
 import com.x.framework.caching.datas.CacheData;
 import com.x.framework.caching.datas.CacheManager;
 import com.x.framework.database.core.SQLInfo;
-import com.x.framework.database.core.Sqls;
+import com.x.framework.database.core.SQLHelper;
 import com.x.protocol.core.IProtocol;
 
 /**
@@ -310,39 +310,39 @@ public class CacheDao<T> implements IDao<T> {
     }
     
     public int delete(String[] columns, Object[] values) throws Exception {
-        return this.delete(Sqls.getWheres(columns, values));
+        return this.delete(SQLHelper.getWheres(columns, values));
     }
     
     @Override
     public T getBean(String[] columns, Object[] values) throws Exception {
-        return this.getBean(Sqls.getWheres(columns, values));
+        return this.getBean(SQLHelper.getWheres(columns, values));
     }
     
     @Override
     public int getCount(String[] columns, Object[] values) throws Exception {
-        return this.getCount(Sqls.getWheres(columns, values));
+        return this.getCount(SQLHelper.getWheres(columns, values));
     }
     
     @Override
     public boolean contains(String[] columns, Object[] values) throws Exception {
-        return CacheManager.contains(this.dataClass, Sqls.getWheres(columns, values));
+        return CacheManager.contains(this.dataClass, SQLHelper.getWheres(columns, values));
     }
     
     @Override
     public T[] getList(String[] columns, Object[] values, KeyValue[] orders) throws Exception {
-        return this.getList(Sqls.getWheres(columns, values), orders);
+        return this.getList(SQLHelper.getWheres(columns, values), orders);
     }
     
     @Override
     public T[] getPage(int page, int pageSize, String[] columns, Object[] values, KeyValue[] orders) throws Exception {
-        return this.getPage(page, pageSize, Sqls.getWheres(columns, values), orders);
+        return this.getPage(page, pageSize, SQLHelper.getWheres(columns, values), orders);
     }
     
     @Override
     public int update(String[] updateColumns, Object[] updateValues, String[] whereColumns, Object[] whereValues)
             throws Exception {
-        return this.update(Sqls.getUpdates(updateColumns, updateValues),
-                Sqls.getWheres(whereColumns, whereValues));
+        return this.update(SQLHelper.getUpdates(updateColumns, updateValues),
+                           SQLHelper.getWheres(whereColumns, whereValues));
     }
     
 }

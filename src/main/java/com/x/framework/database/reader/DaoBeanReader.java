@@ -4,7 +4,7 @@ import com.x.commons.database.core.IDataReader;
 import com.x.commons.util.reflact.Clazzs;
 import com.x.commons.util.string.Strings;
 import com.x.framework.caching.methods.MethodInfo;
-import com.x.framework.database.core.Sqls;
+import com.x.framework.database.core.SQLHelper;
 
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
@@ -51,7 +51,7 @@ public class DaoBeanReader<T> implements IDataReader {
                     // 获取数据库里的值
                     Object param = rs.getObject(i);
                     // 转为Java值
-                    Object javaData = Sqls.toJavaData(param, set);
+                    Object javaData = SQLHelper.toJavaData(param, set);
                     // 调用set方法
                     method.invoke(data, javaData);
                 }

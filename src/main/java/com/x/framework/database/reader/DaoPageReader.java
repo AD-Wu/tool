@@ -6,7 +6,7 @@ import com.x.commons.util.collection.XArrays;
 import com.x.commons.util.reflact.Clazzs;
 import com.x.commons.util.string.Strings;
 import com.x.framework.caching.methods.MethodInfo;
-import com.x.framework.database.core.Sqls;
+import com.x.framework.database.core.SQLHelper;
 
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
@@ -54,7 +54,7 @@ public class DaoPageReader<T> implements IDataReader {
                 MethodInfo info = sets.get(Strings.toUppercase(prop));
                 if (info != null) {
                     Object sqlValue = rs.getObject(prop);
-                    Object param = Sqls.toJavaData(sqlValue, info);
+                    Object param = SQLHelper.toJavaData(sqlValue, info);
                     Method method = info.getMethod();
                     method.invoke(data, param);
                     datas.add(data);

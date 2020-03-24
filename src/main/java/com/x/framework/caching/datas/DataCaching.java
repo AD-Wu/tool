@@ -4,7 +4,7 @@ package com.x.framework.caching.datas;
 import com.x.commons.collection.KeyValue;
 import com.x.commons.collection.Where;
 import com.x.commons.database.pool.DatabaseType;
-import com.x.framework.database.core.Sqls;
+import com.x.framework.database.core.SQLHelper;
 
 /**
  * @Desc：
@@ -100,7 +100,7 @@ public class DataCaching<T> extends CacheData<T> {
         super.lock();
 
         try {
-            super.remove(Sqls.getWheres(props, values));
+            super.remove(SQLHelper.getWheres(props, values));
         } finally {
             super.unlock();
         }
@@ -122,7 +122,7 @@ public class DataCaching<T> extends CacheData<T> {
         super.lock();
 
         try {
-            super.update(Sqls.getUpdates(keys, values), Sqls.getWheres(props, propValues));
+            super.update(SQLHelper.getUpdates(keys, values), SQLHelper.getWheres(props, propValues));
         } finally {
             super.unlock();
         }
@@ -138,7 +138,7 @@ public class DataCaching<T> extends CacheData<T> {
     }
 
     public T getOne(String[] props, Object[] values) throws Exception {
-        return super.getOne(Sqls.getWheres(props, values));
+        return super.getOne(SQLHelper.getWheres(props, values));
     }
 
     public boolean contains(Where[] var1) throws Exception {
@@ -146,7 +146,7 @@ public class DataCaching<T> extends CacheData<T> {
     }
 
     public boolean contains(String[] props, Object[] values) throws Exception {
-        return super.contains(Sqls.getWheres(props, values));
+        return super.contains(SQLHelper.getWheres(props, values));
     }
 
     public int getCount(Where[] wheres) throws Exception {
@@ -154,7 +154,7 @@ public class DataCaching<T> extends CacheData<T> {
     }
 
     public int getCount(String[] props, Object[] values) throws Exception {
-        return super.getCount(Sqls.getWheres(props, values));
+        return super.getCount(SQLHelper.getWheres(props, values));
     }
 
     public T[] getList(Where[] wheres, KeyValue[] kvs) throws Exception {
@@ -162,7 +162,7 @@ public class DataCaching<T> extends CacheData<T> {
     }
 
     public T[] getList(String[] props, Object[] values, KeyValue[] kvs) throws Exception {
-        return super.getList(Sqls.getWheres(props, values), kvs);
+        return super.getList(SQLHelper.getWheres(props, values), kvs);
     }
 
     public T[] getPage(int var1, int var2, Where[] wheres, KeyValue[] kvs) throws Exception {
@@ -170,6 +170,6 @@ public class DataCaching<T> extends CacheData<T> {
     }
 
     public T[] getPage(int var1, int var2, String[] props, Object[] values, KeyValue[] kvs) throws Exception {
-        return super.getPage(var1, var2, Sqls.getWheres(props, values), kvs);
+        return super.getPage(var1, var2, SQLHelper.getWheres(props, values), kvs);
     }
 }

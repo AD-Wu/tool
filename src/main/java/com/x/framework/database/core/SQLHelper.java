@@ -26,12 +26,12 @@ import java.util.Map;
  * @Date 2019-12-05 22:17
  * @Author AD
  */
-public final class Sqls {
+public final class SQLHelper {
     // ------------------------ 变量定义 ------------------------
 
     // ------------------------ 构造方法 ------------------------
 
-    private Sqls() {}
+    private SQLHelper() {}
 
     // ------------------------ 方法定义 ------------------------
 

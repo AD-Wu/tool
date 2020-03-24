@@ -205,8 +205,8 @@ public class SQLInfo<T> {
      * @return SQLParams
      */
     public SQLParams getCreate(T t) {
-        SQLParams params = Sqls.getCreateParams(methods.getMethodsGet(),
-                                                methods.getMethodsSetMap(), PKList, t);
+        SQLParams params = SQLHelper.getCreateParams(methods.getMethodsGet(),
+                                                     methods.getMethodsSetMap(), PKList, t);
         return params == null ? null : new SQLParams(createSQL, params.getParams(),
                                                      params.getTypes());
     }
@@ -219,7 +219,7 @@ public class SQLInfo<T> {
      */
     public SQLParams getByPrimary(Object[] pksValue) {
         if (retrievePK != null && pksValue != null && pksValue.length == PKList.size()) {
-            SQLParams sql = Sqls.getPrimaryParams(methods.getMethodsGetMap(), PKList, pksValue);
+            SQLParams sql = SQLHelper.getPrimaryParams(methods.getMethodsGetMap(), PKList, pksValue);
             return sql == null ? null : new SQLParams(retrievePK, sql.getParams(), sql.getTypes());
         } else {
             return null;
@@ -277,8 +277,8 @@ public class SQLInfo<T> {
      * @return SQLParams
      */
     public SQLParams getCountByPrimary(T bean) throws Exception {
-        SQLParams pk = Sqls.getPrimaryParamsByBean(methods.getMethodsGetMap(), PKList,
-                                                   bean);
+        SQLParams pk = SQLHelper.getPrimaryParamsByBean(methods.getMethodsGetMap(), PKList,
+                                                        bean);
         return pk == null ? null : new SQLParams(countSQL + pk.getSql(),
                                                  pk.getParams(), pk.getTypes());
     }
@@ -292,7 +292,7 @@ public class SQLInfo<T> {
      */
     public SQLParams getUpdate(KeyValue[] updates, Where[] wheres) {
         // 判断update参数和where参数的有效性
-        SQLParams update = Sqls.getUpdateParams(methods.getMethodsGetMap(), updates);
+        SQLParams update = SQLHelper.getUpdateParams(methods.getMethodsGetMap(), updates);
         if (update == null) return null;
         // update table set（xxx,xxx,xxx）,该updateSql=（xxx,xxx,xxx）
         String updateSql = update.getSql();
@@ -316,7 +316,7 @@ public class SQLInfo<T> {
     public SQLParams getUpdateBean(T bean) {
         if (Strings.isNull(updateBeanSQL)) return null;
 
-        SQLParams sql = Sqls.getUpdateBeanParams(methods.getMethodsGet(), PKList, bean);
+        SQLParams sql = SQLHelper.getUpdateBeanParams(methods.getMethodsGet(), PKList, bean);
         return sql == null ? null : new SQLParams(this.updateBeanSQL, sql.getParams(),
                                                   sql.getTypes());
     }
@@ -357,11 +357,11 @@ public class SQLInfo<T> {
     }
 
     public SQLParams getWhere(Where[] wheres) {
-        return Sqls.getWhereParams(methods.getMethodsGetMap(), wheres);
+        return SQLHelper.getWhereParams(methods.getMethodsGetMap(), wheres);
     }
 
     public String getOrderSQL(KeyValue[] orders) {
-        return Sqls.getOrderSQL(methods.getMethodsGetMap(), orders);
+        return SQLHelper.getOrderSQL(methods.getMethodsGetMap(), orders);
     }
 
     public DaoBeanReader<T> getBeanReader() {

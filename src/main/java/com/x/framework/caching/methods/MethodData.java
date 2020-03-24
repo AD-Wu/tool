@@ -2,7 +2,7 @@ package com.x.framework.caching.methods;
 
 import com.x.commons.database.pool.DatabaseType;
 import com.x.commons.util.bean.New;
-import com.x.framework.database.core.Sqls;
+import com.x.framework.database.core.SQLHelper;
 
 import java.lang.reflect.Method;
 import java.sql.Types;
@@ -64,11 +64,11 @@ public final class MethodData {
                 // 属性名
                 propName = name.substring(3);
                 // 返回值所对应的数据库表sql类型
-                returnSqlType = Sqls.getReturnSqlType(method);
+                returnSqlType = SQLHelper.getReturnSqlType(method);
                 gets.add(new MethodInfo(column, propName, method, dbType, returnSqlType));
             } else if (NAME.startsWith("SET")) {
                 // 获取参数类型
-                int paramSqlType = Sqls.getParameterSqlType(method);
+                int paramSqlType = SQLHelper.getParameterSqlType(method);
                 if (paramSqlType != Types.NULL) {
                     // 字段名
                     column = NAME.substring(3);
@@ -79,7 +79,7 @@ public final class MethodData {
             } else if (NAME.startsWith("IS")) {
                 column = NAME.substring(2);
                 propName = name.substring(2);
-                returnSqlType = Sqls.getReturnSqlType(method);
+                returnSqlType = SQLHelper.getReturnSqlType(method);
                 gets.add(new MethodInfo(column, propName, method, dbType, returnSqlType));
             }
         }

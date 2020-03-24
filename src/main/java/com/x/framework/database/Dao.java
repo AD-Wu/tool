@@ -26,213 +26,159 @@ import java.util.List;
  * @Date：2020/1/19 15:59
  */
 public class Dao<T> extends DatabaseAccess implements IDao<T> {
-    
+
     private IProtocol protocol;
-    
+
     private SQLInfo<T> sqlInfo;
-    
+
     Dao(String name, SQLInfo<T> sqlInfo) throws Exception {
         super(name);
         this.sqlInfo = sqlInfo;
     }
-    
+
     Dao(IProtocol protocol, SQLInfo<T> sqlInfo) throws Exception {
         super(protocol.getName());
         this.protocol = protocol;
         this.sqlInfo = sqlInfo;
     }
-    
+
     @Override
     public String[] getPrimaryKeys() {
-        return this.sqlInfo.getPrimaryKeys();
+        return sqlInfo.getPrimaryKeys();
     }
-    
-    @Override
-    public void refreshCache() {
-        throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
-    }
-    
-    @Override
-    public void addCacheListener(String type, IListener listener) {
-        throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
-    }
-    
-    @Override
-    public void addCacheListener(String type, IListener listener, int action) {
-        throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
-    }
-    
-    @Override
-    public boolean hasCacheListener(String type) {
-        throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
-    }
-    
-    @Override
-    public boolean hasCacheListener(String type, IListener listener) {
-        throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
-    }
-    
-    @Override
-    public void removeCacheListener(String type) {
-        throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
-    }
-    
-    @Override
-    public void removeAllCacheListeners() {
-        throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
-    }
-    
-    @Override
-    public void removeCacheListener(String type, IListener listener) {
-        throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
-    }
-    
+
     @Override
     public T add(T bean) throws Exception {
-        SQLParams sqlParams = this.sqlInfo.getCreate(bean);
-        if (sqlParams == null) {
-            return null;
-        } else {
-            try {
-                return this.execute(sqlParams.getSql(), sqlParams.getParams(),
-                        sqlParams.getTypes()) > 0 ? bean : null;
-            } catch (Exception e) {
-                logErr("framework.db.add.err");
-                throw e;
-            }
+        SQLParams param = sqlInfo.getCreate(bean);
+        if (param == null) return null;
+
+        try {
+            return execute(param.getSql(), param.getParams(),
+                           param.getTypes()) > 0 ? bean : null;
+        } catch (Exception e) {
+            logErr("framework.db.add.err");
+            throw e;
         }
     }
-    
+
     @Override
     public T[] addAll(T[] beans) throws Exception {
         if (beans == null) {
             return (T[]) Array.newInstance(sqlInfo.getDataClass(), 0);
         } else {
-            List<T> dataList = New.list();
-            
-            for (int i = 0, L = beans.length; i < L; ++i) {
-                T data = beans[i];
-                SQLParams sqlParams = this.sqlInfo.getCreate(data);
-                if (sqlParams != null) {
+            List<T> results = New.list();
+
+            for (T bean : beans) {
+                SQLParams param = sqlInfo.getCreate(bean);
+                if (param != null) {
                     try {
-                        if (super.execute(sqlParams.getSql(), sqlParams.getParams(),
-                                sqlParams.getTypes()) > 0) {
-                            dataList.add(data);
+                        if (execute(param.getSql(), param.getParams(),
+                                    param.getTypes()) > 0) {
+                            results.add(bean);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
-            
-            T[] result = (T[]) Array.newInstance(sqlInfo.getDataClass(), dataList.size());
-            dataList.toArray(result);
+
+            T[] result = (T[]) Array.newInstance(sqlInfo.getDataClass(), results.size());
+            results.toArray(result);
             return result;
         }
     }
-    
+
     @Override
     public T put(T bean) throws Exception {
-        SQLParams sqlParams = sqlInfo.getCountByPrimary(bean);
-        if (sqlParams == null) {
-            return null;
+        SQLParams param = sqlInfo.getCountByPrimary(bean);
+        if (param == null) return null;
+
+        DaoCountReader reader = new DaoCountReader();
+        executeReader(reader, param.getSql(), param.getParams(), param.getTypes());
+        if (reader.getCount() > 0) {
+            return this.edit(bean) > 0 ? bean : null;
         } else {
-            DaoCountReader reader = new DaoCountReader();
-            this.executeReader(reader, sqlParams.getSql(), sqlParams.getParams(),
-                    sqlParams.getTypes());
-            if (reader.getCount() > 0) {
-                return this.edit(bean) > 0 ? bean : null;
-            } else {
-                return this.add(bean);
-            }
+            return this.add(bean);
         }
     }
-    
+
     @Override
     public T[] putAll(T[] beans) throws Exception {
         if (beans == null) {
-            return (T[]) Array.newInstance(this.sqlInfo.getDataClass(), 0);
+            return beans;
         } else {
-            List<T> dataList = New.list();
-            
-            for (int i = 0, L = beans.length; i < L; ++i) {
-                T data = beans[i];
-                
+            List<T> results = New.list();
+            for (T bean : beans) {
                 try {
-                    T t = this.put(data);
+                    T t = this.put(bean);
                     if (t != null) {
-                        dataList.add(t);
+                        results.add(t);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            
-            T[] result = (T[]) Array.newInstance(sqlInfo.getDataClass(), dataList.size());
-            dataList.toArray(result);
+
+            T[] result = (T[]) Array.newInstance(sqlInfo.getDataClass(), results.size());
+            results.toArray(result);
             return result;
         }
     }
-    
+
     @Override
     public int delete(Where[] wheres) throws Exception {
-        SQLParams sqlParams = sqlInfo.getDelete(wheres);
-        if (sqlParams == null) {
+        SQLParams param = sqlInfo.getDelete(wheres);
+        if (param == null) {
             return -1;
         } else {
             try {
-                return super.execute(sqlParams.getSql(), sqlParams.getParams(),
-                        sqlParams.getTypes());
+                return execute(param.getSql(), param.getParams(), param.getTypes());
             } catch (Exception e) {
                 logErr("framework.db.delete.err");
                 throw e;
             }
         }
     }
-    
+
     @Override
     public int edit(T bean) throws Exception {
-        SQLParams sqlParams = sqlInfo.getUpdateBean(bean);
-        if (sqlParams == null) {
+        SQLParams param = sqlInfo.getUpdateBean(bean);
+        if (param == null) {
             return -1;
         } else {
             try {
-                return this.execute(sqlParams.getSql(), sqlParams.getParams(),
-                        sqlParams.getTypes());
+                return execute(param.getSql(), param.getParams(), param.getTypes());
             } catch (Exception e) {
                 logErr("framework.db.edit.err");
                 throw e;
             }
         }
     }
-    
+
     @Override
     public T getBean(Where[] wheres) throws Exception {
-        SQLParams sqlParams = this.sqlInfo.getRetrieve(wheres);
-        return getBeanBySQLParams(sqlParams);
+        return getBeanBySQLParams(sqlInfo.getRetrieve(wheres));
     }
-    
+
     @Override
     public T getByPrimary(Object... pks) throws Exception {
-        SQLParams sqlParams = sqlInfo.getByPrimary(pks);
-        return getBeanBySQLParams(sqlParams);
+        return getBeanBySQLParams(sqlInfo.getByPrimary(pks));
     }
-    
+
     @Override
     public boolean contains(Where[] wheres) throws Exception {
         return this.getCount(wheres) > 0;
     }
-    
+
     @Override
     public int getCount(Where[] wheres) throws Exception {
-        SQLParams sqlParams = sqlInfo.getCount(wheres);
-        if (sqlParams == null) {
+        SQLParams param = sqlInfo.getCount(wheres);
+        if (param == null) {
             return -1;
         } else {
             try {
                 DaoCountReader reader = new DaoCountReader();
-                super.executeReader(reader, sqlParams.getSql(), sqlParams.getParams(),
-                        sqlParams.getTypes());
+                executeReader(reader, param.getSql(), param.getParams(), param.getTypes());
                 return reader.getCount();
             } catch (Exception e) {
                 logErr("framework.db.count.err");
@@ -240,128 +186,159 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
             }
         }
     }
-    
+
     @Override
     public T[] getList(Where[] wheres, KeyValue[] orders) throws Exception {
-        SQLParams sqlParams = sqlInfo.getRetrieve(wheres, orders);
-        if (sqlParams == null) {
-            return null;
-        } else {
-            try {
-                DaoListReader<T> reader = sqlInfo.getListReader();
-                super.executeReader(reader, sqlParams.getSql(), sqlParams.getParams(),
-                        sqlParams.getTypes());
-                return reader.getDatas();
-            } catch (Exception e) {
-                logErr("framework.db.list.err");
-                throw e;
-            }
+        SQLParams param = sqlInfo.getRetrieve(wheres, orders);
+        if (param == null) return null;
+        try {
+            DaoListReader<T> reader = sqlInfo.getListReader();
+            executeReader(reader, param.getSql(), param.getParams(), param.getTypes());
+            return reader.getDatas();
+        } catch (Exception e) {
+            logErr("framework.db.list.err");
+            throw e;
         }
     }
-    
+
     @Override
     public T[] getPage(int page, int pageSize, Where[] wheres, KeyValue[] orders) throws Exception {
-        SQLParams sqlParams = sqlInfo.getRetrieve(wheres, orders);
-        if (sqlParams == null) {
-            return null;
-        } else {
-            if (page <= 0) {
-                page = 1;
-            }
-            
-            if (pageSize <= 0) {
-                pageSize = 1;
-            }
-            
-            int totalLength = (page - 1) * pageSize;
-            
-            try {
-                DaoPageReader<T> reader = sqlInfo.getPageReader(pageSize);
-                super.executeReader(reader, sqlParams.getSql(), sqlParams.getParams(),
-                        sqlParams.getTypes(), totalLength,
-                        pageSize);
-                return reader.getDatas();
-            } catch (Exception e) {
-                logErr("framework.db.page.err");
-                throw e;
-            }
+        SQLParams param = sqlInfo.getRetrieve(wheres, orders);
+        if (param == null) return null;
+        if (page <= 0) {
+            page = 1;
+        }
+
+        if (pageSize <= 0) {
+            pageSize = 1;
+        }
+
+        int totalLength = (page - 1) * pageSize;
+
+        try {
+            DaoPageReader<T> reader = sqlInfo.getPageReader(pageSize);
+            executeReader(reader, param.getSql(), param.getParams(),
+                          param.getTypes(), totalLength,
+                          pageSize);
+            return reader.getDatas();
+        } catch (Exception e) {
+            logErr("framework.db.page.err");
+            throw e;
         }
     }
-    
+
     @Override
     public int update(KeyValue[] updates, Where[] wheres) throws Exception {
-        SQLParams sqlParams = sqlInfo.getUpdate(updates, wheres);
-        if (sqlParams == null) {
+        SQLParams param = sqlInfo.getUpdate(updates, wheres);
+        if (param == null) {
             return -1;
         } else {
             try {
-                return super.execute(sqlParams.getSql(), sqlParams.getParams(),
-                        sqlParams.getTypes());
+                return execute(param.getSql(), param.getParams(), param.getTypes());
             } catch (Exception e) {
                 logErr("framework.db.update.err");
                 throw e;
             }
         }
     }
-    
+
     @Override
     public T add(String[] columns, Object[] values) throws Exception {
         T data = sqlInfo.createBean(columns, values);
         return data == null ? null : this.add(data);
     }
-    
+
     @Override
     public int delete(String[] columns, Object[] values) throws Exception {
         return this.delete(Sqls.getWheres(columns, values));
     }
-    
+
     @Override
     public T getBean(String[] columns, Object[] values) throws Exception {
         return this.getBean(Sqls.getWheres(columns, values));
     }
-    
+
     @Override
     public boolean contains(String[] columns, Object[] values) throws Exception {
         return this.getCount(Sqls.getWheres(columns, values)) > 0;
     }
-    
+
     @Override
     public int getCount(String[] columns, Object[] values) throws Exception {
         return this.getCount(Sqls.getWheres(columns, values));
     }
-    
+
     @Override
     public T[] getList(String[] columns, Object[] values, KeyValue[] orders) throws Exception {
         return this.getList(Sqls.getWheres(columns, values), orders);
     }
-    
+
     @Override
     public T[] getPage(int page, int pageSize, String[] columns, Object[] values, KeyValue[] orders) throws Exception {
         return this.getPage(page, pageSize, Sqls.getWheres(columns, values), orders);
     }
-    
+
     @Override
     public int update(String[] updateColumns, Object[] updateValues, String[] whereColumns, Object[] whereValues)
             throws Exception {
         return this.update(Sqls.getUpdates(updateColumns, updateValues),
-                Sqls.getWheres(whereColumns, whereValues));
+                           Sqls.getWheres(whereColumns, whereValues));
     }
-    
-    private <T> T getBeanBySQLParams(SQLParams sqlParams)throws Exception{
-        if (sqlParams == null) {
-            return null;
-        } else {
-            try {
-                DaoBeanReader<T> reader = (DaoBeanReader<T>) sqlInfo.getBeanReader();
-                return super.executeReader(reader, sqlParams.getSql(), sqlParams.getParams(),
-                        sqlParams.getTypes()) > 0 ? reader.getData() : null;
-            } catch (Exception e) {
-                logErr("framework.db.bean.err");
-                throw e;
-            }
+
+
+    @Override
+    public void refreshCache() {
+        throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
+    }
+
+    @Override
+    public void addCacheListener(String type, IListener listener) {
+        throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
+    }
+
+    @Override
+    public void addCacheListener(String type, IListener listener, int action) {
+        throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
+    }
+
+    @Override
+    public boolean hasCacheListener(String type) {
+        throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
+    }
+
+    @Override
+    public boolean hasCacheListener(String type, IListener listener) {
+        throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
+    }
+
+    @Override
+    public void removeCacheListener(String type) {
+        throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
+    }
+
+    @Override
+    public void removeAllCacheListeners() {
+        throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
+    }
+
+    @Override
+    public void removeCacheListener(String type, IListener listener) {
+        throw new IllegalArgumentException("Not caching data class: " + this.getClass().getName());
+    }
+
+
+    private T getBeanBySQLParams(SQLParams params) throws Exception {
+        if (params == null) return null;
+        try {
+            DaoBeanReader<T> reader = sqlInfo.getBeanReader();
+            return executeReader(reader, params.getSql(), params.getParams(),
+                                       params.getTypes()) > 0 ? reader.getData() : null;
+        } catch (Exception e) {
+            logErr("framework.db.bean.err");
+            throw e;
         }
     }
-    
+
     private void logErr(String key) {
         Logger logger;
         if (protocol == null) {
@@ -372,7 +349,7 @@ public class Dao<T> extends DatabaseAccess implements IDao<T> {
         if (logger != null) {
             logger.error(Locals.text(key, sqlInfo.getDataClass()));
         }
-        
+
     }
-    
+
 }

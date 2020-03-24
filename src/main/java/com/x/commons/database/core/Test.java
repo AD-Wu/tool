@@ -1,8 +1,8 @@
 package com.x.commons.database.core;
 
 import com.x.commons.util.file.Files;
-import com.x.framework.database.DaoManager;
 import com.x.framework.database.IDao;
+import com.x.framework.database.IDaoManager;
 import com.x.framework.database.test.data.User;
 
 import java.time.LocalDateTime;
@@ -17,7 +17,7 @@ public class Test {
     public static void main(String[] args) throws Exception {
         
         DBSources.load(Files.getResourcesPath() + "db.properties");
-        DaoManager daoManager = DBSources.getDaoManager();
+        IDaoManager daoManager = DBSources.getDaoManager();
         IDao<User> dao = daoManager.getDao(User.class);
         dao.delete(new String[]{"id"}, new Object[]{"123"});
         User user = new User();

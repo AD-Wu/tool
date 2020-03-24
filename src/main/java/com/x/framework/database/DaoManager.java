@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public class DaoManager implements IDaoManager {
     
-    private final Map<Class, IDao> daosMap = New.map();
+    private final Map<Class<?>, IDao<?>> daosMap = New.concurrentMap();
     
     private final Object daosLock = new Object();
     
@@ -93,10 +93,10 @@ public class DaoManager implements IDaoManager {
         if (this.isStopped) {
             return null;
         } else {
-            IDao<T> dao = daosMap.get(clazz);
+            IDao<T> dao = (IDao<T>) daosMap.get(clazz);
             if (dao == null) {
                 synchronized (this.daosLock) {
-                    dao = daosMap.get(clazz);
+                    dao = (IDao<T>) daosMap.get(clazz);
                     if (dao != null) {
                         return dao;
                     }
@@ -106,7 +106,7 @@ public class DaoManager implements IDaoManager {
                     try {
                         if (info.isCaching()) {
                             if (protocol == null) {
-                                dao = new Dao<>(this.name, info);
+                                dao = new CacheDao<>(this.name, info);
                             } else {
                                 dao = new CacheDao<>(this.protocol, info);
                             }
@@ -124,7 +124,6 @@ public class DaoManager implements IDaoManager {
                     }
                 }
             }
-            
             return dao;
         }
     }
@@ -148,7 +147,7 @@ public class DaoManager implements IDaoManager {
             getter = new XTableInfoGetter<>();
             tableInfo = getter.getTableInfo(clazz);
         }
-        return new SQLInfo(clazz, tableInfo, this.type);
+        return new SQLInfo<>(clazz, tableInfo, this.type);
     }
     
     public synchronized void stop() {

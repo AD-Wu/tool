@@ -1,8 +1,8 @@
 package com.x.framework.config;
 
 import com.x.commons.config.Configure;
+import com.x.commons.util.bean.New;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -11,7 +11,7 @@ import java.util.Map;
  * @Author AD
  */
 public final class InitLoader {
-    private static final Map<String, Configure> configs = new HashMap();
+    private static final Map<String, Configure> configs = New.concurrentMap();
     private static final Object lock = new Object();
     
     public InitLoader() {

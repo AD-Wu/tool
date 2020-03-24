@@ -20,13 +20,13 @@ public class DaoBeanReader<T> implements IDataReader {
     
     private final Class<T> dataClass;
     
-    private final Map<String, MethodInfo> setMethodMap;
+    private final Map<String, MethodInfo> sets;
     
     private T data;
     
-    public DaoBeanReader(Class<T> dataClass, Map<String, MethodInfo> setMethodMap) {
+    public DaoBeanReader(Class<T> dataClass, Map<String, MethodInfo> sets) {
         this.dataClass = dataClass;
-        this.setMethodMap = setMethodMap;
+        this.sets = sets;
     }
     
     @Override
@@ -44,14 +44,14 @@ public class DaoBeanReader<T> implements IDataReader {
                 // 转为大写
                 prop = Strings.toUppercase(prop);
                 // 根据属性获取set方法信息
-                MethodInfo info = setMethodMap.get(prop);
-                if (info != null) {
+                MethodInfo set = sets.get(prop);
+                if (set != null) {
                     // 获取set方法
-                    Method method = info.getMethod();
+                    Method method = set.getMethod();
                     // 获取数据库里的值
                     Object param = rs.getObject(i);
                     // 转为Java值
-                    Object javaData = Sqls.toJavaData(param, info);
+                    Object javaData = Sqls.toJavaData(param, set);
                     // 调用set方法
                     method.invoke(data, javaData);
                 }

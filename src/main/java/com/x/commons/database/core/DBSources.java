@@ -7,6 +7,7 @@ import com.x.commons.util.bean.New;
 import com.x.commons.util.prop.Config;
 import com.x.commons.util.prop.data.Part;
 import com.x.framework.database.DaoManager;
+import com.x.framework.database.IDaoManager;
 import com.x.protocol.layers.application.config.DatabaseConfig;
 
 import java.util.Map;
@@ -18,9 +19,9 @@ import java.util.Map;
  */
 public final class DBSources {
     
-    private static final Map<String, DaoManager> managers = New.concurrentMap();
+    private static final Map<String, IDaoManager> managers = New.concurrentMap();
     
-    private static DaoManager FIRST;
+    private static IDaoManager FIRST;
     
     public static void load(String filename) throws Exception {
         Config config = new Config();
@@ -32,7 +33,7 @@ public final class DBSources {
         }
     }
     
-    public static DaoManager getDaoManager() {
+    public static IDaoManager getDaoManager() {
         if (FIRST != null) {
             return FIRST;
         }
@@ -41,14 +42,14 @@ public final class DBSources {
                 return FIRST;
             }
             if (managers.size() == 1) {
-                FIRST = managers.values().toArray(new DaoManager[0])[0];
+                FIRST = managers.values().toArray(new IDaoManager[0])[0];
                 return FIRST;
             }
         }
         return null;
     }
     
-    public static DaoManager getDaoManager(String name) {
+    public static IDaoManager getDaoManager(String name) {
         return managers.get(name);
     }
     

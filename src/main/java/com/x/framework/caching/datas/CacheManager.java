@@ -23,14 +23,14 @@ public final class CacheManager {
         if (!cacheMap.containsKey(dataClass)) {
             synchronized(cacheLock) {
                 if (!cacheMap.containsKey(dataClass)) {
-                    cacheMap.put(dataClass, new CacheData(dataClass, pks, cache, databaseType));
+                    cacheMap.put(dataClass, new CacheData<>(dataClass, pks, cache, databaseType));
                 }
             }
         }
     }
 
     public static <T> boolean contains(Class<T> dataClass) {
-        return dataClass == null ? false : cacheMap.containsKey(dataClass);
+        return dataClass != null && cacheMap.containsKey(dataClass);
     }
 
     public static void clear() {

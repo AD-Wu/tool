@@ -24,16 +24,16 @@ public class DaoPageReader<T> implements IDataReader {
     
     private final Class<T> dataClass;
     
-    private final Map<String, MethodInfo> setMethodMap;
+    private final Map<String, MethodInfo> sets;
     
     private final int pageSize;
     
     private final List<T> datas;
     
-    public DaoPageReader(Class<T> dataClass, Map<String, MethodInfo> setMethodMap, int pageSize) {
+    public DaoPageReader(Class<T> dataClass, Map<String, MethodInfo> sets, int pageSize) {
         this.dataClass = dataClass;
-        this.setMethodMap = Collections.unmodifiableMap(setMethodMap);
-        this.pageSize = pageSize < 0 ? 0 : pageSize;
+        this.sets = Collections.unmodifiableMap(sets);
+        this.pageSize = Math.max(pageSize, 0);
         this.datas = New.list();
     }
     
@@ -51,7 +51,7 @@ public class DaoPageReader<T> implements IDataReader {
             T data = Clazzs.newInstance(dataClass);
             for (int i = 1; i <= count; ++i) {
                 String prop = columns.getColumnName(i);
-                MethodInfo info = setMethodMap.get(Strings.toUppercase(prop));
+                MethodInfo info = sets.get(Strings.toUppercase(prop));
                 if (info != null) {
                     Object sqlValue = rs.getObject(prop);
                     Object param = Sqls.toJavaData(sqlValue, info);

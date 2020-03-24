@@ -22,13 +22,13 @@ public class DaoListReader<T> implements IDataReader {
     
     private final Class<T> dataClass;
     
-    private final Map<String, MethodInfo> setMethodMap;
+    private final Map<String, MethodInfo> sets;
     
     private List<T> datas;
     
-    public DaoListReader(Class<T> dataClass, Map<String, MethodInfo> setMethodMap) {
+    public DaoListReader(Class<T> dataClass, Map<String, MethodInfo> sets) {
         this.dataClass = dataClass;
-        this.setMethodMap = setMethodMap;
+        this.sets = sets;
         this.datas = New.list();
     }
     
@@ -41,12 +41,12 @@ public class DaoListReader<T> implements IDataReader {
             ++rows;
             T data = Clazzs.newInstance(dataClass);
             for (int i = 1; i <= count; ++i) {
-                String prop = columns.getColumnName(i);
-                MethodInfo info = setMethodMap.get(Strings.toUppercase(prop));
-                if (info != null) {
-                    Object sqlValue = rs.getObject(prop);
-                    Object param = Sqls.toJavaData(sqlValue, info);
-                    info.getMethod().invoke(data, param);
+                String column = columns.getColumnName(i);
+                MethodInfo set = sets.get(Strings.toUppercase(column));
+                if (set != null) {
+                    Object sqlValue = rs.getObject(column);
+                    Object param = Sqls.toJavaData(sqlValue, set);
+                    set.getMethod().invoke(data, param);
                     datas.add(data);
                 }
             }

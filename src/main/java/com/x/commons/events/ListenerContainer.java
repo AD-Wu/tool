@@ -8,15 +8,15 @@ import java.util.Comparator;
 import java.util.Map;
 
 /**
- * @Desc：
+ * @Desc：linstener容器
  * @Author：AD
  * @Date：2020/1/13 11:26
  */
-class Listeners {
+class ListenerContainer {
 
-    private static final Comparator<ListenerInfo> COMPARATOR = new Comparator<ListenerInfo>() {
+    private static final Comparator<ListenerData> COMPARATOR = new Comparator<ListenerData>() {
         @Override
-        public int compare(ListenerInfo first, ListenerInfo second) {
+        public int compare(ListenerData first, ListenerData second) {
             int firstPriority = first.getPriority();
             int secondPriority = second.getPriority();
             if (firstPriority == secondPriority) {
@@ -27,20 +27,20 @@ class Listeners {
         }
     };
 
-    private Map<Class<?>, ListenerInfo> classMap = New.concurrentMap();
+    private Map<Class<?>, ListenerData> classMap = New.concurrentMap();
 
-    private Map<IListener, ListenerInfo> infoMap = New.concurrentMap();
+    private Map<IListener, ListenerData> infoMap = New.concurrentMap();
 
     private volatile boolean changed = false;
 
     private final Object lock = new Object();
 
-    private ListenerInfo[] listeners;
+    private ListenerData[] listeners;
 
 
-    Listeners() {}
+    ListenerContainer() {}
 
-    boolean add(ListenerInfo info) {
+    boolean add(ListenerData info) {
         if (info == null) {return false;}
         IListener listener = info.getListener();
         if (listener == null) {
@@ -83,7 +83,7 @@ class Listeners {
 
     int remove(IListener listener) {
         synchronized (lock) {
-            ListenerInfo remove = infoMap.remove(listener);
+            ListenerData remove = infoMap.remove(listener);
             if (remove != null && !changed) {
                 changed = true;
             }
@@ -93,7 +93,7 @@ class Listeners {
 
     int remove(Class<? extends IListener> listenerClass) {
         synchronized (lock) {
-            ListenerInfo remove = classMap.remove(listenerClass);
+            ListenerData remove = classMap.remove(listenerClass);
             if (remove != null) {
                 infoMap.remove(remove.getListener());
                 if (!changed) {
@@ -112,12 +112,12 @@ class Listeners {
         return classMap.containsKey(listenerClass);
     }
 
-    ListenerInfo[] getListeners() {
+    ListenerData[] getListeners() {
         if (changed) {
             synchronized (lock) {
                 if (changed) {
                     changed = false;
-                    this.listeners = infoMap.values().toArray(new ListenerInfo[infoMap.size()]);
+                    this.listeners = infoMap.values().toArray(new ListenerData[infoMap.size()]);
                     Arrays.sort(this.listeners, COMPARATOR);
                 }
             }

@@ -7,7 +7,7 @@ import com.x.commons.util.string.Strings;
  * @Author：AD
  * @Date：2020/1/13 11:14
  */
-final class ListenerInfo {
+final class ListenerData {
     /**
      * 监听器优先级
      */
@@ -28,22 +28,22 @@ final class ListenerInfo {
      */
     private final Object[] params;
 
-    ListenerInfo(IListener listener) {
+    ListenerData(IListener listener) {
         this(0, listener, null);
     }
 
-    ListenerInfo(int priority, IListener listener, Object[] params) {
+    ListenerData(int priority, IListener listener, Object[] params) {
         this.priority = 0;
         this.listener = listener;
         this.listenerClass = listener == null ? null : listener.getClass();
         this.params = params;
     }
 
-    ListenerInfo(Class<?> listenerClass) {
+    ListenerData(Class<?> listenerClass) {
         this(0, listenerClass, null);
     }
 
-    ListenerInfo(int priority, Class<?> listenerClass, Object[] params) {
+    ListenerData(int priority, Class<?> listenerClass, Object[] params) {
         this.priority = 0;
         this.listenerClass = listenerClass;
         this.params = params;

@@ -12,20 +12,20 @@ import java.io.File;
 public class Test {
     public static void main(String[] args) throws Exception {
         FolderMonitor monitor = new FolderMonitor(Files.getResourcesPath());
-        monitor.addListener(new FileListener() {
+        monitor.addListener(new IFileListener() {
             @Override
-            public void onFileModify(File file) {
+            public void onModify(File file) {
                 System.out.println("modify:" + file.getName());
 
             }
 
             @Override
-            public void onFileCreate(File file) {
+            public void onCreate(File file) {
                 System.out.println("create:" + file.getName());
             }
 
             @Override
-            public void onFileDelete(File file) {
+            public void onDelete(File file) {
                 System.out.println("delete:" + file.getName());
             }
         });

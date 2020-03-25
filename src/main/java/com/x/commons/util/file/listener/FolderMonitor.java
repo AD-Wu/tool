@@ -29,6 +29,9 @@ public final class FolderMonitor implements IFolderMonitor, Runnable {
 
     private ExecutorService runner;
 
+    private final Set<String> modifies = New.syncSet();
+
+    private final Set<String> creates = New.syncSet();
 
     private volatile boolean started = false;
 
@@ -89,18 +92,32 @@ public final class FolderMonitor implements IFolderMonitor, Runnable {
                     continue;
                 }
                 WatchEvent.Kind kind = event.kind();// modify、create、delete、overflow
-                String name = kind.name();
                 for (IFileListener listener : listeners) {
                     Runner.add(() -> {
                         switch (kind.name()) {
                             case "ENTRY_MODIFY":
-                                listener.onModify(file);
+                                if (file.isFile() && file.exists()) {
+                                    if (file.length() > 0) {
+                                        modifies.add(filename);
+                                        listener.onModify(file);
+                                    } else {
+                                        if (modifies.contains(filename)) {
+                                            modifies.remove(filename);
+                                            listener.onModify(file);
+                                        }
+                                    }
+                                }
                                 break;
                             case "ENTRY_CREATE":
-                                listener.onCreate(file);
+                                if (file.isFile() && file.length() == 0) {
+                                    creates.add(filename);
+                                    listener.onCreate(file);
+                                }
                                 break;
                             case "ENTRY_DELETE":
-                                listener.onDelete(file);
+                                if (!file.exists() && creates.contains(filename)) {
+                                    listener.onDelete(file);
+                                }
                                 break;
                         }
                     });

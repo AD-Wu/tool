@@ -21,13 +21,13 @@ public final class Runner {
     
     public static void add(Runnable runnable) {
         if (runner != null) {
-            runner.submit(runnable);
+            runner.execute(runnable);
         } else {
             synchronized (Runner.class) {
                 if (runner == null) {
                     runner = New.threadPool(MAX);
                 }
-                runner.submit(runnable);
+                runner.execute(runnable);
             }
         }
     }

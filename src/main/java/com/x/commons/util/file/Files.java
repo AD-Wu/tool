@@ -761,16 +761,16 @@ public final class Files {
     /**
      * 获取某个文件夹路径，不用Paths.get(path),会报找不到文件异常
      *
-     * @param path 必须是一个文件夹路径
+     * @param folderPath 必须是一个文件夹路径
      * @return
      * @throws Exception
      */
-    public static Path getPath(String path) throws Exception {
-        URL url = LOADER.getResource(path);
+    public static Path getPath(String folderPath) throws Exception {
+        URL url = LOADER.getResource(folderPath);
         if (url != null) {
             return Paths.get(url.toURI());
         } else {
-            return Paths.get(path);
+            return Paths.get(folderPath);
         }
     }
 

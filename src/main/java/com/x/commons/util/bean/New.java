@@ -201,11 +201,11 @@ public final class New {
     }
     
     public static ThreadPoolExecutor threadPool(int maxPoolSize) {
-        if (maxPoolSize <= 0 || maxPoolSize >= 100) {
-            maxPoolSize = 10;
+        if (maxPoolSize <= 0 || maxPoolSize > 100) {
+            maxPoolSize = 100;
         }
         return new ThreadPoolExecutor(0, maxPoolSize, 1, TimeUnit.MINUTES,
-                new SynchronousQueue(),
+                new SynchronousQueue<>(),
                 new ThreadPoolExecutor.AbortPolicy());
     }
     

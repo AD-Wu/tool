@@ -118,8 +118,10 @@ public final class FolderWatcher implements IWatcher<FileWatched> {
                          * poll：获取变化信息的监控池，没有则返回null,适合某个时间点监控
                          */
                         WatchKey key = watcher.take();
-                        for (WatchEvent event : key.pollEvents()) {
-                            String filename = String.valueOf(event.context());
+                        List<WatchEvent<?>> events = key.pollEvents();
+                        for (WatchEvent event : events) {
+                            Path context = (Path)event.context();
+                            String filename = String.valueOf(context.getFileName());
                             WatchEvent.Kind kind = event.kind();// modify、create、delete
                             FileWatched watched = watchedMap.get(filename);
                             if (watched != null) {
@@ -187,7 +189,7 @@ public final class FolderWatcher implements IWatcher<FileWatched> {
         }
         
         WatchEvent.Kind[] getEvents() {
-            return events.toArray(new WatchEvent.Kind[events.size()]);
+            return events.toArray(new WatchEvent.Kind[0]);
         }
         
         public Builder period(int period) {

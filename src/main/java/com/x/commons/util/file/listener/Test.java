@@ -3,7 +3,6 @@ package com.x.commons.util.file.listener;
 import com.x.commons.util.file.Files;
 
 import java.io.File;
-import java.io.FileInputStream;
 
 /**
  * @Desc：
@@ -13,39 +12,23 @@ import java.io.FileInputStream;
 public class Test {
     public static void main(String[] args) throws Exception {
         FolderMonitor monitor = new FolderMonitor(Files.getResourcesPath());
-        monitor.addFolderListener(new IFileListener() {
+        monitor.addListener(new FileListener() {
             @Override
-            public void onModify(File file) {
-                if (!file.isDirectory() && file.length() > 0) {
-                    try (FileInputStream in = new FileInputStream(file)) {
-                        System.out.println("modify:" + file.getName());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+            public void onFileModify(File file) {
+                System.out.println("modify:" + file.getName());
 
             }
 
             @Override
-            public void onCreate(File file) {
-                if (!file.isDirectory()) {
-                    if (file.length() == 0) {
-                        System.out.println("create:" + file.getName());
-                    }
-                }
-
-
+            public void onFileCreate(File file) {
+                System.out.println("create:" + file.getName());
             }
 
             @Override
-            public void onDelete(File file) {
-                if (!file.isDirectory()) {
-                    if (!file.exists()) {
-                        System.out.println("删除->" + file.getName());
-                    }
-                }
+            public void onFileDelete(File file) {
+                System.out.println("delete:" + file.getName());
             }
         });
-        System.out.println("异步");
+
     }
 }

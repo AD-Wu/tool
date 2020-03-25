@@ -316,7 +316,7 @@ public final class Strings {
      */
     public static String toHex(int v) {
 
-        return fix(Integer.toHexString(v).toUpperCase());
+        return fixHex(Integer.toHexString(v).toUpperCase());
     }
 
     /**
@@ -341,7 +341,8 @@ public final class Strings {
 
         final SB sb = New.sb();
         for (byte b : bs) {
-            sb.append(toHex((b & 0xFF))).append(separator);
+            String hex = toHex((b & 0xFF));
+            sb.append(hex).append(separator);
         }
         return sb.get();
     }

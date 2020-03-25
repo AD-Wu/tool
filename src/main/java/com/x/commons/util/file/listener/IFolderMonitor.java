@@ -2,11 +2,8 @@ package com.x.commons.util.file.listener;
 
 public interface IFolderMonitor {
 
-    void addFolderListener(IFileListener listener);
+    void addListener(IFileListener listener);
 
-    void removeFolderListener();
+    void removeListener(IFileListener listener);
 
-    void addFileListener(String filename, IFileListener listener);
-
-    void removeFileListener(String filename);
 }

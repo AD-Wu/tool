@@ -27,7 +27,8 @@ public final class FolderMonitor implements IFolderMonitor, Runnable {
 
     private final Set<IFileListener> listeners;
 
-    private ExecutorService runner ;
+    private ExecutorService runner;
+
 
     private volatile boolean started = false;
 
@@ -41,7 +42,7 @@ public final class FolderMonitor implements IFolderMonitor, Runnable {
     }
 
     @Override
-    public void addFolderListener(IFileListener listener) {
+    public void addListener(IFileListener listener) {
         if (listener != null) {
             listeners.add(listener);
             if (!started) {
@@ -56,19 +57,10 @@ public final class FolderMonitor implements IFolderMonitor, Runnable {
     }
 
     @Override
-    public void removeFolderListener() {
-        listeners.clear();
+    public void removeListener(IFileListener listener) {
+        listeners.remove(listener);
     }
 
-    @Override
-    public void addFileListener(String filename, IFileListener listener) {
-
-    }
-
-    @Override
-    public void removeFileListener(String filename) {
-
-    }
 
     @Override
     public void run() {
@@ -93,7 +85,9 @@ public final class FolderMonitor implements IFolderMonitor, Runnable {
                 }
                 String path = Files.fixPath(folder) + filename;
                 File file = Files.getFile(path);
-
+                if (file == null) {
+                    continue;
+                }
                 WatchEvent.Kind kind = event.kind();// modify、create、delete、overflow
                 String name = kind.name();
                 for (IFileListener listener : listeners) {

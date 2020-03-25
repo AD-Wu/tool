@@ -14,9 +14,9 @@ import java.security.NoSuchAlgorithmException;
  * @Author AD
  */
 public final class MD5 {
-    
+
     private MessageDigest md;
-    
+
     public MD5() {
         try {
             this.md = MessageDigest.getInstance("MD5");
@@ -24,19 +24,20 @@ public final class MD5 {
             e.printStackTrace();
         }
     }
-    
+
     public String encode(String str) throws Exception {
         md.update(str.getBytes());
         return Strings.toHex(md.digest());
     }
-    
+
     public String encode(File file) throws Exception {
-        
-        try (FileInputStream in = new FileInputStream(file)) {
-            MappedByteBuffer buf = in.getChannel().map(FileChannel.MapMode.READ_ONLY, 0L, file.length());
+
+        try (FileInputStream in = new FileInputStream(file);
+             FileChannel channel = in.getChannel();) {
+            MappedByteBuffer buf = channel.map(FileChannel.MapMode.READ_ONLY, 0, file.length());
             md.update(buf);
         }
         return Strings.toHex(md.digest());
     }
-    
+
 }

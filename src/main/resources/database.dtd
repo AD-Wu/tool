@@ -1,0 +1,44 @@
+<!-- <!DOCTYPE databases PUBLIC "-//X//DTD DATABASE 1.0" "database.dtd" > -->
+
+<!-- 数据源列表配置 -->
+<!ELEMENT databases (database+)>
+<!-- 应用层数据库访问定义（type） -->
+<!ELEMENT database (url, user, password, driverClass?, initialSize?, maxActive?, maxIdle?,
+        minIdle?, maxWait?, minEvictableIdleTimeMillis?, numTestsPerEvictionRun?, testOnBorrow?, testOnReturn?, testWhileIdle?, timeBetweenEvictionRunsMillis?, validateQuery?)>
+<!-- 应用层数据库访问对象属性 -->
+<!ATTLIST database
+        name     ID                                          #REQUIRED
+        type    (DERBY|MYSQL|ORACLE|SQLSERVER|OTHERS)        #REQUIRED
+ >
+<!-- 数据库连接字符串 -->
+<!ELEMENT url (#PCDATA)>
+<!-- 登录数据库用户名 -->
+<!ELEMENT user (#PCDATA)>
+<!-- 登录数据库密码 -->
+<!ELEMENT password (#PCDATA)>
+<!-- 驱动类名称，可选 -->
+<!ELEMENT driverClass (#PCDATA)>
+<!-- 连接池启动时创建的初始化连接数量（整数，默认：0） -->
+<!ELEMENT initialSize (#PCDATA)>
+<!-- 连接池中可同时连接的最大的连接数（整数，默认：20） -->
+<!ELEMENT maxActive (#PCDATA)>
+<!-- 连接池中最大的空闲的连接数，超过的空闲连接将被释放（整数，默认：8） -->
+<!ELEMENT maxIdle (#PCDATA)>
+<!-- 连接池中最小的空闲的连接数，低于这个数量会被创建新的连接（整数，默认：5） -->
+<!ELEMENT minIdle (#PCDATA)>
+<!-- 最大等待时间，当没有可用连接时，连接池等待连接释放的最大时间，超过该时间限制会抛出异常（毫秒，默认：60000 ms） -->
+<!ELEMENT maxWait (#PCDATA)>
+<!-- 连接池中连接，在时间段内一直空闲，被逐出连接池的时间（毫秒，默认 30 分钟，即：1800000 ms） -->
+<!ELEMENT minEvictableIdleTimeMillis (#PCDATA)>
+<!-- 代表每次检查链接的数量，建议设置和 maxActive 一样大，这样每次可以有效检查所有的链接（整数，默认：20） -->
+<!ELEMENT numTestsPerEvictionRun (#PCDATA)>
+<!-- 在借出连接对象时是否进行有效性检查（布尔值，默认：false） -->
+<!ELEMENT testOnBorrow (#PCDATA)>
+<!-- 在归还连接对象时是否进行有效性检查（布尔值，默认：false） -->
+<!ELEMENT testOnReturn (#PCDATA)>
+<!-- 在进行后台对象清理时，是否还对没有过期的池内对象进行有效性检查。不能通过有效性检查的对象也将被回收（布尔值，默认：true） -->
+<!ELEMENT testWhileIdle (#PCDATA)>
+<!-- 间隔每过多少毫秒进行一次后台对象清理的行动（毫秒，默认：60000） -->
+<!ELEMENT timeBetweenEvictionRunsMillis (#PCDATA)>
+<!-- 检查有效性的 SQL 语句（SELECT 语句，默认："SELECT 1"） -->
+<!ELEMENT validateQuery (#PCDATA)>

@@ -1,0 +1,13 @@
+<!DOCTYPE databases PUBLIC "-//X//DTD DATABASE 1.0" "database.dtd" >
+<databases>
+    <database name="AD" type="MYSQL">
+        <url></url>
+        <user></user>
+        <password></password>
+    </database>
+    <database name="ad" type="MYSQL">
+        <url></url>
+        <user></user>
+        <password></password>
+    </database>
+</databases>

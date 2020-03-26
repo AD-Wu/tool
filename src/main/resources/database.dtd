@@ -9,6 +9,7 @@
 <!ATTLIST database
         name     ID                                          #REQUIRED
         type    (DERBY|MYSQL|ORACLE|SQLSERVER|OTHERS)        #REQUIRED
+        druid   (true|false)	                             "false"
  >
 <!-- 数据库连接字符串 -->
 <!ELEMENT url (#PCDATA)>

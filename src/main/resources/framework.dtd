@@ -1,0 +1,179 @@
+<!-- AX 框架配置 -->
+<!-- <!DOCTYPE framework PUBLIC "-//AX//DTD FRAMEWORK 1.0" "framework.dtd" > -->
+
+<!-- 协议服务列表配置 -->
+<!ELEMENT framework (service+)>
+
+<!-- 协议服务配置（name, enabled, remark） -->
+<!ELEMENT service (application, presentation, session?, transport)>
+<!-- 协议服务配置对象属性 -->
+<!ATTLIST service
+  name				ID					#REQUIRED
+  enabled			(true|false)	"true"
+  debug				(true|false)	"false"
+  remark				CDATA				#REQUIRED
+>
+
+<!-- 应用层配置（提供数据出入口、创建数据执行器处理数据） -->
+<!ELEMENT application (actors?, listeners?, initializer?, database?)>
+
+<!-- 应用层执行器对象 -->
+<!ELEMENT actors (setting?, packages)>
+<!-- 执行器配置对象定义（disableDoc, defaultActor） -->
+<!ELEMENT setting EMPTY>
+<!-- 注解包属性 -->
+<!ATTLIST setting
+  disableDoc		(true|false)	"false"
+  defaultActor		CDATA				""
+>
+<!-- 应用层执行器注解包列表 -->
+<!ELEMENT packages (package+)>
+<!-- 注解包对象定义（base, name, remark） -->
+<!ELEMENT package EMPTY>
+<!-- 注解包属性 -->
+<!ATTLIST package
+  base				CDATA				"com.ax.protocol.core.IDataActor"
+  name				CDATA				"com.ax.xxx"
+  remark				CDATA				#REQUIRED
+>
+
+<!-- 应用层事件侦听器列表 -->
+<!ELEMENT listeners (listener+)>
+<!-- 事件侦听器配置对象（base, pkgName, remark） -->
+<!ELEMENT listener EMPTY>
+<!-- 侦听器配置属性 -->
+<!ATTLIST listener
+  base				CDATA		"com.ax.protocol.core.IProtocolListener"
+  pkgName			CDATA		"com.ax.xxx"
+  remark				CDATA		#REQUIRED
+>
+
+<!-- 应用层初始化操作类定义，类对象继承自：IProtocolNotification（clazz） -->
+<!ELEMENT initializer (parameters?)>
+<!-- 应用层初始化操作对象属性 -->
+<!ATTLIST initializer
+  clazz				CDATA		"com.ax.systems.center.CenterInitializer"
+>
+
+<!-- 应用层数据库访问定义（type） -->
+<!ELEMENT database (connString, user, password, driverClass?, initialSize?, maxActive?, maxIdle?, minIdle?, maxWait?, minEvictableIdleTimeMillis?, numTestsPerEvictionRun?, testOnBorrow?, testOnReturn?, testWhileIdle?, timeBetweenEvictionRunsMillis?, validateQuery?)>
+<!-- 应用层数据库访问对象属性 -->
+<!ATTLIST database
+  type				(DERBY|MYSQL|ORACLE|SQLSERVER|OTHERS)		#REQUIRED
+>
+<!-- 数据库连接字符串 -->
+<!ELEMENT connString (#PCDATA)>
+<!-- 登录数据库用户名 -->
+<!ELEMENT user (#PCDATA)>
+<!-- 登录数据库密码 -->
+<!ELEMENT password (#PCDATA)>
+<!-- 驱动类名称，可选 -->
+<!ELEMENT driverClass (#PCDATA)>
+<!-- 连接池启动时创建的初始化连接数量（整数，默认：0） -->
+<!ELEMENT initialSize (#PCDATA)>
+<!-- 连接池中可同时连接的最大的连接数（整数，默认：20） -->
+<!ELEMENT maxActive (#PCDATA)>
+<!-- 连接池中最大的空闲的连接数，超过的空闲连接将被释放（整数，默认：8） -->
+<!ELEMENT maxIdle (#PCDATA)>
+<!-- 连接池中最小的空闲的连接数，低于这个数量会被创建新的连接（整数，默认：5） -->
+<!ELEMENT minIdle (#PCDATA)>
+<!-- 最大等待时间，当没有可用连接时，连接池等待连接释放的最大时间，超过该时间限制会抛出异常（毫秒，默认：60000 ms） -->
+<!ELEMENT maxWait (#PCDATA)>
+<!-- 连接池中连接，在时间段内一直空闲，被逐出连接池的时间（毫秒，默认 30 分钟，即：1800000 ms） -->
+<!ELEMENT minEvictableIdleTimeMillis (#PCDATA)>
+<!-- 代表每次检查链接的数量，建议设置和 maxActive 一样大，这样每次可以有效检查所有的链接（整数，默认：20） -->
+<!ELEMENT numTestsPerEvictionRun (#PCDATA)>
+<!-- 在借出连接对象时是否进行有效性检查（布尔值，默认：false） -->
+<!ELEMENT testOnBorrow (#PCDATA)>
+<!-- 在归还连接对象时是否进行有效性检查（布尔值，默认：false） -->
+<!ELEMENT testOnReturn (#PCDATA)>
+<!-- 在进行后台对象清理时，是否还对没有过期的池内对象进行有效性检查。不能通过有效性检查的对象也将被回收（布尔值，默认：true） -->
+<!ELEMENT testWhileIdle (#PCDATA)>
+<!-- 间隔每过多少毫秒进行一次后台对象清理的行动（毫秒，默认：60000） -->
+<!ELEMENT timeBetweenEvictionRunsMillis (#PCDATA)>
+<!-- 检查有效性的 SQL 语句（SELECT 语句，默认："SELECT 1"） -->
+<!ELEMENT validateQuery (#PCDATA)>
+
+
+<!-- 表示层配置（数据格式化、加密解密、压缩解压缩处理） -->
+<!ELEMENT presentation (serializer+)>
+<!-- 表示层序列化对象配置，类对象继承自：ISerializer（channel, clazz） -->
+<!ELEMENT serializer (parameters?)>
+<!-- 表示层序列化对象属性 -->
+<!ATTLIST serializer
+  channel			CDATA		#IMPLIED
+  clazz				CDATA		"com.ax.framework.protocol.serializer.JSONSerializer"
+>
+<!-- 参数列表 -->
+<!ELEMENT parameters (p*)>
+<!-- 参数对象（name, value） -->
+<!ELEMENT p EMPTY>
+<!-- 参数属性定义 -->
+<!ATTLIST p
+  name				CDATA			#REQUIRED
+  value				CDATA			#REQUIRED
+>
+
+
+<!-- 会话层配置（会话管理、通讯安全、连接管理） -->
+<!ELEMENT session (login, connection)>
+<!-- 会话登录参数（loginMode, commands, multiSerializer） -->
+<!ELEMENT login EMPTY>
+<!-- 会话登录参数属性 -->
+<!ATTLIST login
+  loginMode			(true|false)	"true"
+  commands			CDATA				"login,user:login,user:session-login"
+  multiSerializer	(true|false)	"false"
+>
+<!-- 会话连接参数（sessionTimeout, maxSize, minuteLimit, limitTime） -->
+<!ELEMENT connection EMPTY>
+<!-- 会话连接参数属性 -->
+<!ATTLIST connection
+  sessionTimeout	CDATA			"180000"
+  maxSize			CDATA			"1000"
+  minuteLimit		CDATA			"20"
+  limitTime			CDATA			"300000"
+>
+
+
+<!-- 传输层配置（封包解包、分段传输、自动重传、自动重连、传输方式控制） -->
+<!ELEMENT transport (channel+)>
+<!-- 传输管道配置（type, name, enabled, corePoolSize, maxPoolSize, queue, readTimeout, sendTimeout） -->
+<!ELEMENT channel (protocol, server?, clients?)>
+<!-- 传输管道参数属性 -->
+<!ATTLIST channel
+  type				(socket|http|serial|custom)	"http"
+  name				CDATA						"system-center-http"
+  enabled 			(true|false)			"true"
+  corePoolSize		CDATA						"0"
+  maxPoolSize		CDATA						"100"
+  queue				CDATA						"1"
+  readTimeout		CDATA						"600000"
+  sendTimeout		CDATA						"60000"
+>
+
+<!-- 协议解析对象，读取类对象继承自：IProtocolReader；发送类对象继承自：IProtocolSender（senderClass, readerClass, maxMappingIndex） -->
+<!ELEMENT protocol EMPTY>
+<!-- 协议解析对象属性 -->
+<!ATTLIST protocol
+  senderClass			CDATA			"com.ax.framework.protocol.reader.WebReader"
+  readerClass			CDATA			"com.ax.framework.protocol.sender.WebSender"
+  maxMappingIndex		CDATA			"0"
+>
+<!-- 服务端配置对象（maxConnection） -->
+<!ELEMENT server (parameters?)>
+<!-- 服务端配置对象属性 -->
+<!ATTLIST server
+  maxConnection		CDATA			"0"
+>
+<!-- 客户端列表配置 -->
+<!ELEMENT clients (client*)>
+<!-- 客户端配置对象（name） -->
+<!ELEMENT client (parameters?)>
+<!-- 客户端配置对象属性 -->
+<!ATTLIST client
+  name					CDATA			"vendor-name-client"
+  enabled 			(true|false)	"true"
+>
+
+

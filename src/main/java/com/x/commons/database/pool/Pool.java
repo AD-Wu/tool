@@ -39,9 +39,9 @@ public final class Pool {
     Pool(PoolConfig config) throws Exception {
         String type = config.getType();
         this.DBType = DatabaseType.get(type);
-        this.poolName = config.getPoolName();
+        this.poolName = config.getName();
         this.url = config.getUrl();
-        this.useDruid = config.isUseDruid();
+        this.useDruid = config.isDruid();
         String user = config.getUser();
         String driver = config.getDriver();
         String pwd = config.getPassword();

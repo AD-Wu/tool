@@ -18,7 +18,7 @@ public final class Pools {
     private Pools() {}
     
     public static Pool start(PoolConfig config) throws Exception {
-        String name = config.getPoolName();
+        String name = config.getName();
         if (POOLS.containsKey(name)) {
             throw new Exception(Locals.text("commons.pool.started", name));
         } else {

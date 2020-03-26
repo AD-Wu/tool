@@ -16,10 +16,10 @@ public class PoolConfig {
     
     // ---------------------- 成员变量 ----------------------
     // 是否使用Druid连接池，默认使用Hikari
-    private boolean useDruid;
+    private boolean druid;
     
-    // 连接池名称
-    private String poolName;
+    // 连接池名称(使用x框架时是协议名,单独使用dao框架时是数据源名)
+    private String name;
     
     // 连接类型,如：Mysql
     private String type;
@@ -154,15 +154,15 @@ public class PoolConfig {
     /**
      * 获取 连接池名称
      */
-    public String getPoolName() {
-        return this.poolName;
+    public String getName() {
+        return this.name;
     }
     
     /**
      * 设置 连接池名称
      */
-    public void setPoolName(String poolName) {
-        this.poolName = poolName;
+    public void setName(String name) {
+        this.name = name;
     }
     
     /**
@@ -352,17 +352,17 @@ public class PoolConfig {
      *
      * @return boolean 是否使用Druid连接池，默认使用Hikari
      */
-    boolean isUseDruid() {
-        return this.useDruid;
+    public boolean isDruid() {
+        return this.druid;
     }
     
     /**
      * 设置是否使用Druid连接池，默认使用Hikari
      *
-     * @param useDruid 是否使用Druid连接池，默认使用Hikari
+     * @param druid 是否使用Druid连接池，默认使用Hikari
      */
-    public void setUseDruid(boolean useDruid) {
-        this.useDruid = useDruid;
+    public void setDruid(boolean druid) {
+        this.druid = druid;
     }
     
     Properties toProperties() throws Exception {
@@ -382,7 +382,7 @@ public class PoolConfig {
     HikariConfig toHikariConfig() {
         HikariConfig config = new HikariConfig();
         
-        config.setPoolName(this.getPoolName());
+        config.setPoolName(this.getName());
         config.setJdbcUrl(this.getUrl());
         config.setUsername(this.getUser());
         config.setPassword(this.getPassword());

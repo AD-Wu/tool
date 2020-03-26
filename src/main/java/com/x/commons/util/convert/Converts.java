@@ -352,7 +352,7 @@ public final class Converts {
     }
     
     public static boolean toBoolean(@NonNull byte[] bs) {
-        return bs[0] == 0 ? false : true;
+        return bs[0] != 0;
     }
     
     public static boolean toBoolean(@NonNull byte[] bs, int expect) { return expect == toInt(bs);}

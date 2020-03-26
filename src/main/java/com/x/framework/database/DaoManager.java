@@ -43,12 +43,13 @@ public class DaoManager implements IDaoManager {
     public DaoManager(String name, DatabaseConfig config) throws Exception {
         this.name = name;
         PoolConfig cfg = new PoolConfig();
-        cfg.setPoolName(name);
+        cfg.setName(name);
         cfg.setType(config.getType());
         cfg.setUrl(config.getUrl());
-        cfg.setDriver(config.getDriverClass());
+        cfg.setDriver(config.getDriver());
         cfg.setUser(config.getUser());
         cfg.setPassword(config.getPassword());
+        cfg.setDruid(Converts.toBoolean(config.getDruid(),cfg.isDruid()));
         cfg.setInitialSize(Converts.toInt(config.getInitialSize(), cfg.getInitialSize()));
         cfg.setMaxActive(Converts.toInt(config.getMaxActive(), cfg.getMaxActive()));
         cfg.setMaxWait(Converts.toLong(config.getMaxWait(), cfg.getMaxWait()));

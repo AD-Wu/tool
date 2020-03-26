@@ -3,7 +3,7 @@
 <!-- 数据源列表配置 -->
 <!ELEMENT databases (database+)>
 <!-- 应用层数据库访问定义（type） -->
-<!ELEMENT database (url, user, password, driverClass?, initialSize?, maxActive?, maxIdle?,
+<!ELEMENT database (url, user, password, driver?, initialSize?, maxActive?, maxIdle?,
         minIdle?, maxWait?, minEvictableIdleTimeMillis?, numTestsPerEvictionRun?, testOnBorrow?, testOnReturn?, testWhileIdle?, timeBetweenEvictionRunsMillis?, validateQuery?)>
 <!-- 应用层数据库访问对象属性 -->
 <!ATTLIST database
@@ -17,7 +17,7 @@
 <!-- 登录数据库密码 -->
 <!ELEMENT password (#PCDATA)>
 <!-- 驱动类名称，可选 -->
-<!ELEMENT driverClass (#PCDATA)>
+<!ELEMENT driver (#PCDATA)>
 <!-- 连接池启动时创建的初始化连接数量（整数，默认：0） -->
 <!ELEMENT initialSize (#PCDATA)>
 <!-- 连接池中可同时连接的最大的连接数（整数，默认：20） -->

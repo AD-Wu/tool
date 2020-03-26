@@ -1,13 +1,13 @@
 <!DOCTYPE databases PUBLIC "-//X//DTD DATABASE 1.0" "database.dtd" >
 <databases>
     <database name="AD" type="MYSQL">
-        <url></url>
-        <user></user>
-        <password></password>
+        <url>jdbc:mysql://localhost:3306/study?zeroDateTimeBehavior=convertToNull</url>
+        <user>root</user>
+        <password>123456</password>
     </database>
     <database name="ad" type="MYSQL">
-        <url></url>
-        <user></user>
-        <password></password>
+        <url>jdbc:mysql://localhost:3306/study</url>
+        <user>test</user>
+        <password>test</password>
     </database>
 </databases>

@@ -1,5 +1,6 @@
 // package com.x.commons.encrypt.rsa;
 //
+// import com.ax.commons.encrypt.base64.BASE64;
 // import org.apache.logging.log4j.util.Base64Util;
 //
 // import javax.crypto.BadPaddingException;
@@ -19,7 +20,7 @@
 //  * @Date 2019-11-25 22:51
 //  * @Author AD
 //  */
-// public class RSA {
+// public class RSAHelper {
 //
 //     /**
 //      * 算法
@@ -62,7 +63,7 @@
 //      * 生成密钥对
 //      * @return
 //      */
-//     public RSA generateKeyPair() {
+//     public RSAHelper generateKeyPair() {
 //         try {
 //             // RSA加密算法
 //             KeyPairGenerator keyPairGenerator = KeyPairGenerator
@@ -75,6 +76,7 @@
 //             privateKey = (RSAPrivateKey) keyPair.getPrivate();
 //
 //             // 使用 Base64编码
+//
 //             publicKeyStr = Base64.encode(publicKey.getEncoded());
 //             privateKeyStr = Base64.encode(privateKey.getEncoded());
 //

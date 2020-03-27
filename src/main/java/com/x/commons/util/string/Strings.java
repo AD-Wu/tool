@@ -281,7 +281,7 @@ public final class Strings {
     public static byte[] hexToBytes(@NonNull String hex) {
 
         String s = removeSpaces(hex);
-        return onlyHex(s) ? getBytes(fix(s)) : XArrays.EMPTY_BYTE;
+        return onlyHex(s) ? getBytes(fixHex(s)) : XArrays.EMPTY_BYTE;
     }
 
     /**

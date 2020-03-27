@@ -15,7 +15,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
  * @Date 2019-10-18 21:14
  * @Author AD
  */
-class SocketServer implements ISocket {
+public class SocketServer implements ISocket {
 
     private final SocketServerConfig config;
 
@@ -29,7 +29,7 @@ class SocketServer implements ISocket {
 
     private volatile boolean started = false;
 
-    SocketServer(SocketServerConfig config, ISocketListener listener) {
+    public SocketServer(SocketServerConfig config, ISocketListener listener) {
         this.config = config;
         boot = new ServerBootstrap();
         boot.channel(NioServerSocketChannel.class);

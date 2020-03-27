@@ -17,11 +17,11 @@ import java.util.Arrays;
  * @Author：AD
  * @Date：2020/3/27 16:48
  */
-public class SocketHandler extends SimpleChannelInboundHandler {
+class SocketHandler extends SimpleChannelInboundHandler {
 
     private final ISocketListener listener;
 
-    public SocketHandler(ISocketListener listener) {
+    SocketHandler(ISocketListener listener) {
         this.listener = listener;
     }
 
@@ -36,18 +36,18 @@ public class SocketHandler extends SimpleChannelInboundHandler {
         ByteBufAllocator alloc = ctx.alloc();
         System.out.println(alloc);
         ByteBuf buffer = alloc.buffer();
-        System.out.println("server="+ Arrays.toString("哈哈".getBytes()));
+        System.out.println("server=" + Arrays.toString("哈哈".getBytes()));
         buffer.writeCharSequence("哈哈", Charsets.UTF8);
         ctx.writeAndFlush(buffer);
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if(msg instanceof ByteBuf){
+        if (msg instanceof ByteBuf) {
             ByteBuf buf = (ByteBuf) msg;
             byte[] data = new byte[buf.readableBytes()];
             buf.readBytes(data);
-            System.out.println("==="+Arrays.toString(data));
+            System.out.println("===" + Arrays.toString(data));
         }
     }
 
@@ -61,9 +61,9 @@ public class SocketHandler extends SimpleChannelInboundHandler {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if(evt instanceof IdleStateEvent){
+        if (evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent) evt;
-            if(IdleState.ALL_IDLE == event.state()){
+            if (IdleState.ALL_IDLE == event.state()) {
                 ctx.channel().close();
             }
         }

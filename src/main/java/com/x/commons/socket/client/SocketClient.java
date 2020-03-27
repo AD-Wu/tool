@@ -38,7 +38,7 @@ public class SocketClient implements ISocket {
     }
 
     @Override
-    public synchronized boolean start() throws Exception {
+    public synchronized void start() throws Exception {
         if (!connected) {
             new Thread(() -> {
                 worker = new NioEventLoopGroup();
@@ -56,7 +56,6 @@ public class SocketClient implements ISocket {
                 }
             }).start();
         }
-        return connected;
     }
 
     @Override

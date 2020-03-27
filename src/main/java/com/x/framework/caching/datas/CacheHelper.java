@@ -209,7 +209,7 @@ public final class CacheHelper {
     }
     
     public static String getPrimaryValueByWheres(String[] pks, Where[] wheres) {
-        if (XArrays.isValue(pks, wheres)) {
+        if (XArrays.isValid(pks, wheres)) {
             return null;
         }
         SB sb = New.sb();

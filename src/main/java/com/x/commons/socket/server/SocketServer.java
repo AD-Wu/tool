@@ -39,7 +39,7 @@ public class SocketServer implements ISocket {
     }
 
     @Override
-    public synchronized boolean start() throws Exception {
+    public synchronized void start() throws Exception {
         if (!started) {
             boss = new NioEventLoopGroup();
             worker = new NioEventLoopGroup();
@@ -52,6 +52,7 @@ public class SocketServer implements ISocket {
                     channel.closeFuture().sync();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    started = false;
                 } finally {
                     started = false;
                     worker.shutdownGracefully();
@@ -59,7 +60,6 @@ public class SocketServer implements ISocket {
                 }
             }).start();
         }
-        return started;
     }
 
     @Override

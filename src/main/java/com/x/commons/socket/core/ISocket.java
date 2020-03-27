@@ -5,7 +5,7 @@ package com.x.commons.socket.core;
  * @Author AD
  */
 public interface ISocket {
-    boolean start() throws Exception;
+    void start() throws Exception;
 
     void stop() throws Exception;
 }

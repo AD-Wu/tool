@@ -1,8 +1,8 @@
 package com.x.commons.socket.client;
 
-import com.x.commons.socket.config.ClientConfig;
-import com.x.commons.socket.handler.client.ClientChannelInitializer;
-import com.x.commons.socket.server.ISocket;
+import com.x.commons.socket.core.ISocket;
+import com.x.commons.socket.core.ISocketListener;
+import com.x.commons.socket.core.SocketInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -11,7 +11,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2019-11-01 23:08
  * @Author AD
  */
@@ -23,30 +23,28 @@ public class SocketClient implements ISocket {
 
     private NioEventLoopGroup worker;
 
-    private final ClientConfig config;
+    private final SocketClientConfig config;
 
     private volatile boolean connected;
 
-    public SocketClient(ClientConfig config) {
+    public SocketClient(SocketClientConfig config, ISocketListener listener) {
         this.config = config;
-        connected = false;
-        boot = new Bootstrap();
+        this.connected = false;
+        this.boot = new Bootstrap();
         boot.channel(NioSocketChannel.class);
         boot.option(ChannelOption.SO_KEEPALIVE, true);
-        boot.handler(new ClientChannelInitializer(config));
-        
+        boot.handler(new SocketInitializer(config, listener));
+
     }
 
     @Override
-    public synchronized void start() {
+    public synchronized boolean start() throws Exception {
         if (!connected) {
-            String ip = config.getIp();
-            int port = config.getPort();
             new Thread(() -> {
                 worker = new NioEventLoopGroup();
-                this.boot.group(worker);
+                boot.group(worker);
                 try {
-                    ChannelFuture f = this.boot.connect(ip, port).sync();
+                    ChannelFuture f = boot.connect(config.getIp(), config.getPort()).sync();
                     connected = true;
                     channel = f.channel();
                     channel.closeFuture().sync();
@@ -58,7 +56,7 @@ public class SocketClient implements ISocket {
                 }
             }).start();
         }
-
+        return connected;
     }
 
     @Override
@@ -67,13 +65,5 @@ public class SocketClient implements ISocket {
             channel.close();
         }
     }
-    
-    @Override
-    public void send(Object msg) {
-        if(channel!=null){
-            ChannelFuture future = channel.writeAndFlush(msg);
-            System.out.println(future);
-        }
-    }
-    
+
 }

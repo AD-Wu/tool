@@ -1,4 +1,4 @@
-package com.x.commons.socket.handler.server;
+package com.x.commons.socket.server;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

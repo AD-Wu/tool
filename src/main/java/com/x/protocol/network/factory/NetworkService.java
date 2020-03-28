@@ -205,7 +205,7 @@ public abstract class NetworkService implements INetworkService {
             if (maxPoolSize < 1) {
                 corePoolSize = 1;
             }
-            this.threadPool = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 60L, TimeUnit.SECONDS, new SynchronousQueue<>()
+            this.threadPool = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 60, TimeUnit.SECONDS, new SynchronousQueue<>()
                     , new ThreadPoolExecutor.AbortPolicy());
             if (!this.noConsents) {
                 this.dataThread = new Thread("NetworkMonitor[" + config.getName() + "]") {

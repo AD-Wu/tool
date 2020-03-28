@@ -33,6 +33,7 @@ public class CustomServiceConsent extends NetworkConsent {
         this.remotePort = info.getConcentRemotePort();
     }
 
+    @Override
     public NetworkIO getNetworkIO() {
         return new NetworkIO(this.service, this, in, out);
     }

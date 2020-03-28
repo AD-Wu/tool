@@ -1,8 +1,7 @@
 package com.x.commons.socket;
 
-import com.x.commons.socket.client.SocketClient;
-import com.x.commons.socket.client.SocketClientConfig;
-import com.x.commons.socket.client.SocketClientListener;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @Desc TODO
@@ -16,10 +15,17 @@ public class Test {
         // SocketServer server = new SocketServer(new SocketServerConfig(7777), listener);
         // server.start();
         // System.out.println("服务启动成功");
-        SocketClientListener listener = new SocketClientListener();
-        SocketClientConfig config = new SocketClientConfig("localhost", 7777);
-        SocketClient client = new SocketClient(config, listener);
-        client.start();
+        // SocketClientListener listener = new SocketClientListener();
+        // SocketClientConfig config = new SocketClientConfig("localhost", 7777);
+        // SocketClient client = new SocketClient(config, listener);
+        // client.start();
+        new InputStream() {
+    
+            @Override
+            public int read() throws IOException {
+                return 0;
+            }
+        };
     
     }
     

@@ -204,11 +204,6 @@ public abstract class NetworkConsent implements INetworkConsent, Runnable {
     }
     
     @Override
-    public INetworkIO getNetworkIO() {
-        return null;
-    }
-    
-    @Override
     public NetworkConsentType getType() {
         return type;
     }

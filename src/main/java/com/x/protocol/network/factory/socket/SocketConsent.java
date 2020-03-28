@@ -12,7 +12,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2020-03-02 00:51
  * @Author AD
  */
@@ -50,6 +50,7 @@ public class SocketConsent extends NetworkConsent {
         this.remotePort = remote == null ? 0 : remote.getPort();
     }
     
+    @Override
     public INetworkIO getNetworkIO() {
         return new NetworkIO(super.service, this, in, out);
     }

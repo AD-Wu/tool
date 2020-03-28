@@ -16,6 +16,10 @@ public class SocketClientConfig extends SocketConfig {
         super(port);
         this.ip = ip;
     }
+    
+    public static SocketClientConfig getLocal(int port){
+        return new SocketClientConfig("localhost", port);
+    }
 
     public String getIp() {
         return ip;

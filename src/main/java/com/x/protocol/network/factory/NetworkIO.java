@@ -3,7 +3,7 @@ package com.x.protocol.network.factory;
 import com.x.protocol.network.interfaces.*;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2020-02-19 01:02
  * @Author AD
  */
@@ -26,22 +26,22 @@ public class NetworkIO implements INetworkIO {
     
     @Override
     public INetworkService getService() {
-        return null;
+        return this.service;
     }
     
     @Override
     public INetworkConsent getConsent() {
-        return null;
+        return this.consent;
     }
     
     @Override
     public <T extends INetworkInput> T getInput() {
-        return null;
+        return (T)this.input;
     }
     
     @Override
     public <T extends INetworkOutput> T getOutput() {
-        return null;
+        return (T)this.output;
     }
     
 }

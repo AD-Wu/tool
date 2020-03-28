@@ -141,6 +141,7 @@ public class WebSocketClientConsent extends NetworkConsent implements INetworkCo
         }
     }
     
+    @Override
     public INetworkIO getNetworkIO() {
         return new NetworkIO(super.service, this, in, out);
     }

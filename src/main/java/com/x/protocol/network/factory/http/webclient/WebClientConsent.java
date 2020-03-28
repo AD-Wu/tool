@@ -28,7 +28,7 @@ import java.util.List;
 import static com.x.protocol.network.factory.http.enums.HttpKey.*;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2020-03-07 13:50
  * @Author AD
  */
@@ -99,6 +99,7 @@ public class WebClientConsent extends NetworkConsent {
         this.remotePort = parser.getPort();
     }
     
+    @Override
     public INetworkIO getNetworkIO() {
         if (httpClient == null) {
             synchronized (clientLock) {

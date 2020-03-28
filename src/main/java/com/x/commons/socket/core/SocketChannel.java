@@ -62,7 +62,6 @@ public final class SocketChannel {
     public boolean send(String msg, String charset) {
         if (Strings.isNull(msg, false)) {
             return true;
-            
         }
         if (channel.isActive() && channel.isOpen() && channel.isActive()) {
             ByteBuf buf = channel.alloc().buffer();

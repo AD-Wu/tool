@@ -1,8 +1,5 @@
 package com.x.commons.socket;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 /**
  * @Desc TODO
  * @Date 2020-02-18 20:03
@@ -19,13 +16,7 @@ public class Test {
         // SocketClientConfig config = new SocketClientConfig("localhost", 7777);
         // SocketClient client = new SocketClient(config, listener);
         // client.start();
-        new InputStream() {
-    
-            @Override
-            public int read() throws IOException {
-                return 0;
-            }
-        };
+        
     
     }
     

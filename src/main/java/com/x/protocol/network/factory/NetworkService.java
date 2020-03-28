@@ -152,12 +152,12 @@ public abstract class NetworkService implements INetworkService {
     
     @Override
     public INetworkConsent getConsentByIndex(long index) {
-        return this.consents.get(index);
+        return consents.get(index);
     }
     
     @Override
     public boolean containConsent(long index) {
-        return this.consents.containsKey(index);
+        return consents.containsKey(index);
     }
     
     @Override
@@ -384,7 +384,7 @@ public abstract class NetworkService implements INetworkService {
      * 网络监听
      */
     private void checkRecvDatas() {
-        NetworkConsent[] consents = new NetworkConsent[0];
+        NetworkConsent[] consentsArray = new NetworkConsent[0];
         
         long oldTime = System.currentTimeMillis();
         long nowTime = 0L;
@@ -397,9 +397,9 @@ public abstract class NetworkService implements INetworkService {
                 if (consentChanged) {
                     synchronized (consentsLock) {
                         consentChanged = false;
-                        consents = this.consents.values().toArray(new NetworkConsent[0]);
+                        consentsArray = consents.values().toArray(new NetworkConsent[0]);
                     }
-                    takeTime = (long) (30000 + consents.length * 20);
+                    takeTime = (long) (30000 + consentsArray.length * 20);
                 }
                 
                 if (isReadTimeout) {
@@ -417,7 +417,7 @@ public abstract class NetworkService implements INetworkService {
                     oldTime = nowTime;
                 }
                 
-                int consentsLength = consents.length;
+                int consentsLength = consentsArray.length;
                 // 无网络应答对象
                 if (consentsLength <= 0) {
                     try {
@@ -427,7 +427,7 @@ public abstract class NetworkService implements INetworkService {
                 } else {
                     // 遍历网络应答对象，查询是否有数据、超时
                     for (int i = 0; i < consentsLength && !stopped; ++i) {
-                        NetworkConsent consent = consents[i];
+                        NetworkConsent consent = consentsArray[i];
                         consent.checkSyncConsentData(nowTime, timeChanged);
                         if (isReadTimeout) {
                             consent.checkConsentTimeout(nowTime, this.readTimeout);

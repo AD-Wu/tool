@@ -5,8 +5,8 @@ import com.x.commons.util.collection.XArrays;
 
 import java.util.Arrays;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @Desc
@@ -17,9 +17,17 @@ public final class Runner {
     
     private static final int MAX = 100;
     
-    private static ExecutorService runner;
+    private static ThreadPoolExecutor runner;
     
     private Runner() {}
+    
+    public static ThreadPoolExecutor getRunner() {
+        return runner;
+    }
+    
+    public static boolean remove(Runnable runnable) {
+        return runner.remove(runnable);
+    }
     
     public static <T> Future<T> submit(Runnable runnable, T result) {
         if (runner != null) {

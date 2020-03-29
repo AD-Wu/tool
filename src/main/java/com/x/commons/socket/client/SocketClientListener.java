@@ -3,8 +3,12 @@ package com.x.commons.socket.client;
 import com.x.commons.socket.bean.XSocketProtocol;
 import com.x.commons.socket.core.ISocketListener;
 import com.x.commons.socket.core.XSocketChannel;
+import com.x.commons.util.string.Strings;
+import com.x.commons.util.thread.Runner;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.timeout.IdleStateEvent;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Desc
@@ -23,12 +27,27 @@ public class SocketClientListener implements ISocketListener<XSocketProtocol> {
     public void inActive(XSocketChannel channel) throws Exception {
         System.out.println("client >>> 通道关闭:" + channel.toString());
         channel.close();
+        int activeCount = Runner.getRunner().getActiveCount();
+        long taskCount = Runner.getRunner().getTaskCount();
+        System.out.println("activeCount:" + activeCount);
+        System.out.println("taskCount:" + taskCount);
+        while (activeCount != 0 || taskCount != 0) {
+            System.out.println("activeCount:" + activeCount);
+            System.out.println("taskCount:" + taskCount);
+            TimeUnit.SECONDS.sleep(1);
+        }
+        System.out.println("activeCount:" + activeCount);
+        System.out.println("taskCount:" + taskCount);
     }
     
     @Override
     public void receive(XSocketChannel channel, ByteBuf buf) throws Exception {
-        // System.out.println("client >>> 接收数据：" + channel.toString() + "=" + Strings.toHex(data));
-        // channel.send("client:receive >> "+Strings.toHex(data));
+        System.out.println("client >>> 接收数据：" + channel.toString());
+        int i = buf.readableBytes();
+        byte[] data = new byte[i];
+        buf.readBytes(data);
+        System.out.println("client >>> 接收数据：" + Strings.toHex(data));
+        channel.send("client:receive >> " + Strings.toHex(data));
     }
     
     @Override

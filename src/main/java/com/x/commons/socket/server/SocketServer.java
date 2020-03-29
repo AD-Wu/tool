@@ -18,6 +18,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
  */
 public class SocketServer implements ISocket {
     
+    // ------------------------ 变量定义 ------------------------
     private final SocketServerConfig config;
     
     private Channel channel;
@@ -30,19 +31,28 @@ public class SocketServer implements ISocket {
     
     private volatile boolean started = false;
     
-    private final ISocketSerializer serializer;
+    // ------------------------ 构造方法 ------------------------
     
-    private final ISocketListener listener;
-    
+    /**
+     * 构造不需要序列化/反序列化的socket server
+     *
+     * @param config   服务配置
+     * @param listener 消息监听器，不能为null
+     */
     public SocketServer(SocketServerConfig config, ISocketListener listener) {
         this(config, listener, null);
     }
     
+    /**
+     * 构造需要序列化/反序列化的socket server
+     *
+     * @param config     服务配置
+     * @param listener   消息监听器，不能为null
+     * @param serializer 序列化者
+     */
     public SocketServer(SocketServerConfig config,
             ISocketListener listener, ISocketSerializer serializer) {
         this.config = config;
-        this.listener = listener;
-        this.serializer = serializer;
         boot = new ServerBootstrap();
         boot.channel(NioServerSocketChannel.class);
         boot.option(ChannelOption.SO_KEEPALIVE, config.isKeepalive());
@@ -50,6 +60,7 @@ public class SocketServer implements ISocket {
         boot.childHandler(new SocketInitializer(config, listener, serializer));
     }
     
+    // ------------------------ 方法定义 ------------------------
     @Override
     public synchronized void start() throws Exception {
         if (!started) {

@@ -1,6 +1,8 @@
 package com.x.commons.util.bean;
 
 import com.x.commons.encrypt.md5.MD5;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import lombok.NonNull;
 
 import java.nio.ByteBuffer;
@@ -172,11 +174,15 @@ public final class New {
         return new DelayQueue();
     }
     
-    public static ByteBuffer buf(int capacity) {
+    public static ByteBuf buf() {
+        return ByteBufAllocator.DEFAULT.buffer();
+    }
+    
+    public static ByteBuffer buffer(int capacity) {
         return ByteBuffer.allocate(capacity);
     }
     
-    public static ByteBuffer buf(@NonNull byte[] bs) {
+    public static ByteBuffer buffer(@NonNull byte[] bs) {
         return ByteBuffer.wrap(bs);
     }
     
@@ -220,5 +226,5 @@ public final class New {
     public static SB sb(String... ss)        {return new SB(ss);}
     
     public static MD5 md5() throws Exception { return new MD5(); }
-
+    
 }

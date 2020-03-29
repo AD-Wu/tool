@@ -4,6 +4,7 @@ import com.x.protocol.network.core.NetworkConsentType;
 import com.x.protocol.network.factory.NetworkConsent;
 import com.x.protocol.network.factory.NetworkService;
 import com.x.protocol.network.factory.http.enums.HttpKey;
+import com.x.protocol.network.interfaces.INetworkIO;
 
 /**
  * @Desc TODO
@@ -40,6 +41,10 @@ public class WebConsent extends NetworkConsent {
     }
     
     // ------------------------ 方法定义 ------------------------
+    @Override
+    public INetworkIO getNetworkIO() {
+        return null;
+    }
     
     @Override
     protected boolean checkDataAvailable() {

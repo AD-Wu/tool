@@ -2,6 +2,7 @@ package com.x.commons.socket.client;
 
 import com.x.commons.socket.core.ISocket;
 import com.x.commons.socket.core.ISocketListener;
+import com.x.commons.socket.core.ISocketSerializer;
 import com.x.commons.socket.core.SocketInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -27,13 +28,13 @@ public class SocketClient implements ISocket {
 
     private volatile boolean connected;
 
-    public SocketClient(SocketClientConfig config, ISocketListener listener) {
+    public SocketClient(SocketClientConfig config, ISocketListener listener, ISocketSerializer serializer) {
         this.config = config;
         this.connected = false;
         this.boot = new Bootstrap();
         boot.channel(NioSocketChannel.class);
         boot.option(ChannelOption.SO_KEEPALIVE, true);
-        boot.handler(new SocketInitializer(config, listener));
+        boot.handler(new SocketInitializer(config, listener,serializer));
 
     }
 

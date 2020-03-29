@@ -1,8 +1,9 @@
 package com.x.commons.socket.client;
 
+import com.x.commons.socket.bean.XSocketProtocol;
 import com.x.commons.socket.core.ISocketListener;
-import com.x.commons.socket.core.SocketChannel;
-import com.x.commons.util.string.Strings;
+import com.x.commons.socket.core.XSocketChannel;
+import io.netty.buffer.ByteBuf;
 import io.netty.handler.timeout.IdleStateEvent;
 
 /**
@@ -10,33 +11,38 @@ import io.netty.handler.timeout.IdleStateEvent;
  * @Date 2020-03-28 00:34
  * @Author AD
  */
-public class SocketClientListener implements ISocketListener {
+public class SocketClientListener implements ISocketListener<XSocketProtocol> {
     
     @Override
-    public void active(SocketChannel channel) throws Exception {
+    public void active(XSocketChannel channel) throws Exception {
         System.out.println("client >>> 通道建立：" + channel.toString());
         channel.send("client:active");
     }
     
     @Override
-    public void inActive(SocketChannel channel) throws Exception {
+    public void inActive(XSocketChannel channel) throws Exception {
         System.out.println("client >>> 通道关闭:" + channel.toString());
         channel.close();
     }
     
     @Override
-    public void receive(SocketChannel channel, byte[] data) throws Exception {
-        System.out.println("client >>> 接收数据：" + channel.toString() + "=" + Strings.toHex(data));
-        channel.send("client:receive >> "+Strings.toHex(data));
+    public void receive(XSocketChannel channel, ByteBuf buf) throws Exception {
+        // System.out.println("client >>> 接收数据：" + channel.toString() + "=" + Strings.toHex(data));
+        // channel.send("client:receive >> "+Strings.toHex(data));
     }
     
     @Override
-    public void timeout(SocketChannel channel, IdleStateEvent event) throws Exception {
+    public void receive(XSocketChannel channel, XSocketProtocol msg) throws Exception {
+        System.out.println("client >>> 接收数据");
+    }
+    
+    @Override
+    public void timeout(XSocketChannel channel, IdleStateEvent event) throws Exception {
         System.out.println("client >>> 超时：" + channel.toString());
     }
     
     @Override
-    public void error(SocketChannel channel, Throwable cause) throws Exception {
+    public void error(XSocketChannel channel, Throwable cause) throws Exception {
         System.out.println("client >>> 错误：" + channel.toString() + ";error=" + cause.getMessage());
     }
     

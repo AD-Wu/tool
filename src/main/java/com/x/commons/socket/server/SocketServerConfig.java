@@ -1,6 +1,6 @@
 package com.x.commons.socket.server;
 
-import com.x.commons.socket.core.SocketConfig;
+import com.x.commons.socket.bean.SocketConfig;
 
 /**
  * @Desc：

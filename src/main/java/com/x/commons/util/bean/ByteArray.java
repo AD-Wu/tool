@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2019-11-25 20:31
  * @Author AD
  */
@@ -34,5 +34,7 @@ public final class ByteArray extends ByteArrayOutputStream {
     public void writeTo(OutputStream output) throws IOException {
         super.writeTo(output);
     }
-    
+    public byte[] get(){
+        return super.toByteArray();
+    }
 }

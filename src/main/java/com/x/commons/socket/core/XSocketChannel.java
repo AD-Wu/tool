@@ -1,5 +1,6 @@
 package com.x.commons.socket.core;
 
+import com.x.commons.util.bean.New;
 import com.x.commons.util.collection.XArrays;
 import com.x.commons.util.convert.Converts;
 import com.x.commons.util.string.Strings;
@@ -7,6 +8,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.StringJoiner;
 
@@ -15,7 +17,7 @@ import java.util.StringJoiner;
  * @Date 2020-03-27 23:34
  * @Author AD
  */
-public final class SocketChannel {
+public final class XSocketChannel {
     
     private final String localHost;
     
@@ -29,9 +31,12 @@ public final class SocketChannel {
     
     private final Channel channel;
     
-    SocketChannel(ChannelHandlerContext ctx) {
+    private final ISocketSerializer serializer;
+    
+    XSocketChannel(ChannelHandlerContext ctx, ISocketSerializer serializer) {
         this.ctx = ctx;
         this.channel = ctx.channel();
+        this.serializer = serializer;
         String local = channel.localAddress().toString();
         String remote = channel.remoteAddress().toString();
         int end = local.indexOf(":");
@@ -42,12 +47,31 @@ public final class SocketChannel {
         this.remotePort = Converts.toInt(remote.substring(end + 1));
     }
     
+    public boolean send(Serializable bean) throws Exception {
+        if (bean == null) {
+            return true;
+        } else {
+            if (this.serializer == null) {
+                throw new Exception("序列化对象为空");
+            } else {
+                if (channel.isActive() && channel.isOpen() && channel.isActive()) {
+                    ByteBuf buf = serializer.encode(bean, New.buf());
+                    byte[] data = new byte[buf.readableBytes()];
+                    buf.readBytes(data);
+                    send(data);
+                    return true;
+                }
+                return false;
+            }
+        }
+    }
+    
     public boolean send(byte[] bytes) {
         if (XArrays.isEmpty(bytes)) {
             return true;
         }
         if (channel.isActive() && channel.isOpen() && channel.isActive()) {
-            ByteBuf buf = channel.alloc().buffer();
+            ByteBuf buf = New.buf();
             buf.writeBytes(bytes);
             ctx.writeAndFlush(buf);
             return true;
@@ -64,7 +88,7 @@ public final class SocketChannel {
             return true;
         }
         if (channel.isActive() && channel.isOpen() && channel.isActive()) {
-            ByteBuf buf = channel.alloc().buffer();
+            ByteBuf buf = New.buf();
             buf.writeCharSequence(msg, Charset.forName(charset));
             ctx.writeAndFlush(buf);
             return true;
@@ -94,7 +118,7 @@ public final class SocketChannel {
     
     @Override
     public String toString() {
-        return new StringJoiner(", ", SocketChannel.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", XSocketChannel.class.getSimpleName() + "[", "]")
                 .add("localHost='" + localHost + "'")
                 .add("localPort=" + localPort)
                 .add("remoteHost='" + remoteHost + "'")

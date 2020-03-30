@@ -1,6 +1,6 @@
 package com.x.commons.socket.client;
 
-import com.x.commons.socket.core.SocketConfig;
+import com.x.commons.socket.bean.SocketConfig;
 import com.x.commons.util.string.Strings;
 
 /**
@@ -15,6 +15,10 @@ public class SocketClientConfig extends SocketConfig {
     public SocketClientConfig(String ip,int port) {
         super(port);
         this.ip = ip;
+    }
+    
+    public static SocketClientConfig getLocal(int port){
+        return new SocketClientConfig("localhost", port);
     }
 
     public String getIp() {

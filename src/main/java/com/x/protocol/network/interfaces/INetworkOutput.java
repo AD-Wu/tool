@@ -6,7 +6,11 @@ package com.x.protocol.network.interfaces;
  * @Author AD
  */
 public interface INetworkOutput {
+    
     INetworkService getService();
+    
     INetworkConsent getConsent();
+    
     void flush();
+    
 }

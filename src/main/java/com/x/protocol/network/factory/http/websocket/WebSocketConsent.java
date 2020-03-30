@@ -89,7 +89,7 @@ public class WebSocketConsent extends NetworkConsent {
         }
     }
     
-    
+    @Override
     public INetworkIO getNetworkIO(){
         return new NetworkIO(super.service, this, in, out);
     }

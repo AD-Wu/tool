@@ -1,4 +1,4 @@
-package com.x.commons.socket.core;
+package com.x.commons.socket.bean;
 
 import com.x.commons.util.string.Strings;
 

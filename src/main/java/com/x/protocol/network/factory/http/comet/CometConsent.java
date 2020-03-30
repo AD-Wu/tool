@@ -38,6 +38,7 @@ public final class CometConsent extends NetworkConsent implements INetworkConsen
         super.localPort = params.getLocalPort();
     }
     
+    @Override
     public INetworkIO getNetworkIO() {
         WebOutput out = new WebOutput(super.service, this, params.getResponse(), true);
         return new NetworkIO(super.service, this, null, out);

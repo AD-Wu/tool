@@ -35,6 +35,7 @@ public class SerialConsent extends NetworkConsent implements SerialPortEventList
         this.out = new SerialOutput(service, this, serialPort.getOutputStream());
     }
     
+    @Override
     public NetworkIO getNetworkIO() {
         return new NetworkIO(service, this, in, out);
     }

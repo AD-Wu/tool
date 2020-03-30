@@ -180,7 +180,7 @@ public class SQLInfo<T> {
      * @throws Exception 反射机制,可能会有反射异常
      */
     public T createBean(String[] columns, Object[] values) throws Exception {
-        if (XArrays.isValue(columns, values)) {
+        if (XArrays.isValid(columns, values)) {
             // 创建对象
             T t = Clazzs.newInstance(dataClass);
             // 获取set方法集合

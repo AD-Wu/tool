@@ -64,7 +64,7 @@ public final class SQLHelper {
      * @return Where[]
      */
     public static Where[] getWheres(String[] columns, Object[] values) {
-        if (XArrays.isValue(columns, values)) {
+        if (XArrays.isValid(columns, values)) {
             Where[] wheres = new Where[columns.length];
 
             for (int i = 0, L = columns.length; i < L; ++i) {
@@ -85,7 +85,7 @@ public final class SQLHelper {
      * @return KeyValue[]
      */
     public static KeyValue[] getUpdates(String[] columns, Object[] values) {
-        if (XArrays.isValue(columns, values)) {
+        if (XArrays.isValid(columns, values)) {
             KeyValue[] kvs = new KeyValue[columns.length];
 
             for (int i = 0, L = columns.length; i < L; ++i) {

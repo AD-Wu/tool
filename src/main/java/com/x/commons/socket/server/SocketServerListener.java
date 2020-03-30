@@ -1,7 +1,7 @@
 package com.x.commons.socket.server;
 
 import com.x.commons.socket.core.ISocketListener;
-import com.x.commons.socket.core.XSocketChannel;
+import com.x.commons.socket.bean.XSocketChannel;
 import com.x.commons.socket.bean.XSocketProtocol;
 import com.x.commons.util.string.Strings;
 import io.netty.buffer.ByteBuf;

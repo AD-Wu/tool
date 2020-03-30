@@ -1,9 +1,5 @@
 package com.x.commons.socket;
 
-import com.x.commons.socket.client.SocketClient;
-import com.x.commons.socket.client.SocketClientConfig;
-import com.x.commons.socket.client.SocketClientListener;
-
 /**
  * @Desc TODO
  * @Date 2020-02-18 20:03
@@ -18,10 +14,7 @@ public class Test {
         // server.start();
         // System.out.println("服务启动成功");
     
-        SocketClientListener listener = new SocketClientListener();
-        SocketClient client = new SocketClient(SocketClientConfig.getLocal(7777), listener);
-        client.start();
-        System.out.println("异步");
+        
     }
     
 }

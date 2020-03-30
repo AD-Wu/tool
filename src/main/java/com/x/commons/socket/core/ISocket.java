@@ -1,11 +1,17 @@
 package com.x.commons.socket.core;
 
+import com.x.commons.socket.bean.SocketConfig;
+
 /**
  * @Date 2019-10-18 21:21
  * @Author AD
  */
 public interface ISocket {
-    void start() throws Exception;
-
-    void stop() throws Exception;
+    
+    boolean connect(SocketConfig config) throws Exception;
+    
+    boolean start(SocketConfig config)throws Exception;
+    
+    void stop();
+    
 }

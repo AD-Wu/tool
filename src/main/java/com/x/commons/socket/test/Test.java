@@ -1,4 +1,4 @@
-package com.x.commons.socket;
+package com.x.commons.socket.test;
 
 /**
  * @Desc TODO

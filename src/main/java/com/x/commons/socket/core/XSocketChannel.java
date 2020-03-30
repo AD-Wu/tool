@@ -1,6 +1,5 @@
-package com.x.commons.socket.bean;
+package com.x.commons.socket.core;
 
-import com.x.commons.socket.core.ISocketSerializer;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.collection.XArrays;
 import com.x.commons.util.convert.Converts;

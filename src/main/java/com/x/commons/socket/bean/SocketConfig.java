@@ -33,12 +33,11 @@ public class SocketConfig {
     private int clientCount = 50;
     
     // ------------------------ 客户端变量 ------------------------
-    private String ip;
+    private String ip = "localhost";
     
     // ------------------------ 构造方法 ------------------------
     public static SocketConfig localClient(int port) {
         SocketConfig config = new SocketConfig();
-        config.setIp("localhost");
         config.setPort(port);
         return config;
     }

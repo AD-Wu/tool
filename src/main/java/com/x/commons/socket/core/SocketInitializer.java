@@ -1,7 +1,6 @@
 package com.x.commons.socket.core;
 
 import com.x.commons.socket.bean.SocketConfig;
-import com.x.commons.socket.bean.XSocketChannel;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;

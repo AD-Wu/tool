@@ -1,6 +1,5 @@
 package com.x.commons.socket.core;
 
-import com.x.commons.socket.bean.XSocketChannel;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.timeout.IdleStateEvent;
 

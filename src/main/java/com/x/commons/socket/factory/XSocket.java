@@ -1,6 +1,10 @@
-package com.x.commons.socket.core;
+package com.x.commons.socket.factory;
 
 import com.x.commons.socket.bean.SocketConfig;
+import com.x.commons.socket.core.ISocket;
+import com.x.commons.socket.core.ISocketListener;
+import com.x.commons.socket.core.ISocketSerializer;
+import com.x.commons.socket.core.SocketInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -24,7 +28,9 @@ public class XSocket implements ISocket {
     
     private volatile boolean connected = false;
     
-    private Channel channel;
+    private Channel server;
+    
+    private Channel client;
     
     private ISocketListener listener;
     
@@ -40,7 +46,7 @@ public class XSocket implements ISocket {
     }
     
     @Override
-    public boolean connect(SocketConfig config) throws Exception {
+    public synchronized boolean connect(SocketConfig config) throws Exception {
         if (!connected && !config.isServerMode()) {
             new Thread(() -> {
                 NioEventLoopGroup worker = new NioEventLoopGroup();
@@ -54,8 +60,8 @@ public class XSocket implements ISocket {
                     int port = config.getPort();
                     ChannelFuture f = boot.connect(ip, port).sync();
                     connected = true;
-                    Channel channel = f.channel();
-                    channel.closeFuture().sync();
+                    client = f.channel();
+                    client.closeFuture().sync();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
@@ -66,6 +72,14 @@ public class XSocket implements ISocket {
         }
         TimeUnit.SECONDS.sleep(5);
         return connected;
+    }
+    
+    @Override
+    public synchronized void disconnect() {
+        if (connected && client != null) {
+            client.close();
+            connected = false;
+        }
     }
     
     @Override
@@ -84,9 +98,8 @@ public class XSocket implements ISocket {
                 try {
                     ChannelFuture future = boot.bind(config.getPort()).sync();
                     started = true;
-                    channel = future.channel();
-                    notify();
-                    channel.closeFuture().sync();
+                    server = future.channel();
+                    server.closeFuture().sync();
                 } catch (Exception e) {
                     e.printStackTrace();
                     started = false;
@@ -103,17 +116,9 @@ public class XSocket implements ISocket {
     
     @Override
     public synchronized void stop() {
-        if (started) {
-            if (channel == null) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                channel.close();
-                started = false;
-            }
+        if (started && server != null) {
+            server.close();
+            started = false;
         }
     }
     

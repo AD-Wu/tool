@@ -10,7 +10,9 @@ public interface ISocket {
     
     boolean connect(SocketConfig config) throws Exception;
     
-    boolean start(SocketConfig config)throws Exception;
+    void disconnect();
+    
+    boolean start(SocketConfig config) throws Exception;
     
     void stop();
     

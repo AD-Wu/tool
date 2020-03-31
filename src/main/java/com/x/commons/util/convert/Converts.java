@@ -5,7 +5,6 @@ import com.x.commons.util.bean.SB;
 import com.x.commons.util.collection.XArrays;
 import com.x.commons.util.date.DateTimes;
 import com.x.commons.util.string.Strings;
-import lombok.NonNull;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -351,37 +350,37 @@ public final class Converts {
         return "TRUE".equals(t) || "Y".equals(t) || "YES".equals(t) || ("1".equals(t)) || defaultValue;
     }
     
-    public static boolean toBoolean(@NonNull byte[] bs) {
+    public static boolean toBoolean(byte[] bs) {
         return bs[0] != 0;
     }
     
-    public static boolean toBoolean(@NonNull byte[] bs, int expect) { return expect == toInt(bs);}
+    public static boolean toBoolean(byte[] bs, int expect) { return expect == toInt(bs);}
     
-    public static boolean toBoolean(@NonNull byte[] bs, String expect) {
+    public static boolean toBoolean(byte[] bs, String expect) {
         return Strings.toASCII(bs).equals(expect);
     }
     
-    public static byte toByte(@NonNull byte[] bs) {
+    public static byte toByte(byte[] bs) {
         return Digit.BYTE.toNumber(bs).byteValue();
     }
     
-    public static short toShort(@NonNull byte[] bs) {
+    public static short toShort(byte[] bs) {
         return Digit.SHORT.toNumber(bs).shortValue();
     }
     
-    public static int toInt(@NonNull byte[] bs) {
+    public static int toInt(byte[] bs) {
         return Digit.INT.toNumber(bs).intValue();
     }
     
-    public static long toLong(@NonNull byte[] bs) {
+    public static long toLong(byte[] bs) {
         return Digit.LONG.toNumber(bs).longValue();
     }
     
-    public static float toFloat(@NonNull byte[] bs) {
+    public static float toFloat(byte[] bs) {
         return Digit.FloatConverter.FLOAT.toFloat(bs);
     }
     
-    public static double toDouble(@NonNull byte[] bs) {
+    public static double toDouble(byte[] bs) {
         return Digit.FloatConverter.DOUBLE.toDouble(bs);
     }
     

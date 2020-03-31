@@ -8,7 +8,6 @@ import com.x.commons.parser.core.IParser;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.bean.SB;
 import com.x.commons.util.collection.XArrays;
-import lombok.NonNull;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.io.PrintWriter;
@@ -278,7 +277,7 @@ public final class Strings {
      * @param hex 16 进制字符串
      * @return byte[]
      */
-    public static byte[] hexToBytes(@NonNull String hex) {
+    public static byte[] hexToBytes(String hex) {
 
         String s = removeSpaces(hex);
         return onlyHex(s) ? getBytes(fixHex(s)) : XArrays.EMPTY_BYTE;
@@ -290,7 +289,7 @@ public final class Strings {
      * @param context 需转换的字符串
      * @return byte[]
      */
-    public static byte[] toBytes(@NonNull String context) {
+    public static byte[] toBytes(String context) {
 
         return toBytes(context, Charsets.UTF8);
     }
@@ -303,7 +302,7 @@ public final class Strings {
      * @return byte[]
      */
 
-    public static byte[] toBytes(@NonNull String context, Charset charset) {
+    public static byte[] toBytes(String context, Charset charset) {
 
         return context.getBytes(charset);
     }
@@ -325,7 +324,7 @@ public final class Strings {
      * @param bs byte[]
      * @return String
      */
-    public static String toHex(@NonNull byte[] bs) {
+    public static String toHex(byte[] bs) {
 
         return toHex(bs, "");
     }
@@ -337,7 +336,7 @@ public final class Strings {
      * @param separator 分隔符
      * @return String
      */
-    public static String toHex(@NonNull byte[] bs, String separator) {
+    public static String toHex(byte[] bs, String separator) {
 
         final SB sb = New.sb();
         for (byte b : bs) {
@@ -353,7 +352,7 @@ public final class Strings {
      * @param bs byte[]
      * @return String
      */
-    public static String toASCII(@NonNull byte[] bs) {
+    public static String toASCII(byte[] bs) {
 
         return new String(bs, Charsets.US_ASCII);
     }
@@ -364,7 +363,7 @@ public final class Strings {
      * @param hex 16进制字符串
      * @return String
      */
-    public static String toASCII(@NonNull String hex) {
+    public static String toASCII(String hex) {
 
         return toASCII(toBytes(hex));
     }
@@ -375,7 +374,7 @@ public final class Strings {
      * @param bs byte[]
      * @return String
      */
-    public static String toUTF8(@NonNull byte[] bs) {
+    public static String toUTF8(byte[] bs) {
 
         return decode(bs, Charsets.UTF8);
     }
@@ -387,7 +386,7 @@ public final class Strings {
      * @param charset
      * @return String
      */
-    public static String decode(@NonNull byte[] bs, Charset charset) {
+    public static String decode(byte[] bs, Charset charset) {
 
         return new String(bs, charset);
     }
@@ -488,7 +487,7 @@ public final class Strings {
      * @param s 需要修改的字符串
      * @return
      */
-    public static String firstToUpper(@NonNull String s) {
+    public static String firstToUpper(String s) {
         byte[] bs = s.getBytes();
         bs[0] = (byte) ((char) bs[0] - 97 + 65);
         return new String(bs);
@@ -500,7 +499,7 @@ public final class Strings {
      * @param s 需要修改的字符串
      * @return
      */
-    public static String firstToLower(@NonNull String s) {
+    public static String firstToLower(String s) {
         byte[] bs = s.getBytes();
         bs[0] = (byte) ((char) bs[0] - 65 + 97);
         return new String(bs);

@@ -3,7 +3,6 @@ package com.x.commons.util.http.data;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.http.enums.HttpHeaderKey;
 import com.x.commons.util.string.Strings;
-import lombok.NonNull;
 import org.apache.http.*;
 import org.apache.http.util.EntityUtils;
 
@@ -53,7 +52,7 @@ public final class HttpResult implements Serializable {
 
     // ----------------------- 构造方法 -----------------------
 
-    public HttpResult(@NonNull HttpResponse resp) throws IOException {
+    public HttpResult(HttpResponse resp) throws IOException {
         this.statusCode = resp.getStatusLine().getStatusCode();
         this.protocolVersion = resp.getProtocolVersion();
         this.result = EntityUtils.toByteArray(resp.getEntity());

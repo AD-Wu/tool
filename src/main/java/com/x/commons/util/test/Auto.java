@@ -1,7 +1,6 @@
 package com.x.commons.util.test;
 
 import com.x.commons.util.reflact.Clazzs;
-import lombok.NonNull;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -15,17 +14,18 @@ public final class Auto {
     private Auto() {
     }
 
-    public static void run(@NonNull Class<?> clazz) throws Exception {
+    public static void run(Class<?> clazz) throws Exception {
         run(clazz, "");
     }
 
-    public static void run(@NonNull Class<?> clazz, @NonNull String method) throws Exception {
+    public static void run(Class<?> clazz, String method) throws Exception {
         final Object o = Clazzs.newInstance(clazz);
         Arrays.stream(clazz.getDeclaredMethods())
-                .filter(m -> m.getAnnotation(AutoRun.class) != null && ("".equals(method) || method.equals(m.getName())))
+                .filter(m -> m.getAnnotation(AutoRun.class) != null && ("".equals(
+                        method) || method.equals(m.getName())))
                 .forEach(m -> {
                     try {
-                       invoke(m,o);
+                        invoke(m, o);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -33,13 +33,14 @@ public final class Auto {
                 });
     }
 
-    public static <T> T run(@NonNull Class<?> clazz, @NonNull String method, T result) throws Exception {
+    public static <T> T run(Class<?> clazz, String method, T result) throws Exception {
         final Object o = Clazzs.newInstance(clazz);
         Arrays.stream(clazz.getDeclaredMethods())
-                .filter(m -> m.getAnnotation(AutoRun.class) != null && ("".equals(method) || method.equals(m.getName())))
+                .filter(m -> m.getAnnotation(AutoRun.class) != null && ("".equals(
+                        method) || method.equals(m.getName())))
                 .map(m -> {
                     try {
-                        Object invoke = invoke(m,o);
+                        Object invoke = invoke(m, o);
                         return (T) invoke;
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -50,7 +51,7 @@ public final class Auto {
         return null;
     }
 
-    private  static Object invoke(Method m, Object o) throws Exception {
+    private static Object invoke(Method m, Object o) throws Exception {
         m.setAccessible(true);
         Class<?>[] paramsType = m.getParameterTypes();
         Object[] params = new Object[paramsType.length];

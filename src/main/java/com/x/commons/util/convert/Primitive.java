@@ -2,7 +2,6 @@ package com.x.commons.util.convert;
 
 import com.x.commons.util.bean.New;
 import com.x.commons.util.string.Strings;
-import lombok.NonNull;
 
 import java.util.Map;
 
@@ -14,7 +13,7 @@ public enum Primitive {
 
     BYTE(byte.class, Byte.class, 1) {
         @Override
-        public Object decode(@NonNull final byte[] bs) {
+        public Object decode(final byte[] bs) {
             return Converts.toByte(bs);
         }
 
@@ -26,7 +25,7 @@ public enum Primitive {
 
     SHORT(short.class, Short.class, 2) {
         @Override
-        public Object decode(@NonNull final byte[] bs) {
+        public Object decode(final byte[] bs) {
             return Converts.toShort(bs);
         }
 
@@ -38,7 +37,7 @@ public enum Primitive {
 
     INT(int.class, Integer.class, 4) {
         @Override
-        public Object decode(@NonNull final byte[] bs) {
+        public Object decode(final byte[] bs) {
             return Converts.toInt(bs);
         }
 
@@ -50,7 +49,7 @@ public enum Primitive {
 
     LONG(long.class, Long.class, 8) {
         @Override
-        public Object decode(@NonNull final byte[] bs) {
+        public Object decode(final byte[] bs) {
             return Converts.toLong(bs);
         }
 
@@ -62,7 +61,7 @@ public enum Primitive {
 
     FLOAT(float.class, Float.class, 4) {
         @Override
-        public Object decode(@NonNull final byte[] bs) {
+        public Object decode(final byte[] bs) {
             return Converts.toFloat(bs);
         }
 
@@ -74,7 +73,7 @@ public enum Primitive {
 
     DOUBLE(double.class, Double.class, 8) {
         @Override
-        public Object decode(@NonNull final byte[] bs) {
+        public Object decode(final byte[] bs) {
             return Converts.toDouble(bs);
         }
 
@@ -86,7 +85,7 @@ public enum Primitive {
 
     BOOLEAN(boolean.class, Boolean.class, 1) {
         @Override
-        public Object decode(@NonNull final byte[] bs) {
+        public Object decode(final byte[] bs) {
             return Converts.toBoolean(bs);
         }
 
@@ -98,7 +97,7 @@ public enum Primitive {
 
     CHAR(char.class, Character.class, 2) {
         @Override
-        public Object decode(@NonNull final byte[] bs) {
+        public Object decode(final byte[] bs) {
             return ' ';
         }
 
@@ -108,7 +107,7 @@ public enum Primitive {
         }
     };
 
-    public static int getLength(@NonNull Class<?> primitiveClass) {
+    public static int getLength(Class<?> primitiveClass) {
         return LENGTH_MAP.get(primitiveClass) == null ? 0 : LENGTH_MAP.get(primitiveClass);
     }
 
@@ -116,7 +115,7 @@ public enum Primitive {
         return this.byteCount;
     }
 
-    public static Primitive of(@NonNull Class<?> primitiveClass) {
+    public static Primitive of(Class<?> primitiveClass) {
         return SELF_MAP.get(primitiveClass);
     }
 
@@ -153,7 +152,7 @@ public enum Primitive {
         }
     }
 
-    public abstract Object decode(@NonNull byte[] bs);
+    public abstract Object decode(byte[] bs);
 
     public abstract Object decode(String s);
 

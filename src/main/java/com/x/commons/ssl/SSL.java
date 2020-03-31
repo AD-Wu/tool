@@ -1,7 +1,6 @@
 package com.x.commons.ssl;
 
 import com.x.commons.ssl.enums.SSLVersion;
-import lombok.SneakyThrows;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
@@ -13,8 +12,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.File;
 import java.io.FileInputStream;
-import java.security.KeyStore;
-import java.security.SecureRandom;
+import java.security.*;
 
 /**
  * @Desc
@@ -56,7 +54,7 @@ public class SSL {
      * @param keyStorePath
      * @param keyStorepass
      */
-    public SSL(String keyStorePath, String keyStorepass) {
+    public SSL(String keyStorePath, String keyStorepass) throws Exception {
         SSLContext sslContext = getSSLContextWithKey(keyStorePath, keyStorepass);
         initSSLContext(sslContext, VERIFIER, new SecureRandom());
         this.sslFactory = sslContext.getSocketFactory();
@@ -105,8 +103,7 @@ public class SSL {
      * @param keyStorePath
      * @param keyStorepass
      */
-    @SneakyThrows
-    private SSLContext getSSLContextWithKey(String keyStorePath, String keyStorepass) {
+    private SSLContext getSSLContextWithKey(String keyStorePath, String keyStorepass) throws Exception {
         String keyStoreType = KeyStore.getDefaultType();
         KeyStore trustStore = KeyStore.getInstance(keyStoreType);
         File keyStore = new File(keyStorePath);
@@ -119,14 +116,21 @@ public class SSL {
         }
     }
 
-    @SneakyThrows
     private SSLContext getSSLContext(SSLVersion version) {
-        return SSLContext.getInstance(version.get());
+        try {
+            return SSLContext.getInstance(version.get());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    @SneakyThrows
     private void initSSLContext(SSLContext sslContext, X509TrustManager verifier, SecureRandom secureRandom) {
-        sslContext.init(null, new TrustManager[]{verifier}, secureRandom);
+        try {
+            sslContext.init(null, new TrustManager[]{verifier}, secureRandom);
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
     }
 
     // -------------------------- 成员方法 --------------------------

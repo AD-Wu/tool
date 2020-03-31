@@ -3,7 +3,6 @@ package com.x.commons.util;
 import com.thoughtworks.xstream.XStream;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.collection.XArrays;
-import com.x.commons.util.file.Files;
 import com.x.commons.util.string.Strings;
 import com.x.commons.util.xml.Xmls;
 import com.x.framework.database.DaoManager;
@@ -49,17 +48,6 @@ public final class DBSources {
     public static void start(String xmlPath) throws Exception {
         List<DatabaseConfig> configs = loadXML(xmlPath);
         start(configs.toArray(new DatabaseConfig[0]));
-    }
-
-    public static void main(String[] args) {
-        try {
-            List<DatabaseConfig> configs = loadXML(Files.getResourcesPath() + "database.xml");
-            for (DatabaseConfig config : configs) {
-                System.out.println(config);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public IDaoManager getDaoManager(String name) {

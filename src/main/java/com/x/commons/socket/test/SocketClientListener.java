@@ -41,7 +41,7 @@ public class SocketClientListener implements ISocketListener<XSocketProtocol> {
     }
     
     @Override
-    public void receive(XSocketChannel channel, ByteBuf buf) throws Exception {
+    public void receive(XSocketChannel channel, ByteBuf buf,long seq) throws Exception {
         System.out.println("client >>> 接收数据：" + channel.toString());
         int i = buf.readableBytes();
         byte[] data = new byte[i];
@@ -51,7 +51,7 @@ public class SocketClientListener implements ISocketListener<XSocketProtocol> {
     }
     
     @Override
-    public void receive(XSocketChannel channel, XSocketProtocol msg) throws Exception {
+    public void receive(XSocketChannel channel, XSocketProtocol msg,long seq) throws Exception {
         System.out.println("client >>> 接收数据");
     }
     

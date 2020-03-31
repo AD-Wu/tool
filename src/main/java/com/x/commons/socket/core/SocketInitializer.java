@@ -1,6 +1,9 @@
 package com.x.commons.socket.core;
 
 import com.x.commons.socket.bean.SocketConfig;
+import com.x.commons.socket.util.Sockets;
+import com.x.commons.util.bean.New;
+import com.x.commons.util.log.Logs;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
@@ -11,8 +14,10 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
+import org.slf4j.Logger;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,32 +62,46 @@ public class SocketInitializer extends ChannelInitializer<SocketChannel> {
      */
     private class SocketHandler extends SimpleChannelInboundHandler {
         
+        private final Logger logger = Logs.get(SocketHandler.class);
+        
         private final ISocketListener listener;
+        
+        private final Map<String, XSocketChannel> sockets;
         
         private SocketHandler(ISocketListener listener) {
             this.listener = listener;
+            this.sockets = New.concurrentMap();
         }
         
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
-            listener.active(new XSocketChannel(ctx, serializer));
+            XSocketChannel channel = new XSocketChannel(ctx, serializer);
+            sockets.put(channel.getSocketInfo().getRemoteAddress(), channel);
+            listener.active(channel);
         }
         
         @Override
         protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-            if (SocketInitializer.this.serializer == null) {
-                if (msg instanceof ByteBuf) {
-                    ByteBuf buf = (ByteBuf) msg;
-                    listener.receive(new XSocketChannel(ctx, serializer), buf);
-                }
+            String remote = Sockets.getRemoteAddress(ctx);
+            if (!sockets.containsKey(remote)) {
+                logger.warn("Receive illegal data,remote={}", remote);
             } else {
-                listener.receive(new XSocketChannel(ctx, serializer), msg);
+                XSocketChannel channel = sockets.get(remote);
+                if (SocketInitializer.this.serializer == null) {
+                    if (msg instanceof ByteBuf) {
+                        ByteBuf buf = (ByteBuf) msg;
+                        listener.receive(channel, buf, channel.getSeq());
+                    }
+                } else {
+                    listener.receive(channel, msg, channel.getSeq());
+                }
             }
         }
         
         @Override
         public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-            listener.inActive(new XSocketChannel(ctx, serializer));
+            XSocketChannel channel = sockets.remove(Sockets.getRemoteAddress(ctx));
+            listener.inActive(channel);
         }
         
         @Override
@@ -90,14 +109,16 @@ public class SocketInitializer extends ChannelInitializer<SocketChannel> {
             if (evt instanceof IdleStateEvent) {
                 IdleStateEvent event = (IdleStateEvent) evt;
                 if (IdleState.ALL_IDLE == event.state()) {
-                    listener.timeout(new XSocketChannel(ctx, serializer), event);
+                    XSocketChannel channel = sockets.get(Sockets.getRemoteAddress(ctx));
+                    listener.timeout(channel, event);
                 }
             }
         }
         
         @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-            listener.error(new XSocketChannel(ctx, serializer), cause);
+            XSocketChannel channel = sockets.get(Sockets.getRemoteAddress(ctx));
+            listener.error(channel, cause);
         }
         
     }
@@ -122,4 +143,5 @@ public class SocketInitializer extends ChannelInitializer<SocketChannel> {
         }
         
     }
+    
 }

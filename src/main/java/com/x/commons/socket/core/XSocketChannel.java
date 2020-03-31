@@ -1,8 +1,9 @@
 package com.x.commons.socket.core;
 
+import com.x.commons.socket.bean.SocketInfo;
+import com.x.commons.socket.util.Sockets;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.collection.XArrays;
-import com.x.commons.util.convert.Converts;
 import com.x.commons.util.string.Strings;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -10,22 +11,16 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;
-import java.util.StringJoiner;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @Desc
- * @Date 2020-03-27 23:34
+ * @Date 2020-04-01 00:13
  * @Author AD
  */
 public final class XSocketChannel {
     
-    private final String localHost;
-    
-    private final int localPort;
-    
-    private final String remoteHost;
-    
-    private final int remotePort;
+    private final SocketInfo socketInfo;
     
     private final ChannelHandlerContext ctx;
     
@@ -33,18 +28,14 @@ public final class XSocketChannel {
     
     private final ISocketSerializer serializer;
     
+    private final AtomicLong seq;
+    
     XSocketChannel(ChannelHandlerContext ctx, ISocketSerializer serializer) {
         this.ctx = ctx;
         this.channel = ctx.channel();
         this.serializer = serializer;
-        String local = channel.localAddress().toString();
-        String remote = channel.remoteAddress().toString();
-        int end = local.indexOf(":");
-        this.localHost = local.substring(1, end);
-        this.localPort = Converts.toInt(local.substring(end + 1));
-        end = remote.indexOf(":");
-        this.remoteHost = remote.substring(1, end);
-        this.remotePort = Converts.toInt(remote.substring(end + 1));
+        this.socketInfo = Sockets.getSocketInfo(ctx);
+        this.seq = new AtomicLong(-1);
     }
     
     public boolean send(Serializable bean) throws Exception {
@@ -100,30 +91,12 @@ public final class XSocketChannel {
         channel.flush().close();
     }
     
-    public String getLocalHost() {
-        return localHost;
+    public SocketInfo getSocketInfo() {
+        return socketInfo;
     }
     
-    public int getLocalPort() {
-        return localPort;
-    }
-    
-    public String getRemoteHost() {
-        return remoteHost;
-    }
-    
-    public int getRemotePort() {
-        return remotePort;
-    }
-    
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", XSocketChannel.class.getSimpleName() + "[", "]")
-                .add("localHost='" + localHost + "'")
-                .add("localPort=" + localPort)
-                .add("remoteHost='" + remoteHost + "'")
-                .add("remotePort=" + remotePort)
-                .toString();
+    long getSeq() {
+        return seq.incrementAndGet();
     }
     
 }

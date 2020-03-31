@@ -1,8 +1,8 @@
 package com.x.commons.socket.test;
 
+import com.x.commons.socket.bean.XSocketProtocol;
 import com.x.commons.socket.core.ISocketListener;
 import com.x.commons.socket.core.XSocketChannel;
-import com.x.commons.socket.bean.XSocketProtocol;
 import com.x.commons.util.string.Strings;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -28,7 +28,7 @@ public class SocketServerListener implements ISocketListener<XSocketProtocol> {
     }
     
     @Override
-    public void receive(XSocketChannel channel, ByteBuf buf) throws Exception {
+    public void receive(XSocketChannel channel, ByteBuf buf, long seq) throws Exception {
         System.out.println("server >>> 接收byte数据：" + channel.toString());
         int i = buf.readableBytes();
         byte b = buf.readByte();
@@ -38,7 +38,7 @@ public class SocketServerListener implements ISocketListener<XSocketProtocol> {
     }
     
     @Override
-    public void receive(XSocketChannel channel, XSocketProtocol msg) throws Exception {
+    public void receive(XSocketChannel channel, XSocketProtocol msg, long seq) throws Exception {
         System.out.println("server >>> 接收对象数据：" + channel.toString());
         System.out.println("server >>> 接收对象数据：" + msg);
         channel.send("server:receive >> " + msg);

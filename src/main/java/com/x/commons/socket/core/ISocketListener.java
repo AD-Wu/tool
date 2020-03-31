@@ -9,9 +9,9 @@ public interface ISocketListener<T> {
     
     void inActive(XSocketChannel channel) throws Exception;
     
-    void receive(XSocketChannel channel, ByteBuf buf) throws Exception;
+    void receive(XSocketChannel channel, ByteBuf buf, long seq) throws Exception;
     
-    void receive(XSocketChannel channel, T msg) throws Exception;
+    void receive(XSocketChannel channel, T msg, long seq) throws Exception;
     
     void timeout(XSocketChannel channel, IdleStateEvent event) throws Exception;
     

@@ -227,7 +227,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.0.0</version>
+                <!--<version>3.0.0</version>-->
                 <configuration>
                     <!-- get all project dependencies -->
                     <descriptorRefs>
@@ -254,13 +254,13 @@
             </plugin>
         </plugins>
         <resources>
-            <resource>
-                <directory>lib</directory>
-                <targetPath>${project.build.directory}/lib</targetPath>
-                <includes>
-                    <include>**/*.jar</include>
-                </includes>
-            </resource>
+            <!--<resource>-->
+                <!--<directory>lib</directory>-->
+                <!--<targetPath>${project.build.directory}/lib</targetPath>-->
+                <!--<includes>-->
+                    <!--<include>**/*.jar</include>-->
+                <!--</includes>-->
+            <!--</resource>-->
             <resource>
                 <directory>src/main/java</directory>
                 <includes>

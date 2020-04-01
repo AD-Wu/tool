@@ -31,8 +31,8 @@ public class XSocketSerializer implements ISocketSerializer<XSocketProtocol> {
     public List<XSocketProtocol> decode(ByteBuf buf) throws Exception {
         List<XSocketProtocol> prtcs = New.list();
         while (buf.isReadable()) {
-            int index = buf.readerIndex();
             byte b = buf.readByte();
+            int index = buf.readerIndex();
             if (b == START) {
                 if (buf.readableBytes() < 4) {
                     buf.readerIndex(index);

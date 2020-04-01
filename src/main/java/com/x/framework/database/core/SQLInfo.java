@@ -250,8 +250,9 @@ public class SQLInfo<T> {
         // 生成where参数和order参数
         SQLParams where = this.getWhere(wheres);
         if (where == null) return null;
+        
         String orderSQL = getOrderSQL(orders);
-        if (Strings.isNull(orderSQL)) return null;
+        if (orderSQL==null) return null;
 
         String whereSQL = where.getSql();
         return new SQLParams(retrieveSQL + whereSQL + orderSQL, where.getParams(),

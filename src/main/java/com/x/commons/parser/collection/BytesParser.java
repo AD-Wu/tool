@@ -1,5 +1,6 @@
 package com.x.commons.parser.collection;
 
+import com.google.auto.service.AutoService;
 import com.x.commons.parser.core.IParser;
 import com.x.commons.parser.core.Parser;
 import com.x.commons.util.string.Strings;
@@ -9,6 +10,7 @@ import com.x.commons.util.string.Strings;
  * @Date 2019-11-23 20:42
  * @Author AD
  */
+@AutoService(IParser.class)
 @Parser(result = {byte[].class, Byte.class})
 public class BytesParser implements IParser<Byte[], Object> {
     

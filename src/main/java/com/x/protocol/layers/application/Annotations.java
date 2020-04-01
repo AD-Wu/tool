@@ -38,19 +38,19 @@ import java.util.jar.JarFile;
  * @Author AD
  */
 public final class Annotations {
-
+    
     // ------------------------ 变量定义 ------------------------
-
+    
     // ------------------------ 构造方法 ------------------------
     private Annotations() {}
     // ------------------------ 方法定义 ------------------------
-
+    
     public static void main(String[] args) throws Exception {
         String className = Annotations.class.getName();
         String pack = "com.x";
         getAnnotationInfo(className, pack, false);
     }
-
+    
     public static AnnotationInfo getAnnotationInfo(String base, String pkgName, boolean checkDoc) throws Exception {
         if (pkgName == null) pkgName = "";
         Class<?> baseClass = !Strings.isNull(base) ? Class.forName(base) : null;
@@ -58,7 +58,7 @@ public final class Annotations {
         List<Class<?>> interfaces = New.list();
         List<Class<?>> datas = New.list();
         List<Class<?>> readyActors = New.list();
-
+        
         ClassLoader loader = Loader.get();
         String pkgPath = pkgName.replaceAll("\\.", "/");
         Enumeration<URL> urlEnums = loader.getResources(pkgPath);
@@ -72,30 +72,24 @@ public final class Annotations {
                     String jarPath = jarPaths[0].substring(jarPaths[0].indexOf("/"));
                     try (JarFile jar = new JarFile(jarPath);) {
                         handleJarEntity(jar, pkgPath, baseClass, actors, datas, readyActors,
-                                        interfaces);
+                                interfaces);
                     } catch (Exception e) {
                         throw e;
                     }
                 }
             }
         } else {
-            out:
-            while (true) {
-                URL url;
-                do {
-                    if (!urlEnums.hasMoreElements()) break out;
-                    url = urlEnums.nextElement();
-                } while (url == null);
+            while (urlEnums.hasMoreElements()) {
+                URL url = urlEnums.nextElement();
                 String protocol = url.getProtocol();
                 if ("file".equals(protocol)) {
                     getPackageClass(pkgName, filterClassFiles(url.getPath()),
-                                    baseClass, actors, datas, readyActors, interfaces);
+                            baseClass, actors, datas, readyActors, interfaces);
                 } else if ("jar".equals(protocol)) {
                     JarURLConnection urlConn = (JarURLConnection) url.openConnection();
-
+                    
                     try (JarFile jarFile = urlConn.getJarFile();) {
-                        handleJarEntity(jarFile, pkgPath, baseClass, actors, datas, readyActors,
-                                        interfaces);
+                        handleJarEntity(jarFile, pkgPath, baseClass, actors, datas, readyActors,interfaces);
                     } catch (Exception e) {
                         throw e;
                     }
@@ -108,24 +102,24 @@ public final class Annotations {
         unionDatas(dataConfigMap);
         return new AnnotationInfo(actors, dataConfigMap, readyActors, interfaces);
     }
-
+    
     public static void checkError(Class<?> dataClazz, Object xAnnotation, String fieldName,
-                                  String fieldValue, boolean needCheck)
+            String fieldValue, boolean needCheck)
             throws Exception {
         if (needCheck) {
             if (Strings.isNull(fieldValue)) {
                 throw new Exception(
                         Locals.text("protocol.layer.annotation.err", fieldName,
-                                    dataClazz.getName(),
-                                    xAnnotation.toString()));
+                                dataClazz.getName(),
+                                xAnnotation.toString()));
             }
         }
     }
-
+    
     private static void handleJarEntity(JarFile jarFile, String pkgPath, Class<?> clazz, List<Class<?>> actors,
-                                        List<Class<?>> datas, List<Class<?>> readyActors, List<Class<?>> interfaces) {
+            List<Class<?>> datas, List<Class<?>> readyActors, List<Class<?>> interfaces) {
         Enumeration<JarEntry> jarEntries = jarFile.entries();
-
+        
         while (jarEntries.hasMoreElements()) {
             JarEntry jarEntry = jarEntries.nextElement();
             if (!jarEntry.isDirectory()) {
@@ -143,48 +137,48 @@ public final class Annotations {
             }
         }
     }
-
+    
     private static void addDefaultAnnotation(List<Class<?>> datas) {
-
+        
         if (datas.indexOf(KeyValue.class) == -1) {
             datas.add(KeyValue.class);
         }
-
+        
         if (datas.indexOf(NameValue.class) == -1) {
             datas.add(NameValue.class);
         }
-
+        
         if (datas.indexOf(Where.class) == -1) {
             datas.add(Where.class);
         }
-
+        
         if (datas.indexOf(CountResult.class) == -1) {
             datas.add(CountResult.class);
         }
-
+        
         if (datas.indexOf(PageRequest.class) == -1) {
             datas.add(PageRequest.class);
         }
-
+        
         if (datas.indexOf(UpdateRequest.class) == -1) {
             datas.add(UpdateRequest.class);
         }
-
+        
         if (datas.indexOf(WhereRequest.class) == -1) {
             datas.add(WhereRequest.class);
         }
     }
-
+    
     private static void analyzeDatas(List<Class<?>> datas, Map<Class<?>, DataConfig> dataConfigMap, boolean checkDoc)
             throws Exception {
         Iterator<Class<?>> it = datas.iterator();
-
+        
         while (it.hasNext()) {
             Class<?> clazz = it.next();
             XData xdata = clazz.getAnnotation(XData.class);
             checkError(clazz, xdata, "doc", xdata.doc(), checkDoc);
             String version = Strings.fixNull(xdata.version(), "1");
-
+            
             DataConfig dc = new DataConfig();
             dc.setDataClass(clazz);
             dc.setDoc(xdata.doc());
@@ -199,16 +193,16 @@ public final class Annotations {
             dc.setProperties(props);
             dataConfigMap.put(clazz, dc);
         }
-
+        
     }
-
+    
     private static void analyzeProperties(Class<?> dataClazz, List<Property> props, List<String> pks, boolean checkNull)
             throws Exception {
         Class<?> superclass = dataClazz.getSuperclass();
         if (superclass != null && superclass.isAnnotationPresent(XData.class)) {
             analyzeProperties(superclass, props, pks, checkNull);
         }
-
+        
         Field[] fields = dataClazz.getDeclaredFields();
         if (!XArrays.isEmpty(fields)) {
             for (Field field : fields) {
@@ -231,7 +225,7 @@ public final class Annotations {
                             dataClass = fieldType.getComponentType();
                         }
                     }
-
+                    
                     field.setAccessible(true);
                     String fieldName = field.getName();
                     Property prop = new Property();
@@ -254,9 +248,9 @@ public final class Annotations {
                 }
             }
         }
-
+        
     }
-
+    
     public static Class<?> getActualType(Class<?> annotationClass, Class<?> clazz, Class<?> type, Type genericType) {
         if (type.isPrimitive()) {
             return type;
@@ -267,7 +261,7 @@ public final class Annotations {
                 if (at != null) {
                     return at;
                 }
-
+                
                 if (annotationClass.isInterface()) {
                     Type[] gtypes = annotationClass.getGenericInterfaces();
                     if (gtypes != null && gtypes.length > 0) {
@@ -277,7 +271,7 @@ public final class Annotations {
                         }
                     }
                 }
-
+                
                 at = getGenericType(clazz.getGenericSuperclass());
                 if (at != null) {
                     return at;
@@ -289,7 +283,7 @@ public final class Annotations {
                     if (gtype != null) {
                         return gtype;
                     }
-
+                    
                     if (annotationClass.isInterface()) {
                         Type[] e = annotationClass.getGenericInterfaces();
                         if (e != null && e.length > 0) {
@@ -303,7 +297,7 @@ public final class Annotations {
                             }
                         }
                     }
-
+                    
                     gtype = getGenericType(clazz.getGenericSuperclass());
                     if (gtype != null) {
                         try {
@@ -314,13 +308,13 @@ public final class Annotations {
                     }
                 }
             }
-
+            
             return type;
         }
     }
-
+    
     // ------------------------ 私有方法 ------------------------
-
+    
     private static Class<?> getGenericType(Type type) {
         if (type == null) {
             return null;
@@ -332,7 +326,7 @@ public final class Annotations {
                 if (clazz == null) {
                     return null;
                 }
-
+                
                 try {
                     return Class.forName("[L" + clazz.getName() + ";");
                 } catch (Exception e) {
@@ -341,11 +335,11 @@ public final class Annotations {
             } else if (type instanceof TypeVariable) {
                 return getGenericType(((TypeVariable) type).getBounds()[0]);
             }
-
+            
             return null;
         }
     }
-
+    
     private static Class<?> getGenericClass(ParameterizedType paramType) {
         Type[] types = paramType.getActualTypeArguments();
         if (!XArrays.isEmpty(types)) {
@@ -360,7 +354,7 @@ public final class Annotations {
             return null;
         }
     }
-
+    
     /**
      * 属性字段里如果有对象属性,更新属性里的对象信息
      *
@@ -368,7 +362,7 @@ public final class Annotations {
      */
     private static void unionDatas(Map<Class<?>, DataConfig> dataConfigMap) {
         Iterator<DataConfig> it = dataConfigMap.values().iterator();
-
+        
         while (it.hasNext()) {
             DataConfig dataConfig = it.next();
             Property[] props = dataConfig.getProperties();
@@ -379,13 +373,13 @@ public final class Annotations {
                 }
             }
         }
-
+        
     }
-
+    
     private static File[] filterClassFiles(String path) {
         return Strings.isNull(path) ? null : (new File(path)).listFiles(Clazzs.FILTER);
     }
-
+    
     private static String getClassName(String pkgName, String className) {
         if (className == null) {
             return null;
@@ -394,18 +388,18 @@ public final class Annotations {
             return last <= 0 ? null : pkgName + "." + className.substring(0, last);
         }
     }
-
+    
     private static void analyzeClass(String className, Class<?> baseClass, List<Class<?>> actors,
-                                     List<Class<?>> datas, List<Class<?>> readyActors, List<Class<?>> interfaces) {
+            List<Class<?>> datas, List<Class<?>> readyActors, List<Class<?>> interfaces) {
         if (!Strings.isNull(className)) {
             Class<?> clazz = null;
-
+            
             try {
                 clazz = Class.forName(className);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
+            
             if (clazz != null) {
                 if (clazz.isAnnotationPresent(XData.class)) {
                     datas.add(clazz);
@@ -419,17 +413,17 @@ public final class Annotations {
                             actors.add(clazz);
                         }
                     }
-
+                    
                     if (baseClass == null) {
                         try {
                             if (clazz.getInterfaces().length == 0) {
                                 return;
                             }
-
+                            
                             if (clazz.getConstructors().length == 0) {
                                 return;
                             }
-
+                            
                             readyActors.add(clazz);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -439,36 +433,36 @@ public final class Annotations {
                             if (clazz.getConstructors().length == 0) {
                                 return;
                             }
-
+                            
                             readyActors.add(clazz);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
-
+                    
                 }
             }
         }
     }
-
+    
     private static void getPackageClass(String pkgName, File[] files, Class<?> actorClass, List<Class<?>> actors,
-                                        List<Class<?>> datas, List<Class<?>> readyActors, List<Class<?>> interfaces) {
+            List<Class<?>> datas, List<Class<?>> readyActors, List<Class<?>> interfaces) {
         if (!XArrays.isEmpty(files)) {
-
+            
             for (int i = 0, L = files.length; i < L; ++i) {
                 File file = files[i];
                 String className = file.getName();
                 if (file.isFile()) {
                     analyzeClass(getClassName(pkgName, className), actorClass, actors, datas,
-                                 readyActors, interfaces);
+                            readyActors, interfaces);
                 } else {
                     String var12 = pkgName.length() > 0 ? pkgName + "." + className : className;
                     getPackageClass(var12, filterClassFiles(file.getPath()), actorClass, actors,
-                                    datas, readyActors, interfaces);
+                            datas, readyActors, interfaces);
                 }
             }
-
+            
         }
     }
-
+    
 }

@@ -1,14 +1,19 @@
 package com.x.commons.util.reflact;
 
 import com.x.commons.util.bean.New;
-import com.x.commons.util.file.Files;
 import com.x.commons.util.string.Strings;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.jar.JarFile;
 
 import static java.util.stream.Collectors.toList;
 
@@ -94,26 +99,54 @@ public final class Clazzs {
         return clazz != null && clazz.isArray();
     }
     
+    public static List<Class<?>> getClasses(String packageName) throws IOException {
+        if (packageName == null) {
+            packageName = "";
+        }
+        String pkgPath = packageName.replaceAll("\\.", "/");
+        Enumeration<URL> urlEnums = LOADER.getResources(pkgPath);
+        if (urlEnums == null) {
+            URL[] urls = ((URLClassLoader) Loader.get()).getURLs();
+            for (URL url : urls) {
+                String path = url.getPath();
+                System.out.println(path);
+            }
+        } else {
+            while (urlEnums.hasMoreElements()) {
+                URL url = urlEnums.nextElement();
+                String prtc = url.getProtocol();
+                if ("file".equals(prtc)) {
+                    System.out.println("file:" + url.getPath());
+                } else if ("jar".equals(prtc)) {
+                    JarURLConnection urlConn = (JarURLConnection) url.openConnection();
+                    try (JarFile jar = urlConn.getJarFile()) {
+                        System.out.println("jar:" + jar.getName());
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
     /**
      * 获取包下带某个注解的类
      *
      * @param packageName 包名
      * @param annotation  注解类
-     *
      */
-    public static <T extends Annotation> List<Class<?>> getClass(
+    private static <T extends Annotation> List<Class<?>> getClass(
             String packageName,
-            Class<T> annotation){
+            Class<T> annotation) {
         return getClass(packageName, New.list())
                 .stream()
                 .filter(c -> c.getDeclaredAnnotation(annotation) != null)
                 .collect(toList());
     }
     
-    public static <A extends Annotation, I> List<Class<I>> getClass(
+    private static <A extends Annotation, I> List<Class<I>> getClass(
             String packageName,
             Class<A> annotation,
-            Class<I> interfaceClass)  {
+            Class<I> interfaceClass) {
         List<Class<?>> collect = null;
         try {
             collect = getClass(packageName, New.list());
@@ -131,10 +164,11 @@ public final class Clazzs {
      * 获取某个包下的所有类
      *
      * @param packageName 包名
-     * @param list 容器
+     * @param list        容器
      */
-    public static List<Class<?>> getClass(String packageName, List<Class<?>> list)  {
-        for (File f : Files.getFiles(packageName)) {
+    private static List<Class<?>> getClass(String packageName, List<Class<?>> list) {
+        File[] files = null;
+        for (File f : files) {
             if (f.isDirectory()) { getClass(getPath(packageName, f), list); }
             if (f.getName().endsWith(".class")) {
                 try {

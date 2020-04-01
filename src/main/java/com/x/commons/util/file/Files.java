@@ -828,7 +828,7 @@ public final class Files {
         return list.toArray(new File[list.size()]);
     }
 
-    public static File[] getFiles(String packageName) {
+    private static File[] getFiles(String packageName) {
 
         try {
             URI uri = LOADER.getResource(packageName.replace(".", SP)).toURI();

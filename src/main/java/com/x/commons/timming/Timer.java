@@ -176,6 +176,31 @@ public final class Timer {
     }
     
     /**
+     * 延迟固定周期执行（所有的定时任务都是上一次执行完毕才会执行下一次）
+     *
+     * @param runnable 可运行的任务
+     * @param delay    延迟时间
+     * @param period   间隔周期
+     * @param unit     时间单位（延迟和周期用同一个单位）
+     */
+    public void add(Runnable runnable, int delay, int period, TimeUnit unit) {
+        add(runnable, unit.toMillis(delay), unit.toMillis(period));
+    }
+    
+    /**
+     * 延迟固定周期执行（所有的定时任务都是上一次执行完毕才会执行下一次）
+     *
+     * @param runnable   可运行的任务
+     * @param delay      延迟时间
+     * @param delayUnit  延迟单位
+     * @param period     间隔周期
+     * @param periodUnit 间隔单位
+     */
+    public void add(Runnable runnable, int delay, TimeUnit delayUnit, int period, TimeUnit periodUnit) {
+        add(runnable, delayUnit.toMillis(delay), periodUnit.toMillis(period));
+    }
+    
+    /**
      * 默认延迟执行一次
      *
      * @param runnable 可运行任务
@@ -193,7 +218,7 @@ public final class Timer {
      * @param period   周期
      */
     public void add(Runnable runnable, long delay, long period) {
-        this.add(runnable, delay, period, 0L);
+        this.add(runnable, delay, period, 0);
     }
     
     /**

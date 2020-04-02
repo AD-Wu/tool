@@ -1,6 +1,7 @@
 package com.x.commons.util.reflact;
 
 import com.x.commons.util.bean.New;
+import org.apache.commons.lang3.reflect.MethodUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -17,6 +18,8 @@ public final class Methods {
 
     private Methods() {}
     public static Method[] getMethods(Class<?> target, Class<? extends Annotation>... annotations) {
+        MethodUtils.getMethodsListWithAnnotation(null, null, false, false);
+        MethodUtils.getMethodsListWithAnnotation(null, null);
         final Method[] ms = target.getDeclaredMethods();
         final List<Method> list = New.list(ms.length);
         for (Method m : ms) {
@@ -33,5 +36,6 @@ public final class Methods {
         final Method[] ms = target.getDeclaredMethods();
         return Stream.of(ms).filter(m -> m.getName().equals(methodName)).findFirst().get();
     }
-
+    
+    
 }

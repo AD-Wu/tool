@@ -1,21 +1,20 @@
 package com.x.commons.util.reflact;
 
 import com.x.commons.util.bean.New;
+import com.x.commons.util.collection.XArrays;
 import com.x.commons.util.string.Strings;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * @Date 2018-12-18 23:49
@@ -41,9 +40,32 @@ public final class Clazzs {
     };
     
     // ------------------------ 构造方法 ------------------------
-    private Clazzs() {
-    }
+    private Clazzs() {}
     // ------------------------ 方法定义 ------------------------
+    
+    public static boolean isArray(Class<?> clazz) {
+        return clazz != null && clazz.isArray();
+    }
+    
+    public static boolean isPrimitive(Class<?> clazz) {
+        return clazz != null && clazz.isPrimitive();
+    }
+    
+    public static boolean isString(Class<?> clazz) {
+        return String.class == clazz;
+    }
+    
+    public static boolean isObject(Class<?> clazz) {
+        return !isPrimitive(clazz) && !isString(clazz) && !isArray(clazz);
+    }
+    
+    public static boolean isPrimitiveArray(Class<?> clazz) {
+        return isArray(clazz) && isPrimitive(clazz.getComponentType());
+    }
+    
+    public static boolean isObjectArray(Class<?> clazz) {
+        return isArray(clazz) && !isPrimitive(clazz.getComponentType());
+    }
     
     public static ClassLoader getLoader() {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -75,120 +97,112 @@ public final class Clazzs {
         return defaultClass;
     }
     
-    public static boolean isPrimitive(Class<?> clazz) {
-        return clazz != null && clazz.isPrimitive();
-    }
-    
-    public static boolean isString(Class<?> clazz) {
-        return String.class == clazz;
-    }
-    
-    public static boolean isObject(Class<?> clazz) {
-        return !isPrimitive(clazz) && !isString(clazz) && !isArray(clazz);
-    }
-    
-    public static boolean isPrimitiveArray(Class<?> clazz) {
-        return isArray(clazz) && isPrimitive(clazz.getComponentType());
-    }
-    
-    public static boolean isObjectArray(Class<?> clazz) {
-        return isArray(clazz) && !isPrimitive(clazz.getComponentType());
-    }
-    
-    public static boolean isArray(Class<?> clazz) {
-        return clazz != null && clazz.isArray();
-    }
-    
+    /**
+     * 获取包下所有类(如果依赖jar包没有打包进来，会发生NoClassDefFoundError异常，表示运行时找不到该类，但编译时可以通过)
+     *
+     * @param packageName 包名，一般要二级包名，如：com.x
+     *
+     * @return
+     *
+     * @throws IOException
+     */
     public static List<Class<?>> getClasses(String packageName) throws IOException {
-        if (packageName == null) {
-            packageName = "";
-        }
+        if (packageName == null) {packageName = "";}
         String pkgPath = packageName.replaceAll("\\.", "/");
         Enumeration<URL> urlEnums = LOADER.getResources(pkgPath);
+        List<Class<?>> classes = New.list();
         if (urlEnums == null) {
             URL[] urls = ((URLClassLoader) Loader.get()).getURLs();
             for (URL url : urls) {
-                String path = url.getPath();
-                System.out.println(path);
+                String filePath = url.getPath();
+                if (!filePath.endsWith("classes/")) {
+                    String fullPath = filePath + "!/" + pkgPath;
+                    String[] jarPkg = fullPath.split("!");
+                    String jarPath = jarPkg[0].substring(jarPkg[0].indexOf("/"));
+                    try (JarFile jar = new JarFile(jarPath)) {
+                        analyzeJar(jar, pkgPath, classes);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         } else {
             while (urlEnums.hasMoreElements()) {
                 URL url = urlEnums.nextElement();
                 String prtc = url.getProtocol();
                 if ("file".equals(prtc)) {
-                    System.out.println("file:" + url.getPath());
+                    String path = url.getPath();
+                    File[] files = new File(path).listFiles(FILTER);
+                    analyzeFile(packageName, files, classes);
                 } else if ("jar".equals(prtc)) {
-                    JarURLConnection urlConn = (JarURLConnection) url.openConnection();
-                    try (JarFile jar = urlConn.getJarFile()) {
-                        System.out.println("jar:" + jar.getName());
+                    try {
+                        JarURLConnection jarConn = (JarURLConnection) url.openConnection();
+                        try (JarFile jar = jarConn.getJarFile();) {
+                            analyzeJar(jar, pkgPath, classes);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    
+                }
+            }
+        }
+        return classes;
+    }
+    
+    private static void analyzeFile(String pkgName, File[] files, List<Class<?>> classes) {
+        if (XArrays.isEmpty(files)) {return;}
+        for (File file : files) {
+            String name = file.getName();
+            if (file.isFile()) {
+                int last = name.lastIndexOf(".");
+                if (last > 0) {
+                    name = pkgName + "." + name.substring(0, last);
+                    try {
+                        classes.add(Class.forName(name));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                String nextPkg = Strings.isNotNull(pkgName) ? pkgName + "." + name : name;
+                File[] childFiles = new File(file.getPath()).listFiles(FILTER);
+                analyzeFile(nextPkg, childFiles, classes);
+            }
+        }
+    }
+    
+    private static void analyzeJar(JarFile jarFile, String pkgPath, List<Class<?>> classes) {
+        Enumeration<JarEntry> files = jarFile.entries();
+        // 便利jar包里的所有元素（jar包其实是压缩包）
+        while (files.hasMoreElements()) {
+            /*
+             获取jar元素，如：
+             - javax/
+             - javax/crypto/
+             - javax/crypto/interfaces/
+             - javax/crypto/interfaces/DHKey.class
+            */
+            JarEntry file = files.nextElement();
+            if (!file.isDirectory()) {
+                String name = file.getName();
+                if (name != null && name.length() >= 8) {
+                    if (name.charAt(0) == '/') {
+                        name = name.substring(1);
+                    }
+                    if (name.startsWith(pkgPath) && name.endsWith(".class")) {
+                        name = name.replaceAll("/", ".");
+                        name = name.substring(0, name.length() - 6);
+                        try {
+                            Class<?> clazz = Class.forName(name);
+                            classes.add(clazz);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
         }
-        return null;
-    }
-    
-    /**
-     * 获取包下带某个注解的类
-     *
-     * @param packageName 包名
-     * @param annotation  注解类
-     */
-    private static <T extends Annotation> List<Class<?>> getClass(
-            String packageName,
-            Class<T> annotation) {
-        return getClass(packageName, New.list())
-                .stream()
-                .filter(c -> c.getDeclaredAnnotation(annotation) != null)
-                .collect(toList());
-    }
-    
-    private static <A extends Annotation, I> List<Class<I>> getClass(
-            String packageName,
-            Class<A> annotation,
-            Class<I> interfaceClass) {
-        List<Class<?>> collect = null;
-        try {
-            collect = getClass(packageName, New.list());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        List<Class<I>> result = collect.stream()
-                .filter(c -> c.getDeclaredAnnotation(annotation) != null &&
-                             interfaceClass.isAssignableFrom(c))
-                .map(c -> (Class<I>) c).collect(toList());
-        return result;
-    }
-    
-    /**
-     * 获取某个包下的所有类
-     *
-     * @param packageName 包名
-     * @param list        容器
-     */
-    private static List<Class<?>> getClass(String packageName, List<Class<?>> list) {
-        File[] files = null;
-        for (File f : files) {
-            if (f.isDirectory()) { getClass(getPath(packageName, f), list); }
-            if (f.getName().endsWith(".class")) {
-                try {
-                    list.add(LOADER.loadClass(getClassName(packageName, f)));
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return list;
-    }
-    
-    // ------------------------ 私有方法 ------------------------
-    
-    private static String getPath(String packageName, File file) {
-        return packageName + "." + file.getName();
-    }
-    
-    private static String getClassName(String packageName, File file) {
-        return getPath(packageName, file).replace(".class", "");
     }
     
 }

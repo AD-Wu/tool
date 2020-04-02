@@ -65,11 +65,11 @@ public final class Annotations {
         if (urlEnums == null) {
             URL[] urls = ((URLClassLoader) loader).getURLs();
             for (URL url : urls) {
-                String path = url.getPath();
-                if (!path.endsWith("classes/")) {
-                    String fullPath = path + "!/" + pkgPath;
-                    String[] jarPaths = fullPath.split("!");
-                    String jarPath = jarPaths[0].substring(jarPaths[0].indexOf("/"));
+                String filePath = url.getPath();
+                if (!filePath.endsWith("classes/")) {
+                    String fullPath = filePath + "!/" + pkgPath;
+                    String[] jarPkg = fullPath.split("!");
+                    String jarPath = jarPkg[0].substring(jarPkg[0].indexOf("/"));
                     try (JarFile jar = new JarFile(jarPath);) {
                         handleJarEntity(jar, pkgPath, baseClass, actors, datas, readyActors,
                                 interfaces);
@@ -89,7 +89,7 @@ public final class Annotations {
                     JarURLConnection urlConn = (JarURLConnection) url.openConnection();
                     
                     try (JarFile jarFile = urlConn.getJarFile();) {
-                        handleJarEntity(jarFile, pkgPath, baseClass, actors, datas, readyActors,interfaces);
+                        handleJarEntity(jarFile, pkgPath, baseClass, actors, datas, readyActors, interfaces);
                     } catch (Exception e) {
                         throw e;
                     }
@@ -448,16 +448,14 @@ public final class Annotations {
     private static void getPackageClass(String pkgName, File[] files, Class<?> actorClass, List<Class<?>> actors,
             List<Class<?>> datas, List<Class<?>> readyActors, List<Class<?>> interfaces) {
         if (!XArrays.isEmpty(files)) {
-            
-            for (int i = 0, L = files.length; i < L; ++i) {
-                File file = files[i];
+            for (File file : files) {
                 String className = file.getName();
                 if (file.isFile()) {
                     analyzeClass(getClassName(pkgName, className), actorClass, actors, datas,
                             readyActors, interfaces);
                 } else {
-                    String var12 = pkgName.length() > 0 ? pkgName + "." + className : className;
-                    getPackageClass(var12, filterClassFiles(file.getPath()), actorClass, actors,
+                    String nextPkg = pkgName.length() > 0 ? pkgName + "." + className : className;
+                    getPackageClass(nextPkg, filterClassFiles(file.getPath()), actorClass, actors,
                             datas, readyActors, interfaces);
                 }
             }

@@ -9,13 +9,12 @@ import com.x.commons.util.reflact.Loader;
 import com.x.commons.util.string.Strings;
 
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
@@ -831,11 +830,20 @@ public final class Files {
     private static File[] getFiles(String packageName) {
 
         try {
-            URI uri = LOADER.getResource(packageName.replace(".", SP)).toURI();
-            return new File(uri).listFiles();
-        } catch (URISyntaxException e) {
+            String replace = packageName.replace(".", SP);
+            Enumeration<URL> resources = LOADER.getResources(replace);
+            List<File> all = New.list();
+            while (resources.hasMoreElements()){
+                URL url = resources.nextElement();
+                File[] files = new File(url.toURI()).listFiles();
+                for (File file : files) {
+                    all.add(file);
+                }
+            }
+            return all.toArray(new File[0]);
+        } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return new File[0];
         }
     }
 

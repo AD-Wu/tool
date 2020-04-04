@@ -1,7 +1,7 @@
 package com.x.commons.socket.core;
 
 import com.x.commons.socket.bean.SocketInfo;
-import com.x.commons.socket.util.Sockets;
+import com.x.commons.socket.util.SocketHelper;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.collection.XArrays;
 import com.x.commons.util.string.Strings;
@@ -34,7 +34,7 @@ public final class XSocketChannel {
         this.ctx = ctx;
         this.channel = ctx.channel();
         this.serializer = serializer;
-        this.socketInfo = Sockets.getSocketInfo(ctx);
+        this.socketInfo = SocketHelper.getSocketInfo(ctx);
         this.seq = new AtomicLong(-1);
     }
     

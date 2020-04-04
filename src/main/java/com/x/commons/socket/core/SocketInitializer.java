@@ -1,7 +1,8 @@
 package com.x.commons.socket.core;
 
 import com.x.commons.socket.bean.SocketConfig;
-import com.x.commons.socket.util.Sockets;
+import com.x.commons.socket.util.SocketHelper;
+import com.x.commons.timming.Timer;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.log.Logs;
 import io.netty.buffer.ByteBuf;
@@ -82,7 +83,7 @@ public class SocketInitializer extends ChannelInitializer<SocketChannel> {
         
         @Override
         protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-            String remote = Sockets.getRemoteAddress(ctx);
+            String remote = SocketHelper.getRemoteAddress(ctx);
             if (!sockets.containsKey(remote)) {
                 logger.warn("Receive illegal data,remote={}", remote);
             } else {
@@ -90,17 +91,30 @@ public class SocketInitializer extends ChannelInitializer<SocketChannel> {
                 if (SocketInitializer.this.serializer == null) {
                     if (msg instanceof ByteBuf) {
                         ByteBuf buf = (ByteBuf) msg;
-                        listener.receive(channel, buf, channel.getSeq());
+                        Timer.get().add(()->{
+                            try {
+                                listener.receive(channel, buf, channel.getSeq());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                        
                     }
                 } else {
-                    listener.receive(channel, msg, channel.getSeq());
+                    Timer.get().add(()->{
+                        try {
+                            listener.receive(channel, msg, channel.getSeq());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
                 }
             }
         }
         
         @Override
         public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-            XSocketChannel channel = sockets.remove(Sockets.getRemoteAddress(ctx));
+            XSocketChannel channel = sockets.remove(SocketHelper.getRemoteAddress(ctx));
             listener.inActive(channel);
         }
         
@@ -109,7 +123,7 @@ public class SocketInitializer extends ChannelInitializer<SocketChannel> {
             if (evt instanceof IdleStateEvent) {
                 IdleStateEvent event = (IdleStateEvent) evt;
                 if (IdleState.ALL_IDLE == event.state()) {
-                    XSocketChannel channel = sockets.get(Sockets.getRemoteAddress(ctx));
+                    XSocketChannel channel = sockets.get(SocketHelper.getRemoteAddress(ctx));
                     listener.timeout(channel, event);
                 }
             }
@@ -117,7 +131,7 @@ public class SocketInitializer extends ChannelInitializer<SocketChannel> {
         
         @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-            XSocketChannel channel = sockets.get(Sockets.getRemoteAddress(ctx));
+            XSocketChannel channel = sockets.get(SocketHelper.getRemoteAddress(ctx));
             listener.error(channel, cause);
         }
         

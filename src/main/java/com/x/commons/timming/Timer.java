@@ -38,7 +38,7 @@ public final class Timer {
     /**
      * 定时器是否停止的标识（定时器其实就是一条线程监测线程池里的任务）
      */
-    private boolean stopped;
+    private volatile boolean stopped;
     
     /**
      * 监测线程
@@ -234,7 +234,7 @@ public final class Timer {
             Task task = new Task(runnable, delay, period, repeatCount);
             synchronized (this.lock) {
                 this.taskList.add(task);
-                this.tasks = (Task[]) taskList.toArray(new Task[this.taskList.size()]);
+                this.tasks = taskList.toArray(new Task[0]);
             }
         }
     }
@@ -248,8 +248,7 @@ public final class Timer {
      */
     public boolean contains(Runnable runnable) {
         
-        for (int i = 0, L = tasks.length; i < L; ++i) {
-            Task task = tasks[i];
+        for (Task task : tasks) {
             if (task.getTask().equals(runnable)) {
                 return true;
             }
@@ -266,9 +265,7 @@ public final class Timer {
      */
     public boolean remove(Runnable runnable) {
         Task task = null;
-        
-        for (int i = 0, L = tasks.length; i < L; ++i) {
-            Task t = tasks[i];
+        for (Task t : tasks) {
             if (t.getTask().equals(runnable)) {
                 task = t;
                 break;
@@ -278,7 +275,7 @@ public final class Timer {
         if (task != null) {
             synchronized (this.lock) {
                 this.taskList.remove(task);
-                this.tasks = (Task[]) taskList.toArray(new Task[taskList.size()]);
+                this.tasks = taskList.toArray(new Task[0]);
                 return true;
             }
         } else {
@@ -310,7 +307,7 @@ public final class Timer {
     public void clear() {
         synchronized (this.lock) {
             taskList.clear();
-            tasks = (Task[]) taskList.toArray(new Task[taskList.size()]);
+            tasks = taskList.toArray(new Task[0]);
         }
     }
     
@@ -355,9 +352,7 @@ public final class Timer {
             instance = null;
             timers = (Timer[]) timerList.toArray(new Timer[0]);
         }
-        int L = timers.length;
-        for (int i = 0; i < L; ++i) {
-            Timer timer = timers[i];
+        for (Timer timer : timers) {
             timer.destroy();
         }
     }
@@ -391,51 +386,39 @@ public final class Timer {
      */
     private void checkTask() {
         // 获取开始时间
-        long old = System.currentTimeMillis();
-        long var5 = 0L;
+        long prev = System.currentTimeMillis();
+        long complexity = 0L;
         // 对象锁
-        Object lock = new Object();
-        synchronized (lock) {
-            // 无限监测执行
+        Object taskLock = new Object();
+        synchronized (taskLock) {
             while (true) {
                 // 判断当前定时器是否终止
                 while (!stopped) {
                     // 如果没有任务等待100毫秒
                     if (tasks.length == 0) {
                         try {
-                            lock.wait(100L);
+                            taskLock.wait(100L);
                         } catch (Exception e) {
                         }
                     } else {
                         // 计算间隔时长
                         long now = System.currentTimeMillis();
-                        int period;
-                        // Task[] tasksTemp;
-                        int taskLength;
-                        int i;
-                        Task task;
-                        if (now < old || now > old + (long) (tasks.length * 2) + var5 + 1000L) {
+                        if (now < prev || now > prev + (long) (tasks.length * 2) + complexity + 1000L) {
                             // 计算出周期
-                            period = (int) (now - old);
-                            // tasksTemp = tasks;
-                            taskLength = tasks.length;
+                            int period = (int) (now - prev);
                             // 更新当前定时器所有任务的下一次执行时间
-                            for (i = 0; i < taskLength; ++i) {
-                                // task = tasksTemp[i];
-                                task = tasks[i];
+                            for (Task task : tasks) {
                                 task.updateTime(period);
                             }
                         }
                         // 更新完毕，初始化变量
-                        old = now;
-                        period = 0;
-                        taskLength = tasks.length;
+                        prev = now;
+                        int runs = 0;
                         
                         // 下次时间更新完毕后，需执行任务
-                        for (i = 0; i < taskLength; ++i) {
-                            task = tasks[i];
+                        for (Task task : tasks) {
                             if (task.needToRun(now)) {
-                                ++period;
+                                ++runs;
                                 // 如果定时器已停止，则不执行任务
                                 if (stopped) {
                                     break;
@@ -450,7 +433,7 @@ public final class Timer {
                                     if (task.needRemove()) {
                                         synchronized (this.lock) {
                                             taskList.remove(task);
-                                            tasks = (Task[]) taskList.toArray(new Task[taskList.size()]);
+                                            tasks = taskList.toArray(new Task[0]);
                                         }
                                     }
                                 } else {
@@ -458,10 +441,10 @@ public final class Timer {
                                 }
                             }
                         }
-                        var5 = (long) (period * 100);
+                        complexity = (long) (runs * 100);
                         
                         try {
-                            lock.wait(100L);
+                            taskLock.wait(100L);
                         } catch (Exception e) {
                         }
                     }

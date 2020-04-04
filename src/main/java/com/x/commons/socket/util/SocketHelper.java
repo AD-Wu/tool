@@ -10,13 +10,14 @@ import io.netty.channel.ChannelHandlerContext;
  * @Date 2020-03-31 23:20
  * @Author AD
  */
-public final class Sockets {
+public final class SocketHelper {
     
-    private Sockets() {}
+    private SocketHelper() {}
     
     public static byte[] getData(ByteBuf buf) {
         byte[] data = new byte[buf.readableBytes()];
         buf.readBytes(data);
+        buf.release();
         return data;
     }
     

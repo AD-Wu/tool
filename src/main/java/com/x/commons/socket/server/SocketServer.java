@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
  * @Author AD
  */
 public class SocketServer implements ISocket {
+    
     private volatile boolean started = false;
     
     private Channel server;
@@ -30,24 +31,26 @@ public class SocketServer implements ISocket {
     private final ISocketSerializer serializer;
     
     private final SocketConfig config;
-    public SocketServer(SocketConfig config,ISocketListener listener) {
-        this(config,listener, null);
+    
+    public SocketServer(SocketConfig config, ISocketListener listener) {
+        this(config, listener, null);
     }
     
-    public SocketServer(SocketConfig config,ISocketListener listener, ISocketSerializer serializer) {
+    public SocketServer(SocketConfig config, ISocketListener listener, ISocketSerializer serializer) {
         this.config = config;
         this.listener = listener;
         this.serializer = serializer;
     }
+    
     @Override
-    public boolean start() throws Exception {
+    public synchronized boolean start() throws Exception {
         if (!started && config.isServerMode()) {
             ServerBootstrap boot = new ServerBootstrap();
             boot.channel(NioServerSocketChannel.class);
             boot.option(ChannelOption.SO_KEEPALIVE, config.isKeepalive());
             boot.option(ChannelOption.SO_BACKLOG, config.getClientCount());
             boot.childHandler(new SocketInitializer(config, listener, serializer));
-        
+            
             EventLoopGroup boss = new NioEventLoopGroup();
             NioEventLoopGroup worker = new NioEventLoopGroup();
             new Thread(() -> {
@@ -72,7 +75,7 @@ public class SocketServer implements ISocket {
     }
     
     @Override
-    public void stop() {
+    public synchronized void stop() {
         if (started && server != null) {
             server.close();
             started = false;

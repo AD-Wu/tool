@@ -14,7 +14,13 @@
         <java.version>1.8</java.version>
     </properties>
 
+
     <dependencies>
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+            <version>5.2.2.RELEASE</version>
+        </dependency>
 
         <dependency>
             <groupId>com.google.auto.service</groupId>
@@ -69,7 +75,6 @@
             <artifactId>httpasyncclient</artifactId>
             <version>4.1.4</version>
         </dependency>
-
 
         <!-- xml解析包 -->
         <dependency>
@@ -191,7 +196,6 @@
             <version>4.5.10</version>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -201,6 +205,7 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <plugin>
@@ -255,11 +260,11 @@
         </plugins>
         <resources>
             <!--<resource>-->
-                <!--<directory>lib</directory>-->
-                <!--<targetPath>${project.build.directory}/lib</targetPath>-->
-                <!--<includes>-->
-                    <!--<include>**/*.jar</include>-->
-                <!--</includes>-->
+            <!--<directory>lib</directory>-->
+            <!--<targetPath>${project.build.directory}/lib</targetPath>-->
+            <!--<includes>-->
+            <!--<include>**/*.jar</include>-->
+            <!--</includes>-->
             <!--</resource>-->
             <resource>
                 <directory>src/main/java</directory>

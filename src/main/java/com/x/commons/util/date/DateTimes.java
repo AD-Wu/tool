@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Date 2018-12-19 23:32
@@ -40,6 +41,15 @@ public final class DateTimes {
     private DateTimes() {}
     
     // ----------------------- 静态方法 -----------------------
+    public static boolean isSecondsAgo(long lastTime, long period) {
+        long now = System.currentTimeMillis();
+        return TimeUnit.MILLISECONDS.toSeconds(now - lastTime) >= period;
+    }
+    
+    public static boolean isMinuteAgo(long lastTime, long period) {
+        long now = System.currentTimeMillis();
+        return TimeUnit.MILLISECONDS.toMinutes(now - lastTime) >= period;
+    }
     
     /**
      * 获取当前日期时间（带毫秒）

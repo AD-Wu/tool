@@ -86,6 +86,17 @@ public final class Clazzs {
         return null;
     }
     
+    public static Class<?>[] getTypes(Object... params) {
+        if (!XArrays.isEmpty(params)) {
+            Class<?>[] classes = new Class[params.length];
+            for (int i = 0, c = params.length; i < c; i++) {
+                classes[i] = params[i].getClass();
+            }
+            return classes;
+        }
+        return new Class[0];
+    }
+    
     public static Class getClazz(String className, Class<?> defaultClass) {
         if (!Strings.isNull(className)) {
             try {

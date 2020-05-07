@@ -151,17 +151,16 @@ public final class XArrays {
      * 对象型数组和基本数据类型数组进行互转，如：byte[] <-> Byte[]
      *
      * @param value
-     * @param targetClasses 目标类型,可选参数，为null时自动互换，如：byte[] <-> Byte[]；<br>
-     *                      不为null时则只取第一个
+     * @param targetClass 目标类型,可选参数，为null时自动互换，如：byte[] <-> Byte[]；
      * @return
      */
-    public static Object convert(Object value, Class<?>... targetClasses) {
+    public static Object convert(Object value, Class<?> targetClass) {
         // 如果目标类型为空，就自动转换
-        if (isEmpty(targetClasses)) {
+        if (targetClass==null) {
             return convert(value);
         }
-        // 获取第一个值
-        Class<?> targetClass = targetClasses[0];
+        // // 获取第一个值
+        // Class<?> targetClass = targetClasses[0];
         // 如果不是数组，返回原值
         if (!Clazzs.isArray(targetClass)) {
             return value;

@@ -1,10 +1,11 @@
 package com.x.commons.util.reflact;
 
+import com.x.commons.interfaces.IFilter;
+import com.x.commons.util.bean.New;
 import com.x.commons.util.collection.XArrays;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -32,46 +33,30 @@ public final class Fields {
     }
 
     public static Field[] getFields(Class<?> target, boolean parent) {
+        return getFields(target, parent, null);
+    }
+
+    public static Field[] getFields(Class<?> target, boolean parent, IFilter<Field> filter) {
         if (target == null) {
             return EMPTY_FIELDS;
         }
         // 获取target类的public、protected、default、private的所有属性
         Field[] fields = target.getDeclaredFields();
         if (parent) {
-            Field[] superFields = getFields(target.getSuperclass(), parent);
-            return XArrays.join(fields, superFields).toArray(new Field[0]);
+            Field[] superFields = getFields(target.getSuperclass(), parent, filter);
+            List<Field> list = New.list();
+            if (filter != null) {
+                for (Field superField : superFields) {
+                    if (filter.accept(superField)) {
+                        list.add(superField);
+                    }
+                }
+                return XArrays.join(fields, list.toArray(new Field[0])).toArray(new Field[0]);
+            } else {
+                return XArrays.join(fields, superFields).toArray(new Field[0]);
+            }
         }
         return fields;
-    }
-
-    public static void main(String[] args) {
-        Field[] fields = getFields(Subb.class, true);
-        for (Field field : fields) {
-            System.out.println(field.getName());
-        }
-    }
-
-    public static class Parent {
-        public String name;
-
-        protected int age;
-
-        boolean sex;
-
-        private LocalDateTime birthday;
-    }
-
-    public static class Sub extends Parent {
-        public String addr;
-
-        protected int number;
-
-        int count;
-
-        private boolean rich;
-    }
-    public static class Subb extends Sub{
-        private String test;
     }
 }
 

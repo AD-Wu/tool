@@ -134,7 +134,7 @@ public final class Locals {
      * @param langKey 如：zh_CN,en_US
      */
     public static void setDefaultLangKey(String langKey) {
-        if (Strings.isNull(langKey) && SUPPORT_LANGUAGES.contains(langKey)) {
+        if (!Strings.isNull(langKey) && SUPPORT_LANGUAGES.contains(langKey)) {
             synchronized (langLock) {
                 defaultLangKey = langKey;
                 defLocal = null;
@@ -213,7 +213,7 @@ public final class Locals {
             return false;
         }
     }
-    
+
     static {
         defLocal = null;
         // 默认中文

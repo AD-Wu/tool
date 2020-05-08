@@ -15,25 +15,25 @@ import java.util.Map;
  * @Author AD
  */
 public final class MethodData {
-    
+
     // ------------------------ 变量定义 ------------------------
     // bean类型
     private final Class<?> dataClass;
-    
+
     // get方法信息数组
     private final MethodInfo[] methodsGet;
-    
+
     // set方法信息数组
     private final MethodInfo[] methodsSet;
-    
+
     // get方法信息数组map
     private final Map<String, MethodInfo> methodsGetMap = New.map();
-    
+
     // set方法信息数组map
     private final Map<String, MethodInfo> methodsSetMap = New.map();
-    
+
     // ------------------------ 构造方法 ------------------------
-    
+
     /**
      * 构造方法
      *
@@ -42,17 +42,13 @@ public final class MethodData {
      */
     public MethodData(Class<?> dataClass, DatabaseType dbType) {
         this.dataClass = dataClass;
-        
+        List<MethodInfo> sets = New.list();
+        List<MethodInfo> gets = New.list();
         /**
          * 获取所有的方法进行遍历，将bean里面的方法封装成MethodInfo对象
          * 同时以大写属性名作为key存入map
          */
-        Method[] ms = dataClass.getDeclaredMethods();
-        List<MethodInfo> sets = New.list();
-        List<MethodInfo> gets = New.list();
-        
-        for (int i = 0, L = ms.length; i < L; ++i) {
-            Method method = ms[i];
+        for (Method method : dataClass.getDeclaredMethods()) {
             String name = method.getName();
             String NAME = name.toUpperCase();
             String column;
@@ -83,61 +79,61 @@ public final class MethodData {
                 gets.add(new MethodInfo(column, propName, method, dbType, returnSqlType));
             }
         }
-        
+
         this.methodsGet = new MethodInfo[gets.size()];
-        
+
         MethodInfo methodInfo;
         for (int i = 0, L = gets.size(); i < L; ++i) {
             methodInfo = gets.get(i);
             this.methodsGet[i] = methodInfo;
             this.methodsGetMap.put(methodInfo.getKey(), methodInfo);
         }
-        
+
         this.methodsSet = new MethodInfo[sets.size()];
-        
+
         for (int i = 0, L = sets.size(); i < L; ++i) {
             methodInfo = sets.get(i);
             this.methodsSet[i] = methodInfo;
             this.methodsSetMap.put(methodInfo.getKey(), methodInfo);
         }
-        
+
     }
-    
+
     // ------------------------ 方法定义 ------------------------
-    
+
     /**
      * 获取 bean类型
      */
     public Class<?> getDataClass() {
         return this.dataClass;
     }
-    
+
     /**
      * 获取 get方法信息数组
      */
     public MethodInfo[] getMethodsGet() {
         return this.methodsGet;
     }
-    
+
     /**
      * 获取 set方法信息数组
      */
     public MethodInfo[] getMethodsSet() {
         return this.methodsSet;
     }
-    
+
     /**
      * 获取 get方法信息数组map
      */
     public Map<String, MethodInfo> getMethodsGetMap() {
         return this.methodsGetMap;
     }
-    
+
     /**
      * 获取 set方法信息数组map
      */
     public Map<String, MethodInfo> getMethodsSetMap() {
         return this.methodsSetMap;
     }
-    
+
 }

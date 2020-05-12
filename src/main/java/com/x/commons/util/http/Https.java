@@ -48,6 +48,16 @@ public final class Https {
     }
 
     /**
+     * post请求,无参数
+     *
+     * @param url 请求路径
+     * @return HttpResult
+     */
+    public static HttpResult post(String url) throws Exception {
+        return post(url, new HttpParam(), HttpConfig.defaultConfig(url));
+    }
+
+    /**
      * post请求，Content-Type=application/json
      *
      * @param url   请求路径

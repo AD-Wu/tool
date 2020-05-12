@@ -43,6 +43,30 @@ public final class HttpClientFactory {
     // -------------------------- 成员方法 --------------------------
 
     /**
+     * 判断是否以https协议
+     *
+     * @param url 请求路径
+     */
+    public static boolean isHttps(String url) {
+        if (Strings.isNull(url)) {
+            return false;
+        }
+        if (url.toLowerCase().startsWith("https://")) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 根据url获取http或https客户端
+     *
+     * @return
+     */
+    public static HttpClient getClient(String url) {
+        return isHttps(url) ? https() : http();
+    }
+
+    /**
      * 获取默认的http请求客户端
      *
      * @return
@@ -132,6 +156,7 @@ public final class HttpClientFactory {
         return getDefaultBuilder().build();
     }
 
+
     // -------------------------- 构建器 --------------------------
 
     public static class Builder {
@@ -147,7 +172,7 @@ public final class HttpClientFactory {
             this.pool(MAX_POOL_SIZE, MAX_PER_ROUTE);
         }
 
-        public Builder retry(int tryCount,boolean retryWhenIOInterrupted) {
+        public Builder retry(int tryCount, boolean retryWhenIOInterrupted) {
             builder.setRetryHandler(this.getRetryHandler(tryCount, retryWhenIOInterrupted));
             return this;
         }

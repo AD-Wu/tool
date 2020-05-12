@@ -16,7 +16,6 @@ import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
@@ -53,6 +52,15 @@ public final class HttpClientFactory {
     }
 
     /**
+     * 获取默认的https请求客户端
+     *
+     * @return
+     */
+    public static HttpClient https() {
+        return HttpClients.createDefault();
+    }
+
+    /**
      * 获取自定义http请求客户端
      *
      * @param builder 自定义构建器：连接池、重试次数、代理
@@ -63,27 +71,16 @@ public final class HttpClientFactory {
     }
 
     /**
-     * 获取默认的https请求客户端,SSL版本：SSLv3
-     *
-     * @return
-     */
-    public static HttpClient https() {
-        return https(SSLVersion.SSLv3);
-    }
-
-    /**
      * 获取指定SSL版本的https请求客户端
      *
      * @param version SSL版本
      * @return
      */
-    public static HttpClient https(SSLVersion version) {
-        CloseableHttpClient httpsClient = HttpClients.createDefault();
-        return httpsClient;
-        // SSL ssl = new SSL(version);
-        // SSLConnectionSocketFactory factory = ssl.getSSLConnSocketFactory();
-        // HttpClientBuilder builder = getDefaultBuilder();
-        // return builder.setSSLSocketFactory(factory).build();
+    public static HttpClient http(SSLVersion version) {
+        SSL ssl = new SSL(version);
+        SSLConnectionSocketFactory factory = ssl.getSSLConnSocketFactory();
+        HttpClientBuilder builder = getDefaultBuilder();
+        return builder.setSSLSocketFactory(factory).build();
     }
 
     /**
@@ -93,7 +90,7 @@ public final class HttpClientFactory {
      * @param builder 自定义构建器：连接池、重试次数、代理
      * @return
      */
-    public static HttpClient https(SSLVersion version, Builder builder) {
+    public static HttpClient http(SSLVersion version, Builder builder) {
         SSL ssl = new SSL(version);
         SSLConnectionSocketFactory factory = ssl.getSSLConnSocketFactory();
         HttpClientBuilder client = builder.getHttpClientBuilder();
@@ -106,8 +103,8 @@ public final class HttpClientFactory {
      * @param keyStorePath 证书路径
      * @return
      */
-    public static HttpClient https(String keyStorePath) throws Exception {
-        return https(keyStorePath, "no-password", new Builder());
+    public static HttpClient http(String keyStorePath) throws Exception {
+        return http(keyStorePath, "no-password", new Builder());
     }
 
     /**
@@ -117,7 +114,7 @@ public final class HttpClientFactory {
      * @param builder      自定义构建器：连接池、重试次数、代理
      * @return
      */
-    public static HttpClient https(String keyStorePath, String keyStorepass, Builder builder) throws Exception {
+    public static HttpClient http(String keyStorePath, String keyStorepass, Builder builder) throws Exception {
         if (!Strings.isNull(keyStorePath)) {
             SSL ssl = new SSL(keyStorePath, keyStorepass);
             SSLConnectionSocketFactory factory = ssl.getSSLConnSocketFactory();

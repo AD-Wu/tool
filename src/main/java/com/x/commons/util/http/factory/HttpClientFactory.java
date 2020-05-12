@@ -16,7 +16,9 @@ import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
@@ -31,13 +33,13 @@ import java.net.UnknownHostException;
  * @Author AD
  * @Date 2019/11/18 9:45
  */
-public final class HttpClients {
+public final class HttpClientFactory {
 
     // -------------------------- 成员变量 --------------------------
 
     // -------------------------- 构造方法 --------------------------
 
-    private HttpClients() {}
+    private HttpClientFactory() {}
 
     // -------------------------- 成员方法 --------------------------
 
@@ -76,10 +78,12 @@ public final class HttpClients {
      * @return
      */
     public static HttpClient https(SSLVersion version) {
-        SSL ssl = new SSL(version);
-        SSLConnectionSocketFactory factory = ssl.getSSLConnSocketFactory();
-        HttpClientBuilder builder = getDefaultBuilder();
-        return builder.setSSLSocketFactory(factory).build();
+        CloseableHttpClient httpsClient = HttpClients.createDefault();
+        return httpsClient;
+        // SSL ssl = new SSL(version);
+        // SSLConnectionSocketFactory factory = ssl.getSSLConnSocketFactory();
+        // HttpClientBuilder builder = getDefaultBuilder();
+        // return builder.setSSLSocketFactory(factory).build();
     }
 
     /**

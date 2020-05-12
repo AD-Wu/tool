@@ -66,8 +66,8 @@ public final class HttpConfig {
     public static HttpConfig defaultConfig(String url, String contentType) {
         boolean isHttps = isHttps(url);
         Builder builder = isHttps ?
-                new Builder(HttpClients.https()).ContentType(contentType) :
-                new Builder(HttpClients.http()).ContentType(contentType);
+                new Builder(HttpClientFactory.https()).ContentType(contentType) :
+                new Builder(HttpClientFactory.http()).ContentType(contentType);
         return new HttpConfig(builder);
     }
     
@@ -86,7 +86,7 @@ public final class HttpConfig {
         
         // http请求客户端
         private final HttpClient client;
-        
+
         // 头部信息
         private Header[] headers;
         

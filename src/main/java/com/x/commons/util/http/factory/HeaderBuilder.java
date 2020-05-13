@@ -16,11 +16,17 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class HeaderBuilder {
 
+    // -------------------------- 成员变量 --------------------------
+
     private Map<String, String> map;
+
+    // -------------------------- 构造方法 --------------------------
 
     public HeaderBuilder() {
         this.map = New.map();
     }
+
+    // -------------------------- 静态工厂方法 --------------------------
 
     /**
      * 默认创建接收UTF-8编码的header
@@ -40,6 +46,8 @@ public class HeaderBuilder {
         HeaderBuilder builder = new HeaderBuilder();
         return builder.acceptCharset(Charset.UTF8).authorization(authorization).build();
     }
+
+    // -------------------------- 成员方法 --------------------------
 
     /**
      * 返回header头信息

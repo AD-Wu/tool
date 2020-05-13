@@ -24,27 +24,33 @@ public final class HttpConfig {
     private final HttpClient client;
 
     // http请求头部信息
-    private final Header[] headers;
+    private Header[] headers = HeaderBuilder.defaultBuild();
 
     // 用于cookie操作
-    private final HttpContext context;
+    private HttpContext context = HttpContexts.create();
 
     // 默认超时时间，单位：秒
-    private final int defaultTimeout;
+    private int timeout = 60;
 
     // 设置RequestConfig
-    private final RequestConfig requestConfig;
+    private RequestConfig requestConfig = setTimeout(timeout).getRequestConfig();
 
     // 输入编码
-    private final String inEncoding;
+    private String inEncoding = Charset.UTF8;
 
     // 输出编码
-    private final String outEncoding;
+    private String outEncoding = Charset.UTF8;
 
     // 请求体编码方式
-    private final ContentType contentType;
+    private ContentType contentType = ContentType.create(HttpContentType.JSON, this.inEncoding);
 
     // ------------------------ 构造方法 ------------------------
+
+    public HttpConfig(String url) {
+        this.client = HttpClientFactory.getClient(url);
+    }
+
+    // ------------------------ 方法定义 ------------------------
 
     public static HttpConfig jsonConfig(String url) {
         return defaultConfig(url, HttpContentType.JSON);
@@ -63,156 +69,102 @@ public final class HttpConfig {
     }
 
     public static HttpConfig defaultConfig(String url, String contentType) {
-        boolean isHttps = HttpClientFactory.isHttps(url);
-        Builder builder = isHttps ?
-                new Builder(HttpClientFactory.https()).ContentType(contentType) :
-                new Builder(HttpClientFactory.http()).ContentType(contentType);
-        return new HttpConfig(builder);
+        return new HttpConfig(url).setContentType(contentType);
     }
 
-    public HttpConfig(Builder builder) {
-        this.client = builder.client;
-        this.headers = builder.headers;
-        this.context = builder.context;
-        this.defaultTimeout = builder.defaultTimeout;
-        this.requestConfig = builder.requestConfig;
-        this.inEncoding = builder.inEncoding;
-        this.outEncoding = builder.outEncoding;
-        this.contentType = builder.contentType;
+    // ------------------------ get and set ------------------------
+    public HttpClient getClient() {
+        return client;
     }
-
-    public static class Builder {
-
-        // http请求客户端
-        private final HttpClient client;
-
-        // 头部信息
-        private Header[] headers;
-
-        // 用于cookie操作
-        private HttpContext context;
-
-        // 默认超时时间，单位：秒
-        private int defaultTimeout;
-
-        // 设置RequestConfig
-        private RequestConfig requestConfig;
-
-        // 输入编码
-        private String inEncoding;
-
-        // 输出编码
-        private String outEncoding;
-
-        // 请求体编码方式
-        private ContentType contentType;
-
-        public Builder(String url) {
-            this(HttpClientFactory.getClient(url));
-        }
-
-        public Builder(HttpClient client) {
-            this.client = client;
-            this.headers = HeaderBuilder.defaultBuild();
-            this.context = HttpContexts.create();
-            this.defaultTimeout = 60;
-            this.timeout(defaultTimeout);
-            this.inEncoding = Charset.UTF8;
-            this.outEncoding = Charset.UTF8;
-            this.contentType = ContentType.create(HttpContentType.JSON, this.inEncoding);
-        }
-
-        public HttpConfig build() {
-            return new HttpConfig(this);
-        }
-
-        public Builder headers(Header[] headers) {
-            this.headers = headers;
-            return this;
-        }
-
-        public Builder context(HttpContext context) {
-            this.context = context;
-            return this;
-        }
-
-        public Builder inEncoding(String inEncoding) {
-            this.inEncoding = inEncoding;
-            return this;
-        }
-
-        public Builder outEncoding(String outEncoding) {
-            this.outEncoding = outEncoding;
-            return this;
-        }
-
-        public Builder ContentType(String contentType) {
-            this.contentType = ContentType.create(contentType, this.inEncoding);
-            return this;
-        }
-
-        public Builder timeout(int timeout) {
-            return timeout(timeout, true);
-        }
-
-        /**
-         * 设置超时时间以及是否允许网页重定向（自动跳转 302）
-         *
-         * @param timeout        超时时间，单位:秒
-         * @param redirectEnable 自动跳转
-         */
-        public Builder timeout(int timeout, boolean redirectEnable) {
-            // 修正超时时间
-            if (timeout <= 0) {
-                timeout = this.defaultTimeout;
-            }
-            int reqTimeout = Converts.toInt(TimeUnit.SECONDS.toMillis(timeout));
-            // 配置请求的超时设置
-            RequestConfig config = RequestConfig.custom()
-                    .setConnectionRequestTimeout(reqTimeout)
-                    .setConnectTimeout(reqTimeout)
-                    .setSocketTimeout(reqTimeout)
-                    .setRedirectsEnabled(redirectEnable)
-                    .build();
-            return requestConfig(config);
-        }
-
-        /**
-         * 设置代理、超时时间、允许网页重定向等
-         *
-         * @param requestConfig 超时时间，单位：秒
-         */
-        public Builder requestConfig(RequestConfig requestConfig) {
-            this.requestConfig = requestConfig;
-            return this;
-        }
-
-    }
-
-    // ------------------------ 方法定义 ------------------------
-
-    public HttpClient getClient() {return client;}
 
     public Header[] getHeaders() {
         return headers;
+    }
+
+    public HttpConfig setHeaders(Header[] headers) {
+        this.headers = headers;
+        return this;
     }
 
     public HttpContext getContext() {
         return context;
     }
 
-    public String getInEncoding() {
-        return inEncoding;
+    public HttpConfig setContext(HttpContext context) {
+        this.context = context;
+        return this;
     }
 
-    public String getOutEncoding() {
-        return outEncoding;
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public HttpConfig setTimeout(int timeout) {
+        setTimeout(timeout, true);
+        return this;
+    }
+
+    /**
+     * 设置超时时间以及是否允许网页重定向（自动跳转 302）
+     *
+     * @param timeout        超时时间，单位:秒
+     * @param redirectEnable 自动跳转
+     */
+    public HttpConfig setTimeout(int timeout, boolean redirectEnable) {
+        // 修正超时时间
+        if (timeout <= 0) {
+            timeout = this.timeout;
+        }
+        this.timeout = timeout;
+        int reqTimeout = Converts.toInt(TimeUnit.SECONDS.toMillis(timeout));
+        // 配置请求的超时设置
+        this.requestConfig = RequestConfig.custom()
+                .setConnectionRequestTimeout(reqTimeout)
+                .setConnectTimeout(reqTimeout)
+                .setSocketTimeout(reqTimeout)
+                .setRedirectsEnabled(redirectEnable)
+                .build();
+        return this;
     }
 
     public RequestConfig getRequestConfig() {
         return requestConfig;
     }
 
-    public ContentType getContentType() {return contentType;}
+    /**
+     * 设置代理、超时时间、允许网页重定向等
+     *
+     * @param requestConfig 超时时间，单位：秒
+     */
+    public HttpConfig setRequestConfig(RequestConfig requestConfig) {
+        this.requestConfig = requestConfig;
+        return this;
+    }
 
+    public String getInEncoding() {
+        return inEncoding;
+    }
+
+    public HttpConfig setInEncoding(String inEncoding) {
+        this.inEncoding = inEncoding;
+        return this;
+    }
+
+    public String getOutEncoding() {
+        return outEncoding;
+    }
+
+    public HttpConfig setOutEncoding(String outEncoding) {
+        this.outEncoding = outEncoding;
+        return this;
+    }
+
+    public ContentType getContentType() {
+        return contentType;
+    }
+
+    public HttpConfig setContentType(String contentType) {
+        this.contentType = ContentType.create(contentType, this.inEncoding);
+        return this;
+    }
 }

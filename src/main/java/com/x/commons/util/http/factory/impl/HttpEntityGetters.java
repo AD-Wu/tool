@@ -1,45 +1,28 @@
 package com.x.commons.util.http.factory.impl;
 
-import com.x.commons.util.bean.New;
 import com.x.commons.util.http.factory.IHttpEntityGetter;
-import com.x.commons.util.string.Strings;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.ServiceLoader;
+import com.x.commons.util.manager.Manager;
 
 /**
  * @Desc：
  * @Author：AD
  * @Date：2020/5/13 17:43
  */
-public final class HttpEntityGetters {
-
-    private static final Map<String, IHttpEntityGetter> GETTERS = New.concurrentMap();
-
-    private static volatile boolean inited = false;
-
-    private HttpEntityGetters() {}
-
+public final class HttpEntityGetters extends Manager<IHttpEntityGetter, String> {
+    
+    private static HttpEntityGetters self = new HttpEntityGetters(IHttpEntityGetter.class);
+    
+    private HttpEntityGetters(Class<IHttpEntityGetter> clazz) {
+        super(clazz);
+    }
+    
     public static IHttpEntityGetter get(String contentType) {
-        if (!inited) {
-            synchronized (HttpEntityGetters.class) {
-                if (!inited) {
-                    init();
-                    inited = true;
-                }
-            }
-        }
-        return GETTERS.get(contentType);
+        return self.getWorker(contentType);
     }
-
-    private static void init() {
-        Iterator<IHttpEntityGetter> it = ServiceLoader.load(IHttpEntityGetter.class).iterator();
-        while (it.hasNext()) {
-            IHttpEntityGetter next = it.next();
-            if (!Strings.isNull(next.getContentType())) {
-                GETTERS.put(next.getContentType(), next);
-            }
-        }
+    
+    @Override
+    protected String[] getKeys(IHttpEntityGetter getter) {
+        return new String[]{getter.getContentType()};
     }
+    
 }

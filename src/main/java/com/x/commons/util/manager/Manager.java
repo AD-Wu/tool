@@ -12,39 +12,41 @@ import java.util.ServiceLoader;
  * @Date：2020/5/13 18:11
  */
 public abstract class Manager<T, KEY> implements IManager<T, KEY> {
-
+    
     protected final Map<KEY, T> factory = New.concurrentMap();
-
-    private static volatile boolean inited = false;
-
-    private static final Object LOCK = new Object();
-
+    
+    private volatile boolean inited = false;
+    
     protected final Class<T> clazz;
-
+    
     protected Manager(Class<T> clazz) {
         this.clazz = clazz;
     }
-
+    
     @Override
-    public T get(KEY key) {
+    public final T getWorker(KEY key) {
         if (!inited) {
-            synchronized (LOCK) {
+            synchronized (this) {
                 if (!inited) {
                     init();
-                    inited = true;
                 }
             }
         }
         return factory.get(key);
     }
-
+    
     private void init() {
         Iterator<T> it = ServiceLoader.load(clazz).iterator();
         while (it.hasNext()) {
             T sub = it.next();
-            initFactory(sub);
+            KEY[] keys = getKeys(sub);
+            for (KEY key : keys) {
+                factory.put(key, sub);
+            }
         }
+        inited = true;
     }
-
-    protected abstract void initFactory(T sub);
+    
+    protected abstract KEY[] getKeys(T sub);
+    
 }

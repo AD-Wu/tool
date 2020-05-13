@@ -19,6 +19,12 @@
 
         <!--   ES客户端     -->
         <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>elasticsearch-rest-high-level-client</artifactId>
             <version>7.6.2</version>
@@ -256,52 +262,73 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-dependency-plugin</artifactId>-->
+                <!--<version>3.0.1</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>copy-dependencies</id>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>copy-dependencies</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<outputDirectory>${project.build.directory}/lib</outputDirectory>-->
+                            <!--<overWriteReleases>false</overWriteReleases>-->
+                            <!--<overWriteSnapshots>false</overWriteSnapshots>-->
+                            <!--<overWriteIfNewer>true</overWriteIfNewer>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-assembly-plugin</artifactId>-->
+<!--&lt;!&ndash;                <version>3.0.0</version>&ndash;&gt;-->
+                <!--<configuration>-->
+                    <!--&lt;!&ndash; get all project dependencies &ndash;&gt;-->
+                    <!--<descriptorRefs>-->
+                        <!--<descriptorRef>jar-with-dependencies</descriptorRef>-->
+                    <!--</descriptorRefs>-->
+                    <!--<archive>-->
+                        <!--<manifest>-->
+                            <!--<mainClass>.</mainClass>-->
+                        <!--</manifest>-->
+                    <!--</archive>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--&lt;!&ndash; 配置执行器 &ndash;&gt;-->
+                    <!--<execution>-->
+                        <!--<id>make-assembly</id>-->
+                        <!--&lt;!&ndash; 绑定到package命令的生命周期上 &ndash;&gt;-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--&lt;!&ndash; 只运行一次 &ndash;&gt;-->
+                            <!--<goal>single</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.0.1</version>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
                 <executions>
                     <execution>
-                        <id>copy-dependencies</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>copy-dependencies</goal>
+                            <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <!--<mainClass>.</mainClass>-->
+                                </transformer>
+                            </transformers>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-<!--                <version>3.0.0</version>-->
-                <configuration>
-                    <!-- get all project dependencies -->
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <mainClass>.</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-                <executions>
-                    <!-- 配置执行器 -->
-                    <execution>
-                        <id>make-assembly</id>
-                        <!-- 绑定到package命令的生命周期上 -->
-                        <phase>package</phase>
-                        <goals>
-                            <!-- 只运行一次 -->
-                            <goal>single</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>

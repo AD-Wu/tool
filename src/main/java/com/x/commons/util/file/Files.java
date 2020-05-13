@@ -7,16 +7,15 @@ import com.x.commons.util.bean.SB;
 import com.x.commons.util.collection.XArrays;
 import com.x.commons.util.reflact.Loader;
 import com.x.commons.util.string.Strings;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @Date 2018-12-20 22:36
@@ -289,9 +288,37 @@ public final class Files {
     }
 
     /**
+     * 使用完整文件路径创建文件（包含文件名）,如果文件已存在，则返回原文件对象
+     * @param fullFilePath 完整文件名
+     * @return File 文件对象
+     */
+    public static File createFile(String fullFilePath) throws Exception {
+        Objects.requireNonNull(fullFilePath, "file path can't be null");
+        String fixPath = fixPath(fullFilePath, false);
+        File file = new File(fixPath);
+        if (!file.exists()) {
+            if (!file.getParentFile().exists()) {
+                if (file.getParentFile().mkdirs() && file.createNewFile()) {
+                    return file;
+                } else {
+                    throw new RuntimeException("Create File Exception");
+                }
+            } else {
+                if (file.createNewFile()) {
+                    return file;
+                } else {
+                    throw new RuntimeException("Create File Exception");
+                }
+            }
+        } else {
+            return file;
+        }
+    }
+
+    /**
      * 指定文件夹目录创建文件(全新空白文件,如果已存在,会覆盖原内容)
      *
-     * @param folder   文件夹目录，没有回自动创建，无需以分隔符结尾
+     * @param folder   文件夹目录，没有会自动创建，无需以分隔符结尾
      * @param filename 文件名
      * @return 成功：File对象；失败：null
      */
@@ -427,7 +454,7 @@ public final class Files {
      *
      * @param content  写入内容
      * @param filePath 完整文件路径,包括文件名后缀
-     * @param charset 编码
+     * @param charset  编码
      * @return boolean true:成功 false:失败
      */
     public static boolean writeTxt(String content, String filePath, Charset charset) {
@@ -466,7 +493,7 @@ public final class Files {
             e.printStackTrace();
         }
         try (PrintWriter writer = new PrintWriter(file, charset.name());) {
-            if(Strings.isNotNull(old)){
+            if (Strings.isNotNull(old)) {
                 writer.write(old);
                 writer.write("\r\n");
             }
@@ -544,6 +571,24 @@ public final class Files {
         return result;
     }
 
+    /**
+     * 读取PDF文件文字内容
+     * @param pdf pdf文件完整路径
+     * @return
+     */
+    public static String readPDF(String pdf) {
+        //创建文档对象
+        String content = "";
+        // 加载PDF对象
+        try (PDDocument doc = PDDocument.load(new File(pdf))) {
+            // 创建PDF剥离对象
+            PDFTextStripper stripper = new PDFTextStripper();
+            return stripper.getText(doc);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
     /**
      * 是否存在文件
      *
@@ -833,7 +878,7 @@ public final class Files {
             String replace = packageName.replace(".", SP);
             Enumeration<URL> resources = LOADER.getResources(replace);
             List<File> all = New.list();
-            while (resources.hasMoreElements()){
+            while (resources.hasMoreElements()) {
                 URL url = resources.nextElement();
                 File[] files = new File(url.toURI()).listFiles();
                 for (File file : files) {

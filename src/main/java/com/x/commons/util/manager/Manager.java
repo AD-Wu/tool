@@ -17,12 +17,6 @@ public abstract class Manager<T, KEY> implements IManager<T, KEY> {
     
     private volatile boolean inited = false;
     
-    protected final Class<T> clazz;
-    
-    protected Manager(Class<T> clazz) {
-        this.clazz = clazz;
-    }
-    
     @Override
     public final T getWorker(KEY key) {
         if (!inited) {
@@ -36,7 +30,7 @@ public abstract class Manager<T, KEY> implements IManager<T, KEY> {
     }
     
     private void init() {
-        Iterator<T> it = ServiceLoader.load(clazz).iterator();
+        Iterator<T> it = ServiceLoader.load(getClazz()).iterator();
         while (it.hasNext()) {
             T sub = it.next();
             KEY[] keys = getKeys(sub);
@@ -46,6 +40,8 @@ public abstract class Manager<T, KEY> implements IManager<T, KEY> {
         }
         inited = true;
     }
+    
+    protected abstract Class<T> getClazz();
     
     protected abstract KEY[] getKeys(T sub);
     

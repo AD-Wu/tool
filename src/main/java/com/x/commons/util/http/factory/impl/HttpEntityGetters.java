@@ -10,14 +10,15 @@ import com.x.commons.util.manager.Manager;
  */
 public final class HttpEntityGetters extends Manager<IHttpEntityGetter, String> {
     
-    private static HttpEntityGetters self = new HttpEntityGetters(IHttpEntityGetter.class);
-    
-    private HttpEntityGetters(Class<IHttpEntityGetter> clazz) {
-        super(clazz);
-    }
+    private static HttpEntityGetters self = new HttpEntityGetters();
     
     public static IHttpEntityGetter get(String contentType) {
         return self.getWorker(contentType);
+    }
+    
+    @Override
+    protected Class<IHttpEntityGetter> getClazz() {
+        return IHttpEntityGetter.class;
     }
     
     @Override

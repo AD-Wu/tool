@@ -62,21 +62,21 @@ public final class ValueSorter {
 
     /**
      * @param gets get方法信息，prop=属性名，methodInfo=对应的方法信息
-     * @param kv   key=prop,value=asc|desc
+     * @param order   key=prop,value=asc|desc
      * @return
      */
-    public static ValueSorter getValueSorter(Map<String, MethodInfo> gets, KeyValue kv) {
+    public static ValueSorter getValueSorter(Map<String, MethodInfo> gets, KeyValue order) {
         // 判断有效性
-        if (kv == null || Strings.isNull(kv.getK())) {
+        if (order == null || Strings.isNull(order.getK())) {
             return null;
         }
-        String prop = kv.getK().toUpperCase();
+        String prop = order.getK().toUpperCase();
         MethodInfo get = gets.get(prop);
         if (get == null) {
             return null;
         }
         // 判断是asc还是desc
-        String v = Strings.toUppercase(kv.getV());
+        String v = Strings.toUppercase(order.getV());
         // 默认asc（升序）
         boolean isAsc = Strings.isNull(v) || !"DESC".equals(v);
 

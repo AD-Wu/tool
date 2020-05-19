@@ -117,6 +117,15 @@ public final class CacheHelper {
         }
     }
 
+    /**
+     * 1、先对where数组进行排序
+     * 2、生成字符串："$whereKeyOperatorWhereValue$orderKey:orderValue"
+     * 3、生成字符串的hash code
+     * @param var0
+     * @param wheres
+     * @param orders
+     * @return
+     */
     public static int getHistoryCacheKey(String var0, Where[] wheres, KeyValue[] orders) {
         if (!Strings.isNull(var0)) {
             SB sb = New.sb(var0);

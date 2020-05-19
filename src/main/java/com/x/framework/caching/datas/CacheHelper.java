@@ -24,18 +24,18 @@ import java.util.Map;
  * @Date：2020/1/15 16:44
  */
 public final class CacheHelper {
-    
+
     private CacheHelper() {}
-    
-    public static <T> T[] getPageData(Class<T> clazz, T[] src, int var2, int length) {
+
+    public static <T> T[] getPageData(Class<T> clazz, T[] src, int page, int length) {
         if (!XArrays.isEmpty(src)) {
-            if (var2 <= 0) {
-                var2 = 1;
+            if (page <= 0) {
+                page = 1;
             }
             if (length <= 0) {
                 length = 1;
             }
-            int srcPos = (var2 - 1) * length;
+            int srcPos = (page - 1) * length;
             if (srcPos < src.length) {
                 if (srcPos + length > src.length) {
                     length = src.length - srcPos;
@@ -54,19 +54,25 @@ public final class CacheHelper {
             return src;
         }
     }
-    
+
     public static void upperCaseWhereKeys(Where[] wheres) {
         Arrays.stream(wheres).forEach(where -> {
             where.setK(where.getK().toUpperCase());
         });
     }
-    
+
+    /**
+     * 获取结果：key=value,key1=value1
+     *
+     * @param ws
+     * @return
+     */
     public static String getWhereString(Where[] ws) {
         if (!XArrays.isEmpty(ws)) {
             Where[] wheres = new Where[ws.length];
             System.arraycopy(ws, 0, wheres, 0, ws.length);
             Arrays.sort(wheres, new Comparator<Where>() {
-                
+
                 public int compare(Where w1, Where w2) {
                     if (w1 != null && w2 != null) {
                         String key1 = w1.getK();
@@ -90,9 +96,6 @@ public final class CacheHelper {
                 if (where == null) {
                     return null;
                 }
-                if (sb.length() > 0) {
-                    sb.append(",");
-                }
                 sb.append(where.getK());
                 sb.append(where.getO().toUpperCase());
                 Object value = where.getV();
@@ -106,14 +109,15 @@ public final class CacheHelper {
                         sb.append(value);
                     }
                 }
+                sb.append(",");
             }
-            return sb.toString();
+            return sb.deleteLast().toString();
         } else {
             return null;
         }
     }
-    
-    public static int getHistoryCacheKey(String var0, Where[] wheres, KeyValue[] kvs) {
+
+    public static int getHistoryCacheKey(String var0, Where[] wheres, KeyValue[] orders) {
         if (!Strings.isNull(var0)) {
             SB sb = New.sb(var0);
             Object value;
@@ -121,7 +125,7 @@ public final class CacheHelper {
                 Where[] copyWheres = new Where[wheres.length];
                 System.arraycopy(wheres, 0, copyWheres, 0, wheres.length);
                 Arrays.sort(copyWheres, new Comparator<Where>() {
-                    
+
                     public int compare(Where where1, Where where2) {
                         if (where1 != null && where2 != null) {
                             String k1 = where1.getK();
@@ -139,7 +143,7 @@ public final class CacheHelper {
                         }
                     }
                 });
-                
+
                 for (int i = 0, L = copyWheres.length; i < L; ++i) {
                     Where where = copyWheres[i];
                     if (where != null) {
@@ -157,10 +161,10 @@ public final class CacheHelper {
                     }
                 }
             }
-            
-            if (!XArrays.isEmpty(kvs)) {
-                for (int i = 0, L = kvs.length; i < L; ++i) {
-                    KeyValue kv = kvs[i];
+
+            if (!XArrays.isEmpty(orders)) {
+                for (int i = 0, L = orders.length; i < L; ++i) {
+                    KeyValue kv = orders[i];
                     if (kv != null) {
                         String key = kv.getK();
                         if (key != null && key.length() != 0) {
@@ -183,7 +187,7 @@ public final class CacheHelper {
             return 0;
         }
     }
-    
+
     public static String getPrimaryValueAsString(Object[] os) {
         if (os != null && os.length != 0) {
             SB sb = New.sb();
@@ -197,17 +201,17 @@ public final class CacheHelper {
             return null;
         }
     }
-    
+
     public static String[] upperCasePrimaryKeys(String[] pks) {
         String[] keys = new String[pks.length];
-        
+
         for (int i = 0, L = pks.length; i < L; ++i) {
             keys[i] = pks[i].toUpperCase();
         }
-        
+
         return keys;
     }
-    
+
     public static String getPrimaryValueByWheres(String[] pks, Where[] wheres) {
         if (XArrays.isValid(pks, wheres)) {
             return null;
@@ -226,34 +230,34 @@ public final class CacheHelper {
                     break;
                 }
             }
-            
+
             if (!var7) {
                 return null;
             }
         }
-        
+
         return String.valueOf(sb.toString().hashCode());
     }
-    
+
     public static String getPrimaryValueByKeys(Map<String, MethodInfo> gets, String[] pks, Object o) throws Exception {
         if (o == null) {
             return null;
         } else {
             SB sb = New.sb();
-            
+
             for (String pk : pks) {
                 MethodInfo get = gets.get(pk);
                 sb.append(get.getMethod().invoke(o));
                 sb.append("|");
             }
-            
+
             return String.valueOf(sb.toString().hashCode());
         }
     }
-    
+
     public static ValueMatcher[] getWhereMatchers(Map<String, MethodInfo> getMethodInfos, Where[] wheres) throws Exception {
         ValueMatcher[] matchers = new ValueMatcher[wheres.length];
-        
+
         for (int i = 0, L = wheres.length; i < L; ++i) {
             ValueMatcher matcher = ValueMatcher.getValueMatcher(getMethodInfos, wheres[i]);
             if (matcher == null) {
@@ -261,34 +265,34 @@ public final class CacheHelper {
             }
             matchers[i] = matcher;
         }
-        
+
         return matchers;
     }
-    
+
     public static boolean matchCondition(ValueMatcher[] matchers, Object o) throws Exception {
-        
+
         for (int i = 0, L = matchers.length; i < L; ++i) {
             ValueMatcher matcher = matchers[i];
             if (!matcher.match(o)) {
                 return false;
             }
         }
-        
+
         return true;
     }
-    
+
     public static void sortArray(Map<String, MethodInfo> getMethodInfos, KeyValue[] kvs, Object[] os) {
         if (kvs != null && kvs.length != 0 && os != null && os.length >= 2) {
             final ValueSorter[] sorters = new ValueSorter[kvs.length];
-            
+
             for (int i = 0, L = kvs.length; i < L; ++i) {
                 sorters[i] = ValueSorter.getValueSorter(getMethodInfos, kvs[i]);
             }
-            
+
             Arrays.sort(os, new Comparator<Object>() {
-                
+
                 public int compare(Object o1, Object o2) {
-                    
+
                     for (int i = 0, L = sorters.length; i < L; ++i) {
                         ValueSorter sorter = sorters[i];
                         if (sorter != null) {
@@ -305,10 +309,10 @@ public final class CacheHelper {
             });
         }
     }
-    
+
     public static ValueUpdater[] getUpdaters(Map<String, MethodInfo> var0, KeyValue[] kvs) throws Exception {
         ValueUpdater[] updaters = new ValueUpdater[kvs.length];
-        
+
         for (int i = 0, L = kvs.length; i < L; ++i) {
             KeyValue kv = kvs[i];
             String K = kv.getK().toUpperCase();
@@ -317,10 +321,10 @@ public final class CacheHelper {
             ValueUpdater updater = new ValueUpdater(K, method, fixValueType(method, kv.getV()));
             updaters[i] = updater;
         }
-        
+
         return updaters;
     }
-    
+
     private static Object fixValueType(Method method, Object converted) {
         Class[] paramTypes = method.getParameterTypes();
         if (XArrays.isEmpty(paramTypes)) {
@@ -351,9 +355,9 @@ public final class CacheHelper {
                     return Converts.toLocalDateTime(converted);
                 default:
                     return converted;
-                
+
             }
         }
     }
-    
+
 }

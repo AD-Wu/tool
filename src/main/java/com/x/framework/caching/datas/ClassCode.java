@@ -9,17 +9,17 @@ import java.util.Map;
 
 public enum ClassCode {
 
-    $BYTE(1, byte.class, Byte.class),
-    $SHORT(2, short.class, Short.class),
-    $INT(3, int.class, Integer.class),
-    $LONG(4, long.class, Long.class),
-    $FLOAT(5, float.class, Float.class),
-    $DOUBLE(6, double.class, Double.class),
-    $BOOLEAN(7, boolean.class, Boolean.class),
-    $CHAR(8, char.class, Character.class),
-    $STRING(9, String.class),
-    $DATE(10, Date.class),
-    $LOCAL_DATE_TIME(11, LocalDateTime.class);
+    $BYTE(ClassCode.BYTE, byte.class, Byte.class),
+    $SHORT(ClassCode.SHORT, short.class, Short.class),
+    $INT(ClassCode.INT, int.class, Integer.class),
+    $LONG(ClassCode.LONG, long.class, Long.class),
+    $FLOAT(ClassCode.FLOAT, float.class, Float.class),
+    $DOUBLE(ClassCode.DOUBLE, double.class, Double.class),
+    $BOOLEAN(ClassCode.BOOLEAN, boolean.class, Boolean.class),
+    $CHAR(ClassCode.CHAR, char.class, Character.class),
+    $STRING(ClassCode.STRING, String.class),
+    $DATE(ClassCode.DATE, Date.class),
+    $LOCAL_DATE_TIME(ClassCode.LOCAL_DATE_TIME, LocalDateTime.class);
 
     // 不能使用$BYTE.getCode()方法获取
     public static final int BYTE = 1;

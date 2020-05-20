@@ -5,7 +5,8 @@ import com.x.commons.database.pool.DatabaseType;
 import java.lang.reflect.Method;
 
 /**
- * @Desc 单个方法信息，如：getXXX或setXXX(T t)
+ * 单个方法信息，如：getXXX或setXXX(T t)
+ *
  * @Date 2019-12-05 22:05
  * @Author AD
  */

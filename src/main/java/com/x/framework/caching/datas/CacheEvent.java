@@ -8,7 +8,7 @@ import com.x.commons.events.Event;
  * @Date：2020/1/13 14:34
  */
 public class CacheEvent<T> extends Event {
-    public static final String TYPE_DATA_CHANGED = "dataChanged";
+    public static final String DATA_CHANGED = "dataChanged";
 
     public static final int ACTION_ADDED = 1;
 

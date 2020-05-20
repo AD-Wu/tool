@@ -15,14 +15,23 @@ import java.util.Map;
  */
 public final class CacheManager {
     private static final Map<Class<?>, CacheData<?>> cacheMap = New.map();
+
     private static final Object cacheLock = new Object();
 
     private CacheManager() {
     }
 
+    /**
+     * 创建缓存
+     *
+     * @param dataClass    缓存类
+     * @param pks          主键值
+     * @param cacheHistory 是否缓存历史数据
+     * @param type         数据库类型
+     */
     public static <T> void createCache(Class<T> dataClass, String[] pks, boolean cacheHistory, DatabaseType type) {
         if (!cacheMap.containsKey(dataClass)) {
-            synchronized(cacheLock) {
+            synchronized (cacheLock) {
                 if (!cacheMap.containsKey(dataClass)) {
                     cacheMap.put(dataClass, new CacheData<>(dataClass, pks, cacheHistory, type));
                 }
@@ -34,13 +43,15 @@ public final class CacheManager {
         return dataClass != null && cacheMap.containsKey(dataClass);
     }
 
+    /**
+     * 清除所有缓存
+     */
     public static void clear() {
-        synchronized(cacheLock) {
+        synchronized (cacheLock) {
             CacheData[] cacheDatas = cacheMap.values().toArray(new CacheData[0]);
             int L = cacheDatas.length;
 
-            for(int i = 0; i < L; ++i) {
-                CacheData data = cacheDatas[i];
+            for (CacheData data : cacheDatas) {
                 data.lock();
                 data.clear();
                 data.unlock();
@@ -49,6 +60,11 @@ public final class CacheManager {
         }
     }
 
+    /**
+     * 清除对象缓存
+     *
+     * @param dataClass 数据类
+     */
     public static void clear(Class<?> dataClass) {
         if (dataClass != null) {
             CacheData data = cacheMap.get(dataClass);
@@ -68,6 +84,11 @@ public final class CacheManager {
 
     }
 
+    /**
+     * 清除历史缓存
+     *
+     * @param dataClass bean类
+     */
     public static void clearHistory(Class<?> dataClass) {
         if (dataClass != null) {
             CacheData data = cacheMap.get(dataClass);
@@ -87,6 +108,12 @@ public final class CacheManager {
 
     }
 
+    /**
+     * 锁住某个类缓存信息，并返回改缓存数据对象
+     *
+     * @param dataClass bean类
+     * @return 该bean类缓存信息
+     */
     public static <T> CacheData<T> lock(Class<T> dataClass) {
         if (dataClass == null) {
             return null;
@@ -133,14 +160,14 @@ public final class CacheManager {
             return null;
         } else {
             CacheData cache = cacheMap.get(dataClass);
-            return cache == null ? null : (T)cache.getOne(wheres);
+            return cache == null ? null : (T) cache.getOne(wheres);
         }
     }
 
     public static <T> T getByPrimary(Class<T> dataClass, Object[] pks) {
         if (dataClass != null && pks != null && pks.length != 0) {
             CacheData cache = cacheMap.get(dataClass);
-            return cache == null ? null : (T)cache.getByPrimary(pks);
+            return cache == null ? null : (T) cache.getByPrimary(pks);
         } else {
             return null;
         }
@@ -150,8 +177,8 @@ public final class CacheManager {
         if (dataClass == null) {
             return false;
         } else {
-            CacheData var2 = cacheMap.get(dataClass);
-            return var2 != null && var2.contains(wheres);
+            CacheData cache = cacheMap.get(dataClass);
+            return cache != null && cache.contains(wheres);
         }
     }
 
@@ -164,27 +191,27 @@ public final class CacheManager {
         }
     }
 
-    public static <T> T[] getList(Class<T> dataClass, Where[] wheres, KeyValue[] kvs) throws Exception {
+    public static <T> T[] getList(Class<T> dataClass, Where[] wheres, KeyValue[] orders) throws Exception {
         if (dataClass == null) {
             return null;
         } else {
             CacheData cache = cacheMap.get(dataClass);
-            return cache == null ? null : (T[])cache.getList(wheres, kvs);
+            return cache == null ? null : (T[]) cache.getList(wheres, orders);
         }
     }
 
-    public static <T> T[] getPage(Class<T> dataClass, int var1, int pageSize, Where[] wheres, KeyValue[] kvs) throws Exception {
+    public static <T> T[] getPage(Class<T> dataClass, int page, int pageSize, Where[] wheres, KeyValue[] orders) throws Exception {
         if (dataClass == null) {
             return null;
         } else {
             CacheData cache = cacheMap.get(dataClass);
-            return cache == null ? null : (T[])cache.getPage(var1, pageSize, wheres, kvs);
+            return cache == null ? null : (T[]) cache.getPage(page, pageSize, wheres, orders);
         }
     }
 
-    public static <T> void update(CacheData<T> cache, KeyValue[] kvs, Where[] wheres) throws Exception {
-        if (cache != null && kvs != null && kvs.length != 0) {
-            cache.update(kvs, wheres);
+    public static <T> void update(CacheData<T> cache, KeyValue[] updates, Where[] wheres) throws Exception {
+        if (cache != null && updates != null && updates.length != 0) {
+            cache.update(updates, wheres);
         }
     }
 }

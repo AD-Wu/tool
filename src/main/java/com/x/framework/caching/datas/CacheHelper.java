@@ -291,11 +291,17 @@ public final class CacheHelper {
         }
     }
 
-    public static ValueMatcher[] getWhereMatchers(Map<String, MethodInfo> getMethodInfos, Where[] wheres) throws Exception {
+    /**
+     * 获取值匹配器
+     *
+     * @param gets   get方法信息map
+     * @param wheres 从where里获取操作符、值，再通过key获取gets里的方法信息对象
+     */
+    public static ValueMatcher[] getWhereMatchers(Map<String, MethodInfo> gets, Where[] wheres) throws Exception {
         ValueMatcher[] matchers = new ValueMatcher[wheres.length];
 
         for (int i = 0, L = wheres.length; i < L; ++i) {
-            ValueMatcher matcher = ValueMatcher.getValueMatcher(getMethodInfos, wheres[i]);
+            ValueMatcher matcher = ValueMatcher.getValueMatcher(gets, wheres[i]);
             if (matcher == null) {
                 throw new Exception("Where condition error: " + getWhereString(wheres));
             }
@@ -307,8 +313,8 @@ public final class CacheHelper {
 
     public static boolean matchCondition(ValueMatcher[] matchers, Object o) throws Exception {
 
-        for (int i = 0, L = matchers.length; i < L; ++i) {
-            ValueMatcher matcher = matchers[i];
+        for (ValueMatcher matcher : matchers) {
+            // 有一个条件没有匹配上，即返回false
             if (!matcher.match(o)) {
                 return false;
             }
@@ -346,15 +352,14 @@ public final class CacheHelper {
         }
     }
 
-    public static ValueUpdater[] getUpdaters(Map<String, MethodInfo> var0, KeyValue[] kvs) throws Exception {
-        ValueUpdater[] updaters = new ValueUpdater[kvs.length];
+    public static ValueUpdater[] getUpdaters(Map<String, MethodInfo> methods, KeyValue[] updates) throws Exception {
+        ValueUpdater[] updaters = new ValueUpdater[updates.length];
 
-        for (int i = 0, L = kvs.length; i < L; ++i) {
-            KeyValue kv = kvs[i];
-            String K = kv.getK().toUpperCase();
-            MethodInfo methodInfo = var0.get(K);
-            Method method = methodInfo.getMethod();
-            ValueUpdater updater = new ValueUpdater(K, method, fixValueType(method, kv.getV()));
+        for (int i = 0, L = updates.length; i < L; ++i) {
+            KeyValue update = updates[i];
+            String prop = update.getK().toUpperCase();
+            Method method = methods.get(prop).getMethod();
+            ValueUpdater updater = new ValueUpdater(prop, method, fixValueType(method, update.getV()));
             updaters[i] = updater;
         }
 

@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Desc：
+ * 封装了方法、比较器、条件值
+ *
  * @Author：AD
  * @Date：2020/1/16 11:26
  */
@@ -35,8 +36,7 @@ public class ValueMatcher {
 
     public boolean match(Object o) throws Exception {
         if (methods.length > 1) {
-            for (int i = 0, L = methods.length; i < L; ++i) {
-                Method method = methods[i];
+            for (Method method : methods) {
                 if (comparer.compare(method.invoke(o), conditionValue)) {
                     return true;
                 }
@@ -47,15 +47,24 @@ public class ValueMatcher {
         }
     }
 
-    public static ValueMatcher getValueMatcher(Map<String, MethodInfo> getMethodInfos, Where where) throws Exception {
+    /**
+     * @param gets
+     * @param where 操作符、值只能有一个，字段属性可以有多个
+     * @return
+     * @throws Exception
+     */
+    public static ValueMatcher getValueMatcher(Map<String, MethodInfo> gets, Where where) throws Exception {
+        // 获取操作符
         String operator = where.getO();
         if (!Strings.isNull(operator)) {
+            // 获取属性
             String[] props = where.getK().split("\\s*,\\s*");
             Method[] methods;
             if (props.length > 1) {
                 List<Method> methodList = New.list();
+                // 根据属性获取对应的方法信息
                 for (String prop : props) {
-                    MethodInfo info = getMethodInfos.get(prop);
+                    MethodInfo info = gets.get(prop);
                     if (info != null) {
                         methodList.add(info.getMethod());
                     }
@@ -66,19 +75,24 @@ public class ValueMatcher {
                 methods = methodList.toArray(new Method[methodList.size()]);
             } else {
                 methods = new Method[1];
-                MethodInfo firstMethodInfo = getMethodInfos.get(props[0]);
+                MethodInfo firstMethodInfo = gets.get(props[0]);
                 if (firstMethodInfo == null) {
                     return null;
                 }
                 methods[0] = firstMethodInfo.getMethod();
             }
+            // 获取where值
             Object value = where.getV();
+            // 获取返回值类型
             Class<?> returnType = methods[0].getReturnType();
             IComparer comparer = null;
             if (operator.trim().toLowerCase().equals("like")) {
                 if (value != null && value.toString().trim().length() != 0) {
+                    // 获取值
                     String strValue = value.toString();
+                    // 获取比较器
                     LikeComparer likeComparer = new LikeComparer(strValue);
+                    // 返回值匹配器
                     return new ValueMatcher(methods, likeComparer, strValue);
                 } else {
                     return null;

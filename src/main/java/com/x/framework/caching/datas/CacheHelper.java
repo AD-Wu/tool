@@ -91,8 +91,7 @@ public final class CacheHelper {
                 }
             });
             SB sb = New.sb();
-            for (int i = 0, L = wheres.length; i < L; ++i) {
-                Where where = wheres[i];
+            for (Where where : wheres) {
                 if (where == null) {
                     return null;
                 }
@@ -121,14 +120,15 @@ public final class CacheHelper {
      * 1、先对where数组进行排序
      * 2、生成字符串："$whereKeyOperatorWhereValue$orderKey:orderValue"
      * 3、生成字符串的hash code
-     * @param var0
+     *
+     * @param action
      * @param wheres
      * @param orders
      * @return
      */
-    public static int getHistoryCacheKey(String var0, Where[] wheres, KeyValue[] orders) {
-        if (!Strings.isNull(var0)) {
-            SB sb = New.sb(var0);
+    public static int getHistoryCacheKey(String action, Where[] wheres, KeyValue[] orders) {
+        if (!Strings.isNull(action)) {
+            SB sb = New.sb(action);
             Object value;
             if (!XArrays.isEmpty(wheres)) {
                 Where[] copyWheres = new Where[wheres.length];
@@ -153,8 +153,7 @@ public final class CacheHelper {
                     }
                 });
 
-                for (int i = 0, L = copyWheres.length; i < L; ++i) {
-                    Where where = copyWheres[i];
+                for (Where where : copyWheres) {
                     if (where != null) {
                         sb.append("$");
                         sb.append(where.getK());
@@ -197,11 +196,16 @@ public final class CacheHelper {
         }
     }
 
+    /**
+     * 获取(o1|o2|o3).toString().hashCode()
+     *
+     * @param os 对象数组
+     * @return 字符串表示的哈希值
+     */
     public static String getPrimaryValueAsString(Object[] os) {
         if (os != null && os.length != 0) {
             SB sb = New.sb();
-            for (int i = 0, L = os.length; i < L; ++i) {
-                Object o = os[i];
+            for (Object o : os) {
                 sb.append(o);
                 sb.append("|");
             }
@@ -210,6 +214,13 @@ public final class CacheHelper {
             return null;
         }
     }
+
+    /**
+     * 将主键值转为大写
+     *
+     * @param pks
+     * @return
+     */
 
     public static String[] upperCasePrimaryKeys(String[] pks) {
         String[] keys = new String[pks.length];
@@ -221,13 +232,20 @@ public final class CacheHelper {
         return keys;
     }
 
+    /**
+     * (pkValue1|pkValue2|pkValue3).toString().hasCode();
+     *
+     * @param pks    被设置为主键的属性名
+     * @param wheres key=value的where数组
+     * @return 字符串的哈希值
+     */
     public static String getPrimaryValueByWheres(String[] pks, Where[] wheres) {
         if (XArrays.isValid(pks, wheres)) {
             return null;
         }
         SB sb = New.sb();
         for (String pk : pks) {
-            boolean var7 = false;
+            boolean find = false;
             for (Where where : wheres) {
                 if (pk.equals(where.getK())) {
                     if (!"=".equals(where.getO())) {
@@ -235,12 +253,12 @@ public final class CacheHelper {
                     }
                     sb.append(where.getV());
                     sb.append("|");
-                    var7 = true;
+                    find = true;
                     break;
                 }
             }
 
-            if (!var7) {
+            if (!find) {
                 return null;
             }
         }
@@ -248,6 +266,15 @@ public final class CacheHelper {
         return String.valueOf(sb.toString().hashCode());
     }
 
+    /**
+     * 根据属性名进行反射调用获取主键值：(pkValue1|pkValue2|pkValue3).toString().hasCode();
+     *
+     * @param gets 属性方法map
+     * @param pks  主键属性名数组
+     * @param o    主键属性所在对象
+     * @return
+     * @throws Exception
+     */
     public static String getPrimaryValueByKeys(Map<String, MethodInfo> gets, String[] pks, Object o) throws Exception {
         if (o == null) {
             return null;

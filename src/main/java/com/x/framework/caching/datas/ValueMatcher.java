@@ -54,8 +54,7 @@ public class ValueMatcher {
             Method[] methods;
             if (props.length > 1) {
                 List<Method> methodList = New.list();
-                for (int i = 0, L = props.length; i < L; ++i) {
-                    String prop = props[i];
+                for (String prop : props) {
                     MethodInfo info = getMethodInfos.get(prop);
                     if (info != null) {
                         methodList.add(info.getMethod());

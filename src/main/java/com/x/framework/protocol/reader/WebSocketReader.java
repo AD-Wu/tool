@@ -1,6 +1,5 @@
 package com.x.framework.protocol.reader;
 
-import com.ax.commons.utils.ConvertHelper;
 import com.x.commons.util.convert.Converts;
 import com.x.commons.util.string.Strings;
 import com.x.protocol.core.ChannelData;
@@ -47,10 +46,10 @@ public class WebSocketReader implements IProtocolReader {
                 }
             
                 if (isReq) {
-                    channelData = ChannelData.fromRemoteRequest(st[1], st[2], st[3], ConvertHelper.toInt(st[4]),
+                    channelData = ChannelData.fromRemoteRequest(st[1], st[2], st[3], Converts.toInt(st[4]),
                             data, null);
                 } else {
-                    channelData = ChannelData.fromRemoteResponse(st[1], st[2], st[3], ConvertHelper.toInt(st[4]),
+                    channelData = ChannelData.fromRemoteResponse(st[1], st[2], st[3], Converts.toInt(st[4]),
                             data, null, Converts.toInt(st[5]), st[6]);
                 }
             

@@ -10,7 +10,7 @@ public enum DatabaseType {
     MYSQL("mysql") {
         @Override
         public String driver() {
-            return "com.mysql.cj.jdbc.Driver";
+            return "com.mysql.jdbc.Driver";
         }
         
         @Override

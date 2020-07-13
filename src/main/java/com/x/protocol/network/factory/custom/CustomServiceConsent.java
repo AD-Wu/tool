@@ -1,6 +1,6 @@
 package com.x.protocol.network.factory.custom;
 
-import com.ax.protocol.network.factory.custom.data.ConcentInfo;
+import com.x.protocol.network.factory.custom.data.ConsentInfo;
 import com.x.protocol.network.core.NetworkConsentType;
 import com.x.protocol.network.factory.NetworkConsent;
 import com.x.protocol.network.factory.NetworkIO;
@@ -26,11 +26,11 @@ public class CustomServiceConsent extends NetworkConsent {
         this.consent = custom;
         this.in = new CustomInput(service, this, custom);
         this.out = new CustomOutput(service, this, custom);
-        ConcentInfo info = custom.getConsentInfo();
-        this.localHost = info.getConcentLocalHost();
-        this.localPort = info.getConcentLocalPort();
-        this.remoteHost = info.getConcentRemoteHost();
-        this.remotePort = info.getConcentRemotePort();
+        ConsentInfo info = custom.getConsentInfo();
+        this.localHost = info.getConsentLocalHost();
+        this.localPort = info.getConsentLocalPort();
+        this.remoteHost = info.getConsentRemoteHost();
+        this.remotePort = info.getConsentRemotePort();
     }
 
     @Override

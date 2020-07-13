@@ -1,6 +1,5 @@
 package com.x.commons.config;
 
-import com.ax.commons.utils.FileHelper;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.collection.XArrays;
 import com.x.commons.util.convert.Converts;
@@ -165,7 +164,7 @@ public class Configure {
         }
         
         fileName = Files.getLocalPath(fileName, false);
-        int spIndex = fileName.lastIndexOf(FileHelper.SP);
+        int spIndex = fileName.lastIndexOf(Files.SP);
         if (spIndex != -1) {
             String folder = fileName.substring(0, spIndex);
             Files.createFolder(folder);

@@ -1,6 +1,6 @@
 package com.x.protocol.network.factory.custom;
 
-import com.ax.protocol.network.factory.custom.data.ConcentInfo;
+import com.x.protocol.network.factory.custom.data.ConsentInfo;
 
 /**
  * @Desc：
@@ -51,7 +51,7 @@ public abstract class CustomConsent {
         this.svcConsent = serviceConsent;
     }
 
-    public abstract ConcentInfo getConsentInfo();
+    public abstract ConsentInfo getConsentInfo();
 
     public abstract int available() throws Exception;
 

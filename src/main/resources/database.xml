@@ -1,13 +1,18 @@
 <!DOCTYPE databases PUBLIC "-//X//DTD DATABASE 1.0" "database.dtd" >
 <databases>
-    <database name="AD" type="MYSQL">
-        <url>jdbc:mysql://localhost:3306/study?zeroDateTimeBehavior=convertToNull</url>
+<!--    <database name="AD" type="MYSQL">-->
+<!--        <url>jdbc:mysql://localhost:3306/study?zeroDateTimeBehavior=convertToNull</url>-->
+<!--        <user>root</user>-->
+<!--        <password>123456</password>-->
+<!--    </database>-->
+    <database name="test" type="MYSQL">
+        <url>jdbc:mysql://172.20.240.120:3306/dtts?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=false</url>
         <user>root</user>
-        <password>123456</password>
+        <password>longshine</password>
     </database>
-    <database name="ad" type="MYSQL">
-        <url>jdbc:mysql://localhost:3306/study</url>
-        <user>test</user>
-        <password>test</password>
+    <database name="ad" type="ORACLE">
+        <url>jdbc:oracle:thin:@//172.26.1.168:1521/dccsdev</url>
+        <user>DCCS</user>
+        <password>hqj__ZS3V1iHo--yGbi-</password>
     </database>
 </databases>

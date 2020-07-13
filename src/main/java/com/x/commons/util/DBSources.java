@@ -1,6 +1,7 @@
 package com.x.commons.util;
 
 import com.thoughtworks.xstream.XStream;
+import com.x.commons.database.core.IDatabase;
 import com.x.commons.util.bean.New;
 import com.x.commons.util.string.Strings;
 import com.x.commons.util.xml.Xmls;
@@ -17,6 +18,13 @@ import java.util.Map;
  * @Author AD
  */
 public final class DBSources {
+
+    public static void main(String[] args) throws Exception {
+        start("database.xml");
+        IDaoManager daoManager = new DBSources().getDaoManager("test");
+        IDatabase databaseAccess = daoManager.getDatabaseAccess();
+        System.out.println(databaseAccess);
+    }
     
     private static final Map<String, IDaoManager> managers = New.concurrentMap();
     

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>What can Javascript do</h1>
+<p>add button event listener</p>
+<button id="button">click me</button>
+<p id="content"></p>
+<script>
+var button = document.getElementById("button");
+button.addEventListener("mouseover",onMouseOver);
+button.addEventListener("click",onClick);
+button.addEventListener("mouseout",onMouseOut);
+function onMouseOver() {
+    document.getElementById("content").innerHTML="Mouse Over</br>";
+}
+function onClick() {
+    document.getElementById("content").innerHTML="Mouse Click</br>";
+}
+function onMouseOut() {
+    document.getElementById("content").innerHTML="Mouse Out</br>";
+}
+</script>
+</body>
+</html>
